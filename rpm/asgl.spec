@@ -32,9 +32,9 @@ g77 -o exe/collect doc/collect.f
 BIN_ASGL="${topdir}/exe"
 LIB_ASGL=${BIN_ASGL}
 export BIN_ASGL LIB_ASGL
-PATH="$PATH:${BIN_ASGL}"
+PATH="${PATH}:${BIN_ASGL}"
 (cd examples && make)
-(cd doc && make ps)
+(cd doc && make && make ps)
 
 %install
 bindir=${RPM_BUILD_ROOT}/usr/bin
@@ -42,11 +42,11 @@ libdir=${RPM_BUILD_ROOT}/usr/lib/asgl
 install -d ${bindir}
 install -d ${libdir}
 install rpm/asgl.script ${bindir}/asgl
-rm -f exe/collect
+rm -f exe/collect exe/asgl
 install exe/* ${libdir}
 
 %clean
-rm -rf ${RPM_BUILD_ROOT}
+[ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
