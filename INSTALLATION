@@ -15,10 +15,10 @@
 Supported computers:
 
 ASGL 1.3.1 runs on Silicon Graphics Iris 4D, Convex C2, Sun 4, 
-IBM RS/6000, DEC Decstation, DEC Alpha station, and compiles with 
-the public domain f2c fortran-to-c translator. To obtain f2c, use 
-the anonymous ftp service on research.att.com. Its IP address is 
-192.20.225.2; login with the username `netlib'. The f2c translator 
+IBM RS/6000, DEC Decstation, DEC Alpha station, Linux boxes, and
+compiles with the public domain f2c fortran-to-c translator. To obtain
+f2c, use the anonymous ftp service on research.att.com. Its IP address
+is 192.20.225.2; login with the username `netlib'. The f2c translator 
 allows ASGL to run on virtually any UNIX computer.
 
 
@@ -27,7 +27,18 @@ allows ASGL to run on virtually any UNIX computer.
 Installation:
 
 
-If you have the asgl-1.3.1.tar.gz distribution file:
+- If you have asgl-1.3.1-1.src.rpm, and are on a RedHat Linux (or similar)
+  system, the following should generate a binary RPM from the source:
+     rpmbuild --rebuild asgl-1.3.1-1.src.rpm
+  (You may have to run this as root.)
+
+
+- If you have asgl-1.3.1-1.i386.rpm (e.g. built from the .src.rpm, above)
+  then the following should install it (run as root):
+     rpm -ivh asgl-1.3.1-1.i386.rpm
+
+
+- If you have the asgl-1.3.1.tar.gz distribution file:
  
   1) Unpack the distribution file:
 
