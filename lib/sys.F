@@ -17,7 +17,7 @@ cf ---------------------------------------------------------------------------
         character cmd*(*), scmd*(*), ccmd*255
         external lenr2,time
 
-#if defined(f2c) || defined (AIX)
+#if defined(f2c) || defined (AIX) || defined(WIN)
           sysf = 'sys.tmp.file'
 #else
 c ------- need argument 0 for an IBM AIX 3.2 xlf (but this doesn
