@@ -37,7 +37,7 @@ dvi: $(SOURCES)
 
 html:
 	latex2html -split 3 -link 5 -init_file latex2html-init \
-		-t "ASGL 1.2 manual" ${DOCUMENT}.tex
+		-t "ASGL 1.3.1 manual" ${DOCUMENT}.tex
 
 gs: ps
 	gs ${DOCUMENT}.ps

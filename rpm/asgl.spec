@@ -1,5 +1,5 @@
 Name:          asgl
-Version:       1.3
+Version:       1.3.1
 Release:       1
 License:       Copyright
 Summary:       PostScript plot creator
