@@ -1,4 +1,5 @@
 manual.tex
+manual
 *.log
 *.aux
 *.dvi

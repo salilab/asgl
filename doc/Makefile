@@ -28,19 +28,18 @@ manual: $(SOURCES) collect
 	./collect ${ROOT}.tex perl.tex
 	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
 
-dvi: $(SOURCES) collect
-	(cd ../examples; make ps_files)
-	./collect ${ROOT}.tex perl.tex
-	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
+dvi: manual
 	latex $(DOCUMENT)
 #	bibtex $(DOCUMENT)
 	makeindex $(DOCUMENT).idx
 	latex $(DOCUMENT)
 	latex $(DOCUMENT)
 
-html:
-	latex2html -split 3 -link 5 -init_file latex2html-init \
-		-t "ASGL 1.3.1 manual" ${DOCUMENT}.tex
+html: dvi
+	@rm -f examples
+	ln -s ../examples examples
+	latex2html -init latex2html-init ${DOCUMENT}.tex
+	@rm -f examples
 
 gs: ps
 	gs ${DOCUMENT}.ps
