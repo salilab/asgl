@@ -79,15 +79,15 @@ c          commfile = call addstr(commfile, '.top')
 c        end if
 
 c ----- top directory for all program files:
-        call getenv(appenv, topdir)
+        call getenv(appenv(1:lenr2(appenv)), topdir)
         if (lenr(topdir) .eq. 0)
      &   call wrtmsg(4,.true.,.true.,1,'TOP',
      &   'Environment variable for application directory undefined.'//
      &   'Program probably not installed correctly.')
         call addstr(topdir, '/')
-        call getenv(binenv, bindir)
+        call getenv(binenv(1:lenr2(binenv)), bindir)
         call addstr(bindir, '/')
-        call getenv(libenv, libdir)
+        call getenv(libenv(1:lenr2(libenv)), libdir)
         call addstr(libdir, '/')
 
 c ----- the filename of the TOP initialization file:
