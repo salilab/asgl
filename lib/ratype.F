@@ -2,6 +2,7 @@
      -                   brkatm,groatm,iresatm,resnam,natmdc,mapres,
      -                   ndcres,nres)
         implicit none
+#include "io.cst"
         integer ndcres, natm, nvdwtyp, iattyp(natm), natmdc(ndcres)
         integer iresatm(natm)
         integer iatm,irest,ibrk,ifind2word,istr2int,mapres,nres
@@ -18,7 +19,7 @@ C ----- associate the GROMOS (vdwatm) type with every atom in the list ;
 c ------- residue type index
           irest = istr2int(resnam(iresatm(iatm)))
           if (irest .eq. 0) then
-            write(*,'(2a)') 
+            write(iolog,'(2a)') 
      -      'atmtype_W> residue type not recognized (set to 1): ', 
      -                  resnam(iresatm(iatm))
             irest = 1
@@ -34,7 +35,7 @@ c --------- GROMOS atom type index
 c ----------- GROMOS atom type index
               iattyp(iatm)=ifind2word('H',vdwatm,nvdwtyp)
             else
-              write(*,'(2a/a,2i4,1x,a)')
+              write(iolog,'(2a/a,2i4,1x,a)')
      -        'atmtype_W> PDB atom not in GRO<->BRK file: ',
      -        atmnam(iatm),
      -        '           ires,irest,resnam: ', 
@@ -44,7 +45,7 @@ c ----------- GROMOS atom type index
           end if
 
           if (iattyp(iatm).eq.0) then
-            write(*,190)atmnam(iatm),iresatm(iatm),
+            write(iolog,190)atmnam(iatm),iresatm(iatm),
      -                  resnam(iresatm(iatm)),svdwcnt(1)
 190         format('atmtype__W> Atom type not found in VDW.LIB: '/
      -      '    Atom, residue in BRK file  : ',a4,2x,i3,1x,a3/

@@ -58,6 +58,7 @@ c
         real small
         parameter (small = 1.0E-10)
 #include "asgl.cmn"
+#include "io.cst"
         integer npnts,ndim,ixy(2),nwxy(2),iwxy(ndim)
         real x0pap,y0pap,x1pap,y1pap,x0ps,y0ps,x1ps,y1ps
         real x0wrl,y0wrl,x1wrl,y1wrl,dxwrl,dywrl,cmps
@@ -79,7 +80,7 @@ c ------- molecule:
           if (deflt(x1wrl)) x1wrl = rmaxv(tab(1,1), npnts)
           if (deflt(y1wrl)) y1wrl = rmaxv(tab(1,2), npnts)
 10      continue
-        write(*,'(a,4g12.4)')
+        write(iolog,'(a,4g12.4)')
      -  'world____> World window: ', x0wrl, y0wrl, x1wrl, y1wrl
 
 
@@ -184,7 +185,7 @@ c ----- update the BoundingBox
         bbox1 = max(bbox1, x2)
         bboy1 = max(bboy1, y2)
 
-c        write(*,'(a,8f8.2)')'UPDBOX: ',x,y,x2,y2,bbox0,bboy0,bbox1,bboy1
+c        write(iolog,'(a,8f8.2)')'UPDBOX: ',x,y,x2,y2,bbox0,bboy0,bbox1,bboy1
 
         return
       end

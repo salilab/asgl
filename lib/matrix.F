@@ -501,7 +501,7 @@ c     of a symmetric matrix A(n,n)
 c        call eignorm(evec,n,nmax)
         call eigsrt(eval,evec,n,nmax)
 
-c        write(*,*) 'Vec_I: A x - L x'
+c        write(iolog,*) 'Vec_I: A x - L x'
 c        s = 0.0
 c        do  i = 1, n
 c          do  j = 1, n
@@ -512,9 +512,9 @@ c            end do
 c            d(j) = p1 - eval(i)*evec(j,i)
 c            s = s + abs(d(j))
 c          end do
-c          write(*,'(i4, 999g15.5)') i, (d(j),j=1,n)
+c          write(iolog,'(i4, 999g15.5)') i, (d(j),j=1,n)
 c        end do
-c        write(*,'(a,g15.5)') 'SUM DEVIATIONS FROM 0: ', s
+c        write(iolog,'(a,g15.5)') 'SUM DEVIATIONS FROM 0: ', s
 
         return
       end
@@ -640,6 +640,7 @@ c --- from Numerical Recipes, Edition 2
 
       subroutine jacobi(a,n,np,d,v,nrot)
       implicit none
+#include "io.cst"
       integer maxiter, nmax
       parameter (maxiter = 100)
       parameter (nmax=500)
@@ -735,7 +736,7 @@ c --- from Numerical Recipes, Edition 2
 23      continue
 24    continue
 
-      write(*,'(a,i7)')'jacobi__E> too many iterations: ',maxiter
+      write(iolog,'(a,i7)')'jacobi__E> too many iterations: ',maxiter
       stop
 
       return

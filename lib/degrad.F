@@ -439,13 +439,14 @@ cf ----------------------------------------------------------------------------
       real function divide(arg,ierr)
         implicit none
 #include "numbers.cst"
+#include "io.cst"
         integer ierr
         real arg
 
         divide = sign(max(divisor,abs(arg)), arg)
 
         if (abs(arg) .lt. divisor) then
-          write(*,'(a,2g20.6/a)')
+          write(iolog,'(a,2g20.6/a)')
      &    'divide__E> division by zero: ', arg, divisor,
      &    '           try changing RANDOM_SEED and complain to Andrej'
           ierr = 1

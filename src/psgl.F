@@ -304,7 +304,7 @@ c --- form feed:
 #include "psgl.cmn"
 
         if (epsf) then
-          write(*,'(a)') 'showpag_E> not allowed in encapsulated PS'
+          write(iolog,'(a)') 'showpag_E> not allowed in encapsulated PS'
           stop
         end if
 
@@ -728,7 +728,7 @@ c ------- find which size symbol this is:
             isize = is
             if (ss .eq. sizsyb(is)) go to 25
 20        continue
-          write(*,*)'Error[dosiz]: symbol not found: ', ss
+          write(iolog,*)'Error[dosiz]: symbol not found: ', ss
           go to 30
 25        linwgt(il) = size(isize)
 30      continue
@@ -797,7 +797,7 @@ c       for the one after the decimal point:
           lr = i
           if (index('123456789.', str(i:i)) .gt. 0) go to 30
 20      continue
-        write(*,*) 'condns__E> no number in str: ', x, ' | ', str
+        write(iolog,*) 'condns__E> no number in str: ', x, ' | ', str
         return
 30      continue
 c ----- there is always a dot when you write a number in a f14.6 format:
@@ -1024,7 +1024,7 @@ c --------- rotate the two window defining points:
             xt2r = c*(xt2-x) - s*(yt2-y) + x
             yt2r = s*(xt2-x) + c*(yt2-y) + y
 
-c            write(*,'(a,f8.4,2i3,2f8.4,i4,1x,a)') 
+c            write(iolog,'(a,f8.4,2i3,2f8.4,i4,1x,a)') 
 c     -      'TXT: ', fnthgt(ifont),ihstyl,ivstyl,x,y,lr3,txt3(1:lr3)
             call updbox(xt1r, yt1r)
             call updbox(xt2r, yt2r)
@@ -1162,7 +1162,7 @@ c ------- restore the graphics state, if necessary
         if (.not. epsf) then
           write(iops, '(a,2i4)') '%%Page: ', ipage,ipage
         else
-          write(*,*) 
+          write(iolog,*) 
      -    'Warning[pspage]: cannot use SHOWPAGE when in EPS format.'
         end if
         return
@@ -1210,7 +1210,7 @@ c ----- do I have to fix the smallest BoundingBox?
           bbox1 = min(bbx1, max(bbx0,bbox1))
           bboy1 = min(bby1, max(bby0,bboy1))
 
-          write(*,'(a,4i5)') 
+          write(iolog,'(a,4i5)') 
      -    'closeps__> %%BoundingBox: ', 
      -    nint(bbox0),nint(bboy0),nint(bbox1),nint(bboy1)
 

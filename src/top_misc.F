@@ -34,7 +34,7 @@ c ----- is this going to be an encapsulated PS or PS file
         if (encaps .eq. '#EPSF') then
           epsf = .true.
           if (lenr(ext) .lt. 1) ext = '.ps'
-          write(*,'(a)') 'top.ini__> Encapsulated PostScript'
+          write(iolog,'(a)') 'top.ini__> Encapsulated PostScript'
           call initbb
 c ------- by default, turn the mark page off:
 c ------- top.ini specific
@@ -42,7 +42,7 @@ c ------- top.ini specific
         else
           epsf = .false.
           ext = '.ps'
-          write(*,'(a)') 'top.ini__> PostScript'
+          write(iolog,'(a)') 'top.ini__> PostScript'
         end if
         call rootfn(commfile, dummy)
         call concat(dummy, ext, psfil)
@@ -50,15 +50,15 @@ c ------- top.ini specific
 
 c ----- read the correspondence between Brookhaven and GROMOS names:
 c       (nresdc and resdc are local to init1 - use ndcres and dcres outside)
-        call rdgrbrk(ioinp,grbrkf,groatm,brkatm,mrestyp,mapres,
+        call rdgrbrk(ioinp,iolog,grbrkf,groatm,brkatm,mrestyp,mapres,
      -               nresdc,natmdc,resdc)
 
 c ----- read the table of the van der Waals radii:
-        call readvdw(ioinp,vdwfnam,vdwatm,vdwcnt,nvdwtyp,mattyp,
+        call readvdw(ioinp,iolog,vdwfnam,vdwatm,vdwcnt,nvdwtyp,mattyp,
      -               polar,electr)
 
 c ----- read the default atom and bond colors and line types
-        call rddraw(ioinp,drawlib,nvdwtyp,mbndtyp,nbndtyp,
+        call rddraw(ioinp,iolog,drawlib,nvdwtyp,mbndtyp,nbndtyp,
      -               atypc,iatypl,btypc,ibtypl)
 
 c ----- no data in Table:

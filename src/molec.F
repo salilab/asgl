@@ -31,12 +31,12 @@ c --- for each atom, get the bonds connected to it
      -               maxpoint,isel,numsel)
 
 c      do  i = 1, numbond
-c        write(*,'(a,4i5)') 'BOND: ',i,ibond(1,i),ibond(2,i),ibline(i)
+c        write(iolog,'(a,4i5)') 'BOND: ',i,ibond(1,i),ibond(2,i),ibline(i)
 c      end do
 c      l = 1
 c      do  i = 1, numat
 c        j = lastbond(i)
-c        write(*,'(a,4i5)') 'ATOM: ',i,(nbonds(k),k=l,j)
+c        write(iolog,'(a,4i5)') 'ATOM: ',i,(nbonds(k),k=l,j)
 c        l = j + 1
 c      end do
 
@@ -66,8 +66,8 @@ c -------- bond l is bonded to atom ia
            if (ia.eq.ibond(1,l)) then
 c ---------- atom ia occurs behind atom j; draw bond l between them
              j=ibond(2,l)
-c             write(*,*)l,bcolor(l),ibline(l),bond_fact(l),taper(l)
-c             write(*,*)x(ia),y(ia),z(ia),x(j),y(j),z(j)
+c             write(iolog,*)l,bcolor(l),ibline(l),bond_fact(l),taper(l)
+c             write(iolog,*)x(ia),y(ia),z(ia),x(j),y(j),z(j)
              call draw_bond(perspective,x(ia),y(ia),z(ia),
      -            x(j),y(j),z(j),atrad(ia),atrad(j),bcolor(l),
      -            ibline(l),width,bond_fact(l),taper(l))
@@ -118,7 +118,7 @@ c --- plot the bond
      -                 bond_fact,xb,yb,numpbond,maxpbond,taper)
       end if
 
-c      write(*,*) 'iline: ', iline
+c      write(iolog,*) 'iline: ', iline
       if (iline .gt. 0) then
         call pgone(xb,yb,numpbond,iline,color)
       else
@@ -126,8 +126,8 @@ c      write(*,*) 'iline: ', iline
         y1 = wpy(0.5*(yb(1)+yb(4)))
         x2 = wpx(0.5*(xb(2)+xb(3)))
         y2 = wpy(0.5*(yb(2)+yb(3)))
-c        write(*,*) xb(1),yb(1),xb(2),yb(2),xb(3),yb(3),xb(4),yb(4)
-c        write(*,*) x1,y1,x2,y2
+c        write(iolog,*) xb(1),yb(1),xb(2),yb(2),xb(3),yb(3),xb(4),yb(4)
+c        write(iolog,*) x1,y1,x2,y2
         call line(x1,y1,x2,y2,-iline)
       end if
 
@@ -479,7 +479,7 @@ c --- there is a covalent bond if: distance < (sum of vdw radii)*vdwred
           if (undefd(coval(1)) .or. undefd(coval(2))) then
             bndlen2 = vdwred*(vdwcnt(iattyp(ia))+vdwcnt(iattyp(ja)))
             bndlen1 = 0.5*bndlen2
-c            write(*,'(4i4,2f8.3)') ia,ja,iattyp(ia),iattyp(ja),
+c            write(iolog,'(4i4,2f8.3)') ia,ja,iattyp(ia),iattyp(ja),
 c     &                 vdwcnt(iattyp(ia)),vdwcnt(iattyp(ja))
           else
             bndlen1 = coval(1)
@@ -507,6 +507,7 @@ c     &                 vdwcnt(iattyp(ia)),vdwcnt(iattyp(ja))
      -           maxbond,addbnd,bndtyp,iattyp,vdwcnt,nvdwtyp,
      -           coval)
       implicit none
+#include "io.cst"
       integer maxbond,numat,numbond,numsel,isel(numsel)
       integer ibond(2,maxbond), indexw,iattyp(numat),nvdwtyp
       real x(numat),y(numat),z(numat),vdwcnt(nvdwtyp)
@@ -519,7 +520,7 @@ c     &                 vdwcnt(iattyp(ia)),vdwcnt(iattyp(ja))
       if (indexw(bndtyp, 'COVALENT') .gt. 0) then
         call getcov(x,y,z,numat,isel,numsel,ibond,numbond,maxbond,
      -              iattyp,vdwcnt,nvdwtyp,coval)
-        write(*,'(a,2i6)') 
+        write(iolog,'(a,2i6)') 
      -  'calc_conn> Selctd atoms, COVALENT bonds calculated: ',
      -  numsel,numbond
       end if
@@ -527,7 +528,7 @@ c     &                 vdwcnt(iattyp(ia)),vdwcnt(iattyp(ja))
       if (indexw(bndtyp, 'SEQUENTIAL') .gt. 0) then
         call getseq(x,y,z,numat,isel,numsel,ibond,numbond,maxbond,
      -              iattyp,vdwcnt,nvdwtyp,coval)
-        write(*,'(a,2i6)') 
+        write(iolog,'(a,2i6)') 
      -  'calc_conn> Selctd atoms, SEQUENTIAL bonds used: ', 
      -  numsel,numbond
       end if

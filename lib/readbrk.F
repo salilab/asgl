@@ -16,11 +16,12 @@ C       IATMR1(I) ... index of the 1. atom in the I-th resiude ;
 C       IATMR2(I) ... index of the last atom in the I-th resiude ;
 C       IRESATM(I)... residue index of the I-th atom ;
 C
-      subroutine readbrk(ioinp,brkname,x,y,z,maxatm,maxres,natm,nres,
-     -                   resnam,resnum,atmnam,iatmr1,iatmr2,iresatm)
+      subroutine readbrk(ioinp,iolog,brkname,x,y,z,maxatm,maxres,natm,
+     -                   nres,resnam,resnum,atmnam,iatmr1,iatmr2,
+     -                   iresatm)
         implicit none
 
-        integer maxatm,ioinp
+        integer maxatm,ioinp,iolog
         integer maxres,natm,nres,iatmr1(maxres),iatmr2(maxres)
         integer iresatm(maxatm)
         real x(maxatm), y(maxatm), z(maxatm)
@@ -57,18 +58,19 @@ c          if ((test1.eq.'ATOM  ') .or. (test1.eq.'HETATM')) then
         iatmr2(nres) = natm
         close(ioinp)
 
-        write(*,'(''readbrk__> residues, atoms: '', 2i6)') nres, natm
+        write(iolog,'(''readbrk__> residues, atoms: '', 2i6)') nres,
+     &        natm
 
         return
       end
 
 
 
-      subroutine rdxyz(ioinp,brkname,x,y,z,maxatm,maxres,natm,nres,
-     -                 resnam,resnum,atmnam,iatmr1,iatmr2,iresatm)
+      subroutine rdxyz(ioinp,iolog,brkname,x,y,z,maxatm,maxres,natm,
+     -                 nres,resnam,resnum,atmnam,iatmr1,iatmr2,iresatm)
         implicit none
 
-        integer maxatm,ioinp
+        integer maxatm,ioinp,iolog
         integer maxres,natm,nres,iatmr1(maxres),iatmr2(maxres)
         integer iresatm(maxatm)
         real x(maxatm), y(maxatm), z(maxatm)
@@ -94,7 +96,8 @@ c          if ((test1.eq.'ATOM  ') .or. (test1.eq.'HETATM')) then
         nres = nres - 1
         close(ioinp)
 
-        write(*,'(''rdxyz____> residues, atoms: '', 2i6)') nres, natm
+        write(iolog,'(''rdxyz____> residues, atoms: '', 2i6)') nres,
+     &        natm
 
         return
       end

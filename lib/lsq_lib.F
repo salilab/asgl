@@ -115,7 +115,7 @@ c ----- iterate until satisfied
 10      continue
 
           niter = niter + 1
-          write(*,11) niter, chisq, (a(i),i=1,min(nprmall,6))
+          write(iolog,11) niter, chisq, (a(i),i=1,min(nprmall,6))
 11        format('chi^2,P: ', i3, 99g13.4)
 
           chi2 = chisq
@@ -151,8 +151,8 @@ c                   you also stop if niter .ge. maxcyc
             irel = 0
           end if
        
-c          write(*,*) 'Iabs, irel: ', iabs, irel
-c          write(*,*) 'dabs, drel, alamda: ', dchi2a, dchi2r, alamda
+c          write(iolog,*) 'Iabs, irel: ', iabs, irel
+c          write(iolog,*) 'dabs, drel, alamda: ', dchi2a, dchi2r, alamda
           if (((iabs.lt.2).and.(irel.lt.2).and.(alamda.lt.alammax)).and.
      -        (niter.lt.maxcyc)) go to 10
 
@@ -488,6 +488,7 @@ c     parameters vector a, length na;
      -           ainit,a,covar,nprmmax,niter,alamda,chisq,degfreed,
      -           q,errmult,alammax,nx,mstdev)
         implicit none
+#include "io.cst"
         real eps
         integer npnts,nx,i,j,nprmall,nprmfit,lista(nprmfit),nprmmax
         integer niter,lenr
@@ -500,7 +501,7 @@ c     parameters vector a, length na;
         character stat*3
         logical allvar
 
-        write(*, 10) 
+        write(iolog, 10) 
      -  comment1(1:max(1,lenr(comment1))), 
      -  comment2(1:max(1,lenr(comment2))),
      -  npnts, mstdev, nx
@@ -512,7 +513,7 @@ c     parameters vector a, length na;
      -        'Standard deviations user supplied: ', l7 /
      -        'Number of independent variables  : ', i7 //)
 
-        write(*, 20)
+        write(iolog, 20)
 20      format('From the following output, extract this information:'//
      - '      1) Parameter estimates;' /
      - '      2) Errors in parameters;' /
@@ -531,19 +532,19 @@ c     parameters vector a, length na;
      - '      minimized is chi^2, so the best solution is the one with'/
      - '      the minimal chi^2.'////)
 
-        write(*, 30) '#', 'INIT', 'FINAL', 'STD.ERR.', 'FIXED'
+        write(iolog, 30) '#', 'INIT', 'FINAL', 'STD.ERR.', 'FIXED'
 30      format(a3,3a15,a9/
      -    '--------------------------------------------------------')
         allvar = .true.
         do 50  i = 1, nprmall
           call varied(lista, nprmfit, i, stat)
           if (stat .eq. 'YES') allvar = .false.
-          write(*, 40) i, ainit(i), a(i), sqrt(covar(i,i)), stat
+          write(iolog, 40) i, ainit(i), a(i), sqrt(covar(i,i)), stat
 40        format(i3, 3g15.5, 6x, a3)
 50      continue
 
         rms = sqrt(chisq / (degfreed-1.0))
-        write(*, 60) niter, alamda, chisq, rms, degfreed, q, errmult
+        write(iolog, 60) niter, alamda, chisq, rms, degfreed, q, errmult
 60      format(//'Number of calls of Marquardt routine   : ', i15   //
      -           'Final value of LAMBDA convergence param: ', e15.5 //
      -           'Chi^2 = SUMi {[y(i)-y(i)''] / s(i)}^2   : ',e15.5 //
@@ -553,49 +554,49 @@ c     parameters vector a, length na;
      -           'Multiplier for the co-variance matrix  : ', e15.5 ///)
 
         if (.not. mstdev) then
-          write(*, 62)
+          write(iolog, 62)
 62        format('Note: Goodness-of-fit estimates not meaningful.' /
      -           '      Error estimates tentative.'/)
         else
-          write(*, 64)
+          write(iolog, 64)
 64        format(
      - 'Note: Multiplier for the co-variance matrix not meaningful.'/)
         end if
 
 c ----- see lsq_lib for more comments on convergence
-        write(*, 63)
+        write(iolog, 63)
 63      format('Note on convergence from the final value of lambda:')
         if (alamda .ge. alammax) then
-          write(*, 65) 
+          write(iolog, 65) 
 65        format('      A potential problem with convergence or '/
      -           '      very good initial estimates or ' /
      -           '      a very deep chi^2 minimum.'/)
         else
-          write(*, 66) 
+          write(iolog, 66) 
 66        format('      No convergence problem.'/)
         endif
 
-        write(*, 70) (i,i=1,nprmall)
+        write(iolog, 70) (i,i=1,nprmall)
 70      format(// 'Co-variance matrix:' // 2x, 999i8)
         do 90  i = 1, nprmall
-          write(*, 80) i, (covar(i,j),j=1,nprmall)
+          write(iolog, 80) i, (covar(i,j),j=1,nprmall)
 80        format(i2, 999f8.4)
 90      continue
 
         if (allvar) then
-        write(*, 100) (i,i=1,nprmall)
+        write(iolog, 100) (i,i=1,nprmall)
 100     format(// 'Cross-correlation matrix: ' // 2x, 999i8)
         do 120  i = 1, nprmall
-          write(*, 110) i, 
+          write(iolog, 110) i, 
      -    (covar(i,j)/max(eps,sqrt(covar(i,i)*covar(j,j))),j=1,nprmall)
 110       format(i2, 999f8.4)
 120     continue
         else
-        write(*, 130)
+        write(iolog, 130)
 130     format(// 'Cross-correlation matrix not written out since some'/
      -            'parameters were not varied.'//)
         end if
-        write(*, '(///)')
+        write(iolog, '(///)')
 
         close(11)
 

@@ -26,8 +26,8 @@ cf ----------------------------------------------------------------------------
       program top1
         implicit none
 #include "top_appl.cmn"
-        integer icmd,lr,iargc,lenr,i,lenr2
-        character key*100, str*14
+        integer icmd,lr,iargc,lenr,i,lenr2,istat
+        character key*100, str*14, outfile*256
         logical iowr
         external lenr, lenr2, iowr
 
@@ -72,7 +72,14 @@ c ----- get the TOP program name:
         end if
         job = commfile
         lr = lenr(job)
-        if (job(max(1,lr-3):lr) .eq. '.top') job=job(1:lr-4)
+        if (job(max(1,lr-3):lr) .eq. '.top') then
+          job=job(1:lr-4)
+          outfile = job(1:lr-4) // '.log'
+        else
+          outfile = job(1:lr) // '.log'
+        end if
+        CALL openf5(iolog,outfile,'REPLACE','SEQUENTIAL','FORMATTED',
+     &              2,1,istat,iolog)
 
 c        else
 c          commfile = call addstr(commfile, '.top')
@@ -2080,7 +2087,7 @@ c --------- match this end_do with the last un-matched DO above it:
                 go to 10
               end if
             end do
-            write(*,'(a)')
+            write(iolog,'(a)')
      &      'indendd_E> cannot have END_DO before free DO'
             stop
 10          continue

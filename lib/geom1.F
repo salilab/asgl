@@ -499,13 +499,14 @@ c --- returns the distance rms on the symmetric matrix of distances
 c     spanned by 3d euclidean points x1(n),y1(n),z1(n) and x1(n),y2(n),z2(n)
       real function drmsq1(x1,y1,z1,x2,y2,z2,n)
         implicit none
+#include "io.cst"
         integer i,j,n
         real x1(n), y1(n), z1(n), dist1
         real x2(n), y2(n), z2(n), d1, d2, d, sd
 
 c ----- get the distance rms
         if (n .lt. 2) then
-          write(*,'(a)') 'drmsq1__W> n<2'
+          write(iolog,'(a)') 'drmsq1__W> n<2'
           drmsq1 = -1.0
           go to 100
         end if
@@ -554,13 +555,14 @@ c     spanned by 3d euclidean points a(3,n) and b(3,n); the difference
 c     contributes to the sum only if smaller than cut (neqvp such differences)
       real function drmsq3(x1,y1,z1,x2,y2,z2,n,cut,neqvp)
         implicit none
+#include "io.cst"
         integer i,j,n,neqvp
         real x1(n), y1(n), z1(n)
         real x2(n), y2(n), z2(n), d1, d2, d, sd, cut, dist1
 
 c ----- get the distance rms
         if (n .lt. 2) then
-          write(*,'(a)') 'drmsq3__W> n<2'
+          write(iolog,'(a)') 'drmsq3__W> n<2'
           drmsq3 = -1.0
           go to 100
         end if

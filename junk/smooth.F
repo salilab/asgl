@@ -6,15 +6,15 @@
 
       if (iargc() .ne. 4) stop 'usage: inp_file out_file window columns'
       call getarg(1, ifile)
-      write(*,*) 'Input file: ', ifile
+      write(iolog,*) 'Input file: ', ifile
       call getarg(2, ofile)
-      write(*,*) 'Output file: ', ofile
+      write(iolog,*) 'Output file: ', ofile
       call getarg(3, swind)
       call str_i(swind, isegm, ierr)
-      write(*,*) 'Half-window size: ', isegm
+      write(iolog,*) 'Half-window size: ', isegm
       call getarg(4, scolumn)
       call str_i(scolumn, ncolumn, ierr)
-      write(*,*) 'Number of columns: ', ncolumn
+      write(iolog,*) 'Number of columns: ', ncolumn
 
       open(11, file=ifile, status='old')
       n = 1

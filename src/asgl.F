@@ -195,6 +195,7 @@ c     develop it anymore.
       subroutine fitmod2(x,nx2,nxmax,y,sig,npnts,type,ainit,nainit,
      &    nprmfit,lista,relcut,abscut,mstdev,x1,y1,x2,y2,n,npnts2,wr)
         implicit none
+#include "io.cst"
         integer nprmmax, nmodels
         parameter (nprmmax = 50, nmodels = 17)
         integer nx2,npnts,maxcyc,nainit,ifind2word,npnts2,n,imod
@@ -231,7 +232,7 @@ c     develop it anymore.
         call upper(type2)
         imod = ifind2word(type2,smodels,nmodels)
         if (imod .lt. 1) then
-          write(*,'(2a)') 'fitmod2__E> model not found: ', type2
+          write(iolog,'(2a)') 'fitmod2__E> model not found: ', type2
           stop
         end if
 
@@ -331,7 +332,8 @@ c ----- the parameters are: a, w_1, m_1, s_1, w_2, m_2, s_2, ..., m_n, s_n
           comment2='y = a * {Sum_i w_i * Gauss[mean_i, stdev_i]}'
 c          call chkprm(nainit,nprmall,nprmfit,nx,nx2)
           if (mod(nainit, 3) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -351,7 +353,8 @@ c ----- the parameters are: a, w_1, m_1, s_1, w_2, m_2, s_2, ..., m_n, s_n
           comment2='y = a * {Sum_i w_i * Gauss[mean_i, stdev_i]}'
 c          call chkprm(nainit,nprmall,nprmfit,nx,nx2)
           if (mod(nainit, 3) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss2, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -369,7 +372,8 @@ c          call chkprm(nainit,nprmall,nprmfit,nx,nx2)
           comment1='Fit to a multiple 360 binormal (Sum_i w_i=1):'
           comment2=' '
           if (mod(nainit, 6) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss3, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -523,7 +527,8 @@ c          call chkprm(nainit,nprmall,nprmfit,nx,nx2)
           comment1='Fit to a true multiple 360 binormal (Sum_i w_i=1):'
           comment2=' '
           if (mod(nainit, 6) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss4, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -830,7 +835,7 @@ c ----- determine the real world range of the 'array' graph:
         real y(npnts), ysrt(maxpnt)
 
         if (center .lt. 0 .or. center .gt. 1.0) then
-          write(*,*)'rmaxv2___E> bad WORLD_FRACTION value: ', 
+          write(iolog,*)'rmaxv2___E> bad WORLD_FRACTION value: ', 
      &      center
           stop
         end if
@@ -886,7 +891,7 @@ c --- prepare the nxtick labels for the x-axis ticks:
             call add3str('E', expons)
           end if
           if (abs(factaxs - 10.0**intexp) .gt. 0.001)
-     -      write(*,'(a/a,2f15.5)') 
+     -      write(iolog,'(a/a,2f15.5)') 
      -      'axslbl__W> E* in tick labels not quite correct ',
      -      '           (factor not an integer power of 10): ',
      -      factaxs, 10.0**intexp
@@ -896,11 +901,11 @@ c --- prepare the nxtick labels for the x-axis ticks:
         l = len(xlabl(1))
         ilabl = 0
         do 10  i = 1, nxtick
-c         write(*,*) i, nxtick, i0xtck, x, nxnumb
+c         write(iolog,*) i, nxtick, i0xtck, x, nxnumb
          if (i.ge.i0xtck.and.mod((i-i0xtck), nxnumb) .eq. 0) then
           ilabl = ilabl + 1
           if (ilabl .gt. maxtck) then
-            write(*,'(a)') 'axslbl__E> increase MAXTCK'
+            write(iolog,'(a)') 'axslbl__E> increase MAXTCK'
             stop
           end if
 c ------- get a string with plenty of pre-dot positions and specified 
@@ -1023,6 +1028,7 @@ c --- it will do a density plot of an array x(i,j):
      -                  x0plt,y0plt,x1plt,y1plt,dxtxt,dytxt,iaxtyp)
         implicit none
 #include "asgl.cst"
+#include "io.cst"
 #include "psgl.cmn"
         integer iaxtyp
         integer nleg, nnumb
@@ -1046,7 +1052,7 @@ c ----- clip everything outside the Plot area:
 c ----- find the smallest and the largest elements of an array
         if (small .eq. -999.) small = rminarr(arr,maxa,nxdim,nydim)
         if (big   .eq. -999.) big   = rmaxarr(arr,maxa,nxdim,nydim)
-        write(*,'(a,2g14.4)')
+        write(iolog,'(a,2g14.4)')
      -  'dplot1___> Zmin, Zmax: ', small, big
 
 c ----- get a scaling factor for the grayness
@@ -1253,7 +1259,7 @@ c ----- get the spline points
           end do
           npnts = nsmth
         else
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'spltab__E> not enough space in Table array for a spline'
           stop
         end if
@@ -1303,7 +1309,7 @@ c ----- get the spline points
             end do
             npnts = nsmth
           else
-            write(*,'(a)') 
+            write(iolog,'(a)') 
      -      'plot2___E> not enough space in Table array for a spline'
             stop
           end if
@@ -1408,7 +1414,7 @@ c ----- number of positions, ratio between x and y spans
      -               0,  0,  0,  0, 90,  32*0/
 
         if ((iaspect .lt. 0).or.(iaspect.gt.2)) then
-          write(*,'(a,i4)')
+          write(iolog,'(a,i4)')
      -    'positio_E>, iaspect out of range: ', iaspect
           stop
         end if
@@ -1539,6 +1545,7 @@ c --- prepares a density plot from ordinary data
       subroutine getdens(x,y,npnts,arr,maxxarr,maxyarr,dx,dy,
      -                   nbarx,nbary,x0wrl,y0wrl,x1wrl,y1wrl)
         implicit none
+#include "io.cst"
         integer i,npnts,nbarx,ix,indhst2,j,iy,nbary,maxxarr,maxyarr
         real x(npnts),arr(maxxarr,maxyarr),x0wrl,x1wrl,y0wrl,y1wrl
         real rminv,rmaxv,dx,dy,y(npnts)
@@ -1566,12 +1573,12 @@ c ----- determine the real world range of the x-axis for the histogram:
 
 c ----- get number of bars from x0wrl and x1wrl and dx
         if ((x1wrl-x0wrl) .lt. 1.0E-10) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'getdens_E> x-range too small (no data,bad XMIN/XMAX)'
           stop
         else
          if (dx .lt. 1.0E-5) then
-           write(*,'(a)') 'getdens_E> BAR_DX too small'
+           write(iolog,'(a)') 'getdens_E> BAR_DX too small'
            stop
          end if
 c ------ there is half of a bar empty margin on each side:
@@ -1583,12 +1590,12 @@ c ----- make sure that x1wrl is the center of the last bar + dx
         x1wrl = x0wrl + (nbarx+1)*dx
 
         if ((y1wrl-y0wrl) .lt. 1.0E-10) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'getdens_E> y-range too small (no data,bad YMIN/YMAX)'
           stop
         else
          if (dy .lt. 1.0E-5) then
-           write(*,'(a)') 'getdens_E> BAR_DY too small'
+           write(iolog,'(a)') 'getdens_E> BAR_DY too small'
            stop
          end if
          nbary = ifix((y1wrl-y0wrl) / dy) - 1
@@ -1597,11 +1604,11 @@ c ----- make sure that x1wrl is the center of the last bar + dx
         y1wrl = y0wrl + (nbary+1)*dy
 
         if(nbarx.gt.maxxarr) then
-          write(*,'(a)') 'getdens_E> increase MAXXARR'
+          write(iolog,'(a)') 'getdens_E> increase MAXXARR'
           stop
         end if
         if(nbary.gt.maxyarr) then
-          write(*,'(a)') 'getdens_E> increase MAXYARR'
+          write(iolog,'(a)') 'getdens_E> increase MAXYARR'
           stop
         end if
 
@@ -1618,10 +1625,10 @@ c ----- accumulate the arr values
           arr(ix,iy) = arr(ix,iy) + 1
         end do
 
-        write(*,'(a,2i4)') 'getdens__> NBARX, DX   : ', nbarx, dx
-        write(*,'(a,2i4)') 'getdens__> NBARY, DY   : ', nbary, dy
-        write(*,'(a,2i4)') 'getdens__> X0WRL, Y0WRL: ', x0wrl, y0wrl
-        write(*,'(a,2i4)') 'getdens__> X1WRL, Y1WRL: ', x1wrl, y1wrl
+        write(iolog,'(a,2i4)') 'getdens__> NBARX, DX   : ', nbarx, dx
+        write(iolog,'(a,2i4)') 'getdens__> NBARY, DY   : ', nbary, dy
+        write(iolog,'(a,2i4)') 'getdens__> X0WRL, Y0WRL: ', x0wrl, y0wrl
+        write(iolog,'(a,2i4)') 'getdens__> X1WRL, Y1WRL: ', x1wrl, y1wrl
 
         return
       end
@@ -1633,6 +1640,7 @@ c     bars
       subroutine gethist(x,npnts,dx,xh,yh,nbars,maxpnt,x0wrl,x1wrl,
      -                   y,yavr,ystd,stderr)
         implicit none
+#include "io.cst"
         integer i,npnts,nbars,ix,maxpnt,indhst2
         real x(npnts),xh(maxpnt),yh(maxpnt),x0wrl,x1wrl
         real y(npnts), yavr(maxpnt), ystd(maxpnt)
@@ -1653,11 +1661,11 @@ c ----- determine the real world range of the x-axis for the histogram:
 
 c ----- get number of bars from x0wrl and x1wrl and dx
         if ((x1wrl-x0wrl) .lt. 1.0E-10) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'gethist_E> x-range too small (no data,bad XMIN/XMAX)'
         else
          if (dx .lt. 1.0E-5) then
-           write(*,'(a)') 'gethist_E> BAR_DX too small'
+           write(iolog,'(a)') 'gethist_E> BAR_DX too small'
            stop
          end if
          nbars = ifix((x1wrl-x0wrl) / dx) - 1
@@ -1666,7 +1674,7 @@ c ----- if x1wrl is more than x0wrl+(nbars+1)*dx, increase nbars
         if (abs(x0wrl+(nbars+1)*dx-x1wrl) .gt. 1.0E-5) nbars=nbars+1
 c ----- make sure that x1wrl is the center of the last bar
         x1wrl = x0wrl + (nbars+1)*dx
-        write(*,'(a,3g12.4,i4)') 
+        write(iolog,'(a,3g12.4,i4)') 
      -  'gethist__> x0wrl,x1wrl,dx,nbars: ',x0wrl,x1wrl,dx,nbars
 
 c ----- initialize yh and assign the xh values
@@ -1724,7 +1732,7 @@ c ----- x and y changes for the next label of the same style:
      -         0,1, 0,1, 0,-1/
    
 c ----- print the caption:
-c        write(*,*) 'lenl,lbl: ', lenl(lbl), lbl
+c        write(iolog,*) 'lenl,lbl: ', lenl(lbl), lbl
         call ps_text(lbl,xpos(lblpos),ypos(lblpos),lblfnt,
      -               orient(lblpos),justif(lblpos),ialgn(lblpos))
 c ------change the position for the next label of this type
@@ -1898,6 +1906,7 @@ c ----- back to no clip
       subroutine fitmod(x,y,sig,npnts,type,ainit,nainit,nprmfit,lista,
      -                  relcut,abscut,mstdev,x1,x2,n,npnts2,wr)
         implicit none
+#include "io.cst"
         integer nprmmax, nxmax
         parameter (nprmmax = 50, nxmax=1)
         integer npnts,maxcyc,nainit,indexw,npnts2,n
@@ -2019,7 +2028,8 @@ c ----- the parameters are: a, w_1, m_1, s_1, w_2, m_2, s_2, ..., m_n, s_n
           comment2='y = a * {Sum_i w_i * Gauss[mean_i, stdev_i]}'
 c          call chkprm(nainit,nprmall,nprmfit,nx,1)
           if (mod(nainit, 3) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -2040,7 +2050,8 @@ c ----- the parameters are: a, w_1, m_1, s_1, w_2, m_2, s_2, ..., m_n, s_n
           comment2='y = a * {Sum_i w_i * Gauss[mean_i, stdev_i]}'
 c          call chkprm(nainit,nprmall,nprmfit,nx,1)
           if (mod(nainit, 3) .ne. 0)
-     -    write(*,'(a,i4)')'fit_____E> wrong number of params: ',nainit
+     -    write(iolog,'(a,i4)') 'fit_____E> wrong number of params: ',
+     -                          nainit
           call lsqfit(x,nx,nxmax,y,sig,npnts,ainit,a,nprmfit,nprmall,
      -         nprmmax,lista,covar,alpha, chisq, fitpolygauss2, abscut, 
      -         relcut, mstdev, niter, alamda, q, errmult, degfreed,  
@@ -2195,23 +2206,24 @@ c          call chkprm(nainit,nprmall,nprmfit,nx,1)
   
       subroutine chkprm(nainit,nprmall,nprmfit,nx,nwx)
         implicit none
+#include "io.cst"
         integer nainit,nprmall,nprmfit,nx,nwx
         if (nx .ne. nwx) then
-          write(*,'(a,2i3)') 'chkprm__E> specified and expected ',
+          write(iolog,'(a,2i3)') 'chkprm__E> specified and expected ',
      &          'numbers of X columns differ: ', nwx, nx
           stop
         end if
         if (nainit .ne. nprmall) then
-          write(*,'(a,2i5)') 
+          write(iolog,'(a,2i5)') 
      -    'chkprm__E> # of params initlzd <> all params: ',
      -    nainit,nprmall
           stop
         end if
         if (nprmfit .gt. nprmall) then
-          write(*,'(a,2i5)') 
+          write(iolog,'(a,2i5)') 
      -    'chkprm__E> # of param fitted > all params: ',
      -    nprmfit, nprmall
-          write(*,'(a)') '      no param will be fitted'
+          write(iolog,'(a)') '      no param will be fitted'
           nprmfit = 0
         end if
         return
@@ -2311,7 +2323,7 @@ c     (a ... parameters to be estimated by the least-squares fit)
         real x(nx), a(na), t1, t2, t3, t4, t5, t6, t7
 
 c        if (abs(x(1)) .gt. 1.0E5)
-c     -    write(*,'(a)') 'fitpoly_W> Numerical instability; x: ', x(1) 
+c     -    write(iolog,'(a)') 'fitpoly_W> Numerical instability; x: ', x(1) 
 
 c ----- this is to allow large x and higher a(i) = 0:
 
@@ -2386,7 +2398,7 @@ c
           p2 = a(6)
         end if
 
-c        write(*,*) zab,zcd,npnts,x(1),a(1),a(2),a(3),a(4),a(5),a(6)
+c        write(iolog,*) zab,zcd,npnts,x(1),a(1),a(2),a(3),a(4),a(5),a(6)
 
         if (x(1) .gt. 0.0) then
           fitlj1 = (a(1)-a(3))/x(1)**a(5) - (a(2)-a(4))/x(1)**a(6) + 
@@ -2411,6 +2423,7 @@ c        write(*,*) zab,zcd,npnts,x(1),a(1),a(2),a(3),a(4),a(5),a(6)
 
       real function fitdisf(x, nx, a, na)
         implicit none
+#include "io.cst"
         integer nx,na
         real x(nx), a(na), tmp1, tmp2, tmp2sq
 
@@ -2418,9 +2431,9 @@ c        write(*,*) zab,zcd,npnts,x(1),a(1),a(2),a(3),a(4),a(5),a(6)
         tmp2 = a(3)+x(1)+a(4)
         tmp2sq = tmp2*tmp2
         if (tmp2sq .le. tmp1) then
-          write(*,'(a,2g15.5)')
+          write(iolog,'(a,2g15.5)')
      &    'fitdisf__E> tmp2sq .le. tmp1: ',tmp2sq,tmp1
-          write(*,'(99g15.5)')
+          write(iolog,'(99g15.5)')
      &    x(1),a(1),a(2),a(3),a(4)
           stop
         end if
@@ -2674,7 +2687,7 @@ c ----- the same order as in MODELLER:
           im = im + 3
           is = is + 3
         end do
-c        write(*,'(99f9.3)') x(1), a(1)*f, (anew(is),is=1,na+1)
+c        write(iolog,'(99f9.3)') x(1), a(1)*f, (anew(is),is=1,na+1)
 
         fitpolygauss2 = a(1) * f
 
@@ -2729,6 +2742,7 @@ c        write(*,'(99f9.3)') x(1), a(1)*f, (anew(is),is=1,na+1)
 c --- average the values in neighbouring elements of y-columns
       subroutine avrtab(isegm,x,npnts,maxpnt,ncolmn,nwxy,iwxy,ndim)
       implicit none
+#include "io.cst"
       integer isegm,ncolmn, ndim,i,npnts,maxpnt
       integer nwxy(2), iwxy(ndim),icol
       real x(maxpnt,ncolmn)
@@ -2736,7 +2750,7 @@ c --- average the values in neighbouring elements of y-columns
       do  i = 1, nwxy(2)
         icol = iwxy(nwxy(1)+i)
         if ((icol.lt.1).or.(icol.gt.ncolmn)) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'avrtab__E> column index out of range (XY_SCOLUMNS)'
           stop
         end if
@@ -2749,12 +2763,13 @@ c --- average the values in neighbouring elements of y-columns
 
       subroutine  smth(x,npnts,isegm)
       implicit none
+#include "io.cst"
       integer maxn
       parameter (maxn=10000)
       integer isegm, i, npnts
       real x(npnts), xs(maxn), average
       if (npnts.gt.maxn) then
-        write(*,'(a)') 'smth___E> increase maxn'
+        write(iolog,'(a)') 'smth___E> increase maxn'
         stop
       end if
       do i = 1, npnts
@@ -2769,6 +2784,7 @@ c --- average the values in neighbouring elements of y-columns
 
       real function average(x,i,isegm,n)
       implicit none
+#include "io.cst"
       integer n, isegm, i1, i2, i, j
       real x(n),av,w,wi
 
@@ -2782,7 +2798,7 @@ c --- average the values in neighbouring elements of y-columns
         w = w + wi
       end do
       if (wi .lt. 1.0E-6) then
-        write(*,'(a)') 'average_E> HALF_WINDOW too small'
+        write(iolog,'(a)') 'average_E> HALF_WINDOW too small'
         stop
       end if
       average = av / w
@@ -2794,13 +2810,14 @@ c --- average the values in neighbouring elements of y-columns
 
       subroutine trstab(x,npnts,maxpnt,ncolmn,ncol,icols,ndim,trans)
         implicit none
+#include "io.cst"
         integer npnts,maxpnt,ncolmn,ncol,ndim,ic,i,j,icols(ndim)
         real trans,x(maxpnt,ncolmn)
 
         do  i = 1, ncol
           ic = icols(i)
           if ((ic.lt.1).or.(ic.gt.ncolmn)) then
-            write(*,'(a)') 
+            write(iolog,'(a)') 
      -      'trstab__E> column index out of range (XY_SCOLUMNS)'
             stop
           end if
@@ -2880,8 +2897,9 @@ c --- average the values in neighbouring elements of y-columns
 
         if (val.ne.'NONE') then
           if (epsf) then
-            write(*,'(a)') 'stamp___W> not sensible in encapsulated PS'
-            write(*,'(a)') '           PAGE_STAMP reset to OFF'
+            write(iolog,'(a)')
+     &            'stamp___W> not sensible in encapsulated PS'
+            write(iolog,'(a)') '           PAGE_STAMP reset to OFF'
             sprm(1, 59) = 'NONE'
             return
           end if
@@ -2946,7 +2964,7 @@ c           tmp1 = 4.0*a(3)*x(1,i)
 c           tmp2 = a(3)+x(1,i)+a(4)
 c           tmp2sq = tmp2*tmp2
 c           if (tmp2sq .le. tmp1) then
-c c            write(*,'(a,2g15.5)')
+c c            write(iolog,'(a,2g15.5)')
 c c     &      'fitdisf__E> tmp2sq .le. tmp1: ',tmp2sq,tmp1
 c             constr = .false.
 c             return
@@ -3012,7 +3030,8 @@ c --- copy the density/table array to XY array
           do  j = 1, nydim
             npnts = npnts + 1
             if (npnts .gt. maxpnt) then
-              write(*,'(a,i6)') 'tab2xy___E> increase MAXPNT: ', npnts
+              write(iolog,'(a,i6)') 'tab2xy___E> increase MAXPNT: ',
+     &                              npnts
               stop
             end if
             tab(npnts,ix) = i
@@ -3059,11 +3078,11 @@ c ----- X,Y = XY_COLUMNS; Z = ERROR_COLUMN
           iy = nint(tab(i,iprm(2,37)))
 
           if (ix.lt.1 .or. ix.gt.maxxarr) then
-            write(*,'(a,i6)') 'xy2tab___E> IX out of bounds: ', ix
+            write(iolog,'(a,i6)') 'xy2tab___E> IX out of bounds: ', ix
             stop
           end if
           if (iy.lt.1 .or. iy.gt.maxyarr) then
-            write(*,'(a,i6)') 'xy2tab___E> IY out of bounds: ', iy
+            write(iolog,'(a,i6)') 'xy2tab___E> IY out of bounds: ', iy
             stop
           end if
           nxdim = max(nxdim, ix)

@@ -396,6 +396,7 @@ cf ----------------------------------------------------------------------------
      &                  istop,iverbose)
         implicit none
 #include "lenf.cst"
+#include "io.cst"
         integer mdir, mext
         parameter (mdir=20, mext=20)
         integer i, ifndflg, ndir, istop, iext, next, lenr, lr, ll
@@ -418,24 +419,24 @@ c ----- Try the original name without and with .Z (note that this is generally
 c       not the same as using current directory and no extension):
         fullfil = fname
         compressed = .false.
-        if (iverbose.eq.1) write(*,'(2a)')
+        if (iverbose.eq.1) write(iolog,'(2a)')
      &    'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
         if (filexs(fullfil)) return
         call addstr(fullfil, '.Z')
         compressed = .true.
-        if (iverbose.eq.1) write(*,'(2a)')
+        if (iverbose.eq.1) write(iolog,'(2a)')
      &    'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
         if (filexs(fullfil)) return
 
 c ----- Try adding pdb before the filename:
         call concat('pdb', fname, fullfil)
         compressed = .false.
-        if (iverbose.eq.1) write(*,'(2a)')
+        if (iverbose.eq.1) write(iolog,'(2a)')
      &    'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
         if (filexs(fullfil)) return
         call addstr(fullfil, '.Z')
         compressed = .true.
-        if (iverbose.eq.1) write(*,'(2a)')
+        if (iverbose.eq.1) write(iolog,'(2a)')
      &    'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
         if (filexs(fullfil)) return
 
@@ -474,20 +475,20 @@ c ----- add no extension if no extensions specified:
 
           do  iext = 1, next
 
-c            write(*,'(//a,2i4,1x/a,a70/a,a70)')
+c            write(iolog,'(//a,2i4,1x/a,a70/a,a70)')
 c     &      'IDIR, IEXT: ', idir,iext,'  DIR: ',dir(i)(1:lenr2(dir(i))),
 c     &      '  EXT: ', ext(iext)(1:lenr2(ext(iext)))
 
 c --------- append the extension and see if it exists in directory i:
             call concat(dcode, ext(iext), fullfil)
             compressed = .false.
-            if (iverbose.eq.1) write(*,'(2a)')
+            if (iverbose.eq.1) write(iolog,'(2a)')
      &        'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
             if (filexs(fullfil)) return
 
             call addstr(fullfil, '.Z')
             compressed = .true.
-            if (iverbose.eq.1) write(*,'(2a)')
+            if (iverbose.eq.1) write(iolog,'(2a)')
      &        'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
             if (filexs(fullfil)) return
 
@@ -495,13 +496,13 @@ c --------- Try pre-pending 'pdb':
 
             call concat(dcode2, ext(iext), fullfil)
             compressed = .false.
-            if (iverbose.eq.1) write(*,'(2a)')
+            if (iverbose.eq.1) write(iolog,'(2a)')
      &        'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
             if (filexs(fullfil)) return
 
             call addstr(fullfil, '.Z')
             compressed = .true.
-            if (iverbose.eq.1) write(*,'(2a)')
+            if (iverbose.eq.1) write(iolog,'(2a)')
      &        'fullfn___> trying: ', fullfil(1:lenr2(fullfil))
             if (filexs(fullfil)) return
           end do
@@ -509,7 +510,7 @@ c --------- Try pre-pending 'pdb':
         end do
 
         if (istop .eq. 1) then
-          write(*,'(2a/2a/2a/2a)')
+          write(iolog,'(2a/2a/2a/2a)')
      &    'fullfn__E> file not found: ', code(1:lenr2(code)),
      &    '           directories   : ', dirs(1:lenr2(dirs)),
      &    '           extensions    : ', exts(1:lenr2(exts)),

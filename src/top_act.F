@@ -14,7 +14,7 @@ c ----- x-column:
           iprm(1,47)=iprm(1,37)
         end if
         if (iprm(1,47) .ne. iprm(1,37)) then
-          write(*,'(a,2i4/a)') 
+          write(iolog,'(a,2i4/a)') 
      -    'act31___w> X_COLUMN <> X_SCOLUMN: ', iprm(1,37), iprm(1,47),
      -    '           if correction needed: SET NO_XY_SCOLUMNS = 0 n'
         end if
@@ -25,10 +25,10 @@ c ----- y-columns:
           iprm(2,47)=iprm(2,37)
         end if
         if (iprm(2,46) .gt. 1) then
-          write(*,'(a)') 'act31____> stacked bars in a histogram'
+          write(iolog,'(a)') 'act31____> stacked bars in a histogram'
         else
           if (iprm(2,47) .ne. iprm(2,37)) then
-            write(*,'(a,2i4/a)') 
+            write(iolog,'(a,2i4/a)') 
      -      'act31___w> Y_COLUMN <> Y_SCOLUMN: ',iprm(2,37), iprm(2,47),
      -      '           if correction needed: SET NO_XY_SCOLUMNS = 0 0'
           end if
@@ -36,12 +36,12 @@ c ----- y-columns:
 
 c ----- check:
         if ((iprm(1,47).lt.1).or.(iprm(1,47).gt.ncolmn)) then
-          write(*,'(a)') 'act31__E> illegal x-column'
+          write(iolog,'(a)') 'act31__E> illegal x-column'
           stop
         end if
         do  iy = 2, 1+iprm(2,46)
           if ((iprm(iy,47).lt.1).or.(iprm(iy,47).gt.ncolmn)) then
-            write(*,'(a,3i5)') 
+            write(iolog,'(a,3i5)') 
      -      'act31__E> illegal y-column: ',iy,iprm(iy,47),ncolmn
             stop
           end if
@@ -81,7 +81,7 @@ c ------- calculate the color first:
      &      rprm(1,81)=rminv(tab(1,iprm(1,76)),iprm(1,61))
           if (rprm(2,81).eq.-999.)
      &      rprm(2,81)=rmaxv(tab(1,iprm(1,76)),iprm(1,61))
-          write(*,'(a,2g14.4)')
+          write(iolog,'(a,2g14.4)')
      -    'plot1___> Cmin, Cmax: ', rprm(1,81),rprm(2,81)
 c ------- get a scaling factor for the color:
 c         from red to blue:
@@ -114,14 +114,14 @@ c ----- calculate Pearson correlation coefficient
           prob = -999.9
           z = -999.9
         end if
-        write(*,'(a,2i5)')  'Correlation between columns       : ',
+        write(iolog,'(a,2i5)')  'Correlation between columns       : ',
      -                      iprm(1,37), iprm(2,37)
-        write(*,'(a, i5)')  'Number of points                  : ', 
+        write(iolog,'(a, i5)')  'Number of points                  : ', 
      -                      iprm(1,61)
-        write(*,'(a,f10.5)')'Pearson correlation coeff (R)     : ',r
-        write(*,'(a,f10.5)')'Pearson correlation coeff^2 (R^2) : ',r*r
-        write(*,'(a,f10.5)')'Significance (small is signif)    : ',prob
-        write(*,'(a,f10.5)')'Fischer'' z                       : ',z
+        write(iolog,'(a,f10.5)')'Pearson correlation coeff (R)     : ',r
+        write(iolog,'(a,f10.5)')'Pearson correlation coeff^2 (R^2) : ',r*r
+        write(iolog,'(a,f10.5)')'Significance (small is signif)    : ',prob
+        write(iolog,'(a,f10.5)')'Fischer'' z                       : ',z
 
 
 c ----- plot point symbols if so desired
@@ -194,8 +194,8 @@ c       of columns specified in #COLUMNS line):
 c ----- the new number of columns in the table:
         ncolmn = icol1 + nbuffr  - 1
         if (ncolmn .gt. maxclm) then
-          write(*,'(a,i6)') 'act33__E> increase MAXCLM to at least: ',
-     &                      ncolmn
+          write(iolog,'(a,i6)')
+     &          'act33__E> increase MAXCLM to at least: ', ncolmn
           stop
         end if
 
@@ -215,7 +215,7 @@ c ----- the new number of columns in the table:
             istrcol(i) = .true.
             nstrs = nstrs + 1
             if (nstrs.gt.maxsclm) then
-              write(*,'(a)') 'act33___E> Increase MAXSCLM.'
+              write(iolog,'(a)') 'act33___E> Increase MAXSCLM.'
               stop
             end if
             istrs(nstrs) = i
@@ -226,7 +226,7 @@ c ----- the new number of columns in the table:
         end do
 
         if (iprm(1,59) .lt. 1) then
-          write(*,'(a)') 'act33__E> POINT_MODULUS < 1'
+          write(iolog,'(a)') 'act33__E> POINT_MODULUS < 1'
           stop
         end if
 
@@ -238,7 +238,7 @@ c ----- columns to be read this time:
           if (lenr(line) .lt. 1) go to 20
           if (line(1:13) .eq. '#CAPTION_TEXT') then
             sprm(1,40) = line(15:)
-            write(*,*) 'CAPTION_TEXT assigned: ', sprm(1,40)
+            write(iolog,*) 'CAPTION_TEXT assigned: ', sprm(1,40)
           end if
           if (line(1:11) .eq. '#PRINT_TEXT')   sprm(1,41) = line(13:)
           if (line(1:12) .eq. '#DESCRIPTION')  sprm(1,48) = line(14:)
@@ -254,14 +254,14 @@ c ----- columns to be read this time:
 
                 iprm(1,61) = iprm(1,61) + 1
                 if (iprm(1,61) .gt. maxpnt) then
-                  write(*,'(a)') 
+                  write(iolog,'(a)') 
      &            'act33____E> too many rows; increase MAXPNT'
                   stop
                 end if
 
                 call str_sn2(line, buffr, maxclm, nbuffr)
                 if (nbuffr .ne. nc) then
-                  write(*,'(a,2i5/a)')
+                  write(iolog,'(a,2i5/a)')
      &            'act33___E> wrong format; items expected,items: ',
      &            nc, nbuffr,line(1:lenr(line))
                   stop
@@ -275,7 +275,7 @@ c ----- columns to be read this time:
                   else
                     call str_r(buffr(j), tab(iprm(1,61),i), ierr)
                     if (ierr .gt. 0) then
-                      write(*,'(2a/a)')
+                      write(iolog,'(2a/a)')
      &                'act33___E> not a real: ', 
      &                buffr(j), line(1:lenr(line))
                       stop
@@ -292,7 +292,7 @@ c ----- columns to be read this time:
         close(ioin)
 c        if (mod(nline,iprm(1,59)) .eq. 0) iprm(1,61) = iprm(1,61) - 1
 
-        write(*,'(a,i3,2i8)') 'act33____> columns,points,lines: ',
+        write(iolog,'(a,i3,2i8)') 'act33____> columns,points,lines: ',
      -             ncolmn,iprm(1,61),nline
         inp = 1
         called(33) = .true.
@@ -388,16 +388,16 @@ c --- returns the arr(i,j): nxdim by nydim
 
         if (.not. lprm(1,35)) then
 
-          write(*,'(a)') 'act36____> reading unformatted array file'
+          write(iolog,'(a)') 'act36____> reading unformatted array file'
 
           if (sprm(1,58).eq.'XY') then
             read(ioin,*)nxdim,nydim
             if (nxdim.gt.maxxarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXXARR: ',nxdim
+              write(iolog,'(a,i8)') 'act36___E> increase MAXXARR: ',nxdim
               stop
             end if
             if (nydim.gt.maxyarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXYARR: ',nydim
+              write(iolog,'(a,i8)') 'act36___E> increase MAXYARR: ',nydim
               stop
             end if
             do  i = 1, nxdim
@@ -408,11 +408,11 @@ c --- returns the arr(i,j): nxdim by nydim
 
             read(ioin,*)nydim,nxdim
             if (nxdim.gt.maxxarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXXARR: ',nxdim
+              write(iolog,'(a,i8)') 'act36___E> increase MAXXARR: ',nxdim
               stop
             end if
             if (nydim.gt.maxyarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXYARR: ',nydim
+              write(iolog,'(a,i8)') 'act36___E> increase MAXYARR: ',nydim
               stop
             end if
             do  j = 1, nydim
@@ -422,10 +422,10 @@ c --- returns the arr(i,j): nxdim by nydim
 
         else
 
-          write(*,'(a)') 'act36____> reading formatted array file'
+          write(iolog,'(a)') 'act36____> reading formatted array file'
 
           if (iprm(1,64).gt.maxclm) then
-            write(*,'(a)') 'act36__E> increase MAXCLM'
+            write(iolog,'(a)') 'act36__E> increase MAXCLM'
             stop
           end if
           do  i = 1, maxxarr
@@ -447,21 +447,21 @@ c 10        read(ioin, *, end=100) i,j,(a(k),k=1,iprm(1,64))
             call str_r(buffr(iprm(1,64)+2), a(iprm(1,64)), ierr)
 
             if (min(i,j) .lt. 1) then
-              write(*,'(a,3i4,g15.5)')
+              write(iolog,'(a,3i4,g15.5)')
      -        'act36__E> line; indices less than 0: ', il, i, j,
      -        a(iprm(1,64))
               do  i = 1, iprm(1,64)
-                write(*,'(a,1x,i5,1x,a)')
+                write(iolog,'(a,1x,i5,1x,a)')
      -          'act36__E> i, buffr: ', i, buffr(i+2)
               end do
               stop
             end if
             if (i.gt.maxxarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXXARR: ',i
+              write(iolog,'(a,i8)') 'act36___E> increase MAXXARR: ',i
               stop
             end if
             if (j.gt.maxyarr) then
-              write(*,'(a,i8)') 'act36___E> increase MAXYARR: ',j
+              write(iolog,'(a,i8)') 'act36___E> increase MAXYARR: ',j
               stop
             end if
 
@@ -470,11 +470,11 @@ c 10        read(ioin, *, end=100) i,j,(a(k),k=1,iprm(1,64))
             arr(i,j) = a(iprm(1,64))
             if (lprm(1,36)) then
               if (i.gt.maxyarr) then
-                write(*,'(a,i8)')'act36___E> increase MAXYARR: ',i
+                write(iolog,'(a,i8)')'act36___E> increase MAXYARR: ',i
                 stop
               end if
               if (j.gt.maxxarr) then
-                write(*,'(a,i8)')'act36___E> increase MAXXARR: ',j
+                write(iolog,'(a,i8)')'act36___E> increase MAXXARR: ',j
                 stop
               end if
               arr(j,i) = arr(i,j)
@@ -551,8 +551,8 @@ c --- print text:
         logical strgin
         external strgin
 
-c        write(*,*) sprm(1,55)
-c        write(*,*) iprm(1,69)
+c        write(iolog,*) sprm(1,55)
+c        write(iolog,*) iprm(1,69)
 
         if (indexw(sprm(1,55), 'POINT') .gt. 0) then
 c ------- if point not defined, use the last one:
@@ -560,8 +560,8 @@ c ------- if point not defined, use the last one:
      -      iprm(1,69)=iprm(1,61)
           x = tab(iprm(1,69),iprm(1,37)) + rprm(1,78)
           y = tab(iprm(1,69),iprm(2,37)) + rprm(2,78)
-c          write(*,*) iprm(1,69), iprm(1,61), iprm(1,37), iprm(2,37)
-c          write(*,*) rprm(1,78), rprm(2,78), x, y
+c          write(iolog,*) iprm(1,69), iprm(1,61), iprm(1,37), iprm(2,37)
+c          write(iolog,*) rprm(1,78), rprm(2,78), x, y
         else
           x = rprm(1,41) + rprm(1,78)
           y = rprm(2,41) + rprm(2,78)
@@ -640,7 +640,7 @@ c --- Prints PS command
 
 c ------- transform the Table array:
           if (index(sprm(1,36), 'NORMALIZE') .gt. 0) then
-            write(*,'(a)')
+            write(iolog,'(a)')
      -      'act43____> y = y/(Sum y)'
             do  i = 1, nvars
               ic = iprm(i,47)
@@ -648,7 +648,7 @@ c ------- transform the Table array:
               do  j = 1, iprm(1,61)
                 sum = sum + tab(j,ic)
               end do
-              write(*,'(a,f10.5)') 'act43____> SUM = ', sum
+              write(iolog,'(a,f10.5)') 'act43____> SUM = ', sum
               do  j = 1, iprm(1,61)
                 tab(j,ic) = tab(j,ic)/sum
               end do
@@ -656,7 +656,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'EXPONENTIAL') .gt. 0) then
-            write(*,'(a,4f10.5/a)') 
+            write(iolog,'(a,4f10.5/a)') 
      -      'act43____> parameters: ',rprm(1,40),rprm(2,40),rprm(3,40),
      -      rprm(4,40),
      -      '           y = a + exp[b + c*y^d]'
@@ -671,7 +671,7 @@ c ------- transform the Table array:
 
           if (index(sprm(1,36), 'LOGARITHMIC1') .gt. 0) then
             xmin1 = rmina(tab,maxpnt,maxclm,iprm(1,61),nvars,iprm(1,47))
-            write(*,'(a,3f10.5/a)') 
+            write(iolog,'(a,3f10.5/a)') 
      -      'act43____> y_min, parameters: ',
      -      xmin1,rprm(1,40),rprm(2,40),
      -      '           y = Ln[a + b*(y-y_min)]'
@@ -689,7 +689,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'LOGARITHMIC2') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = Ln[a + b*y]'
             do  i = 1, nvars
@@ -707,7 +707,7 @@ c ------- transform the Table array:
 
           if (index(sprm(1,36), 'LOGARITHMIC3') .gt. 0) then
             xmin1 = rmina(tab,maxpnt,maxclm,iprm(1,61),nvars,iprm(1,47))
-            write(*,'(a,3f10.5/a)') 
+            write(iolog,'(a,3f10.5/a)') 
      -      'act43____> y_min, parameters: ',
      -      xmin1,rprm(1,40),rprm(2,40),
      -      '           y = Log10[a + b*(y-y_min)]'
@@ -725,7 +725,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'LOGARITHMIC4') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = Log10[a + b*y]'
             do  i = 1, nvars
@@ -742,7 +742,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'CUMULATIVE') .gt. 0) then
-            write(*,'(a)') 
+            write(iolog,'(a)') 
      -      'act43____> y_i = Sum_(k=1,i,1) y_k'
             do  i = 1, nvars
               ic = iprm(i,47)
@@ -753,7 +753,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'LINEAR') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = a + b*y'
             do  i = 1, nvars
@@ -765,7 +765,7 @@ c ------- transform the Table array:
           end if
 
           if (index(sprm(1,36), 'INVERSE') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = a + b/y'
             do  i = 1, nvars
@@ -787,7 +787,7 @@ c ------- transform the DPLOT array:
           if (index(sprm(1,36), 'LOGARITHMIC1') .gt. 0) then
 c --------- see above
             xmin1 = rminarr(arr,maxxarr,nxdim,nydim)
-            write(*,'(a,3f10.5/a)') 
+            write(iolog,'(a,3f10.5/a)') 
      -      'act43____> y_min, parameters: ',
      -      xmin1,rprm(1,40),rprm(2,40),
      -      '           y = Ln[a + b*(y-y_min)]'
@@ -804,7 +804,7 @@ c --------- see above
           end if
 
           if (index(sprm(1,36), 'LOGARITHMIC2') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = Ln[a + b*y]'
             do  i = 1, nydim
@@ -824,7 +824,7 @@ c ------- transform the DPLOT array:
           if (index(sprm(1,36), 'LOGARITHMIC3') .gt. 0) then
 c --------- see above
             xmin1 = rminarr(arr,maxxarr,nxdim,nydim)
-            write(*,'(a,3f10.5/a)') 
+            write(iolog,'(a,3f10.5/a)') 
      -      'act43____> y_min, parameters: ',
      -      xmin1,rprm(1,40),rprm(2,40),
      -      '           y = Log10[a + b*(y-y_min)]'
@@ -841,7 +841,7 @@ c --------- see above
           end if
 
           if (index(sprm(1,36), 'LOGARITHMIC4') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40),
      -      '           y = Log10[a + b*y]'
             do  i = 1, nydim
@@ -857,7 +857,7 @@ c --------- see above
           end if
 
           if (index(sprm(1,36), 'LINEAR') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40), 
      -      '           y = a + b*y'
             do  i = 1, nydim
@@ -868,7 +868,7 @@ c --------- see above
           end if
 
           if (index(sprm(1,36), 'INVERSE') .gt. 0) then
-            write(*,'(a,2f10.5/a)') 
+            write(iolog,'(a,2f10.5/a)') 
      -      'act43____> parameters: ', rprm(1,40),rprm(2,40), 
      -      '           y = a + b/y'
             do  i = 1, nydim
@@ -916,7 +916,7 @@ c --- draw a caption:
 #include "top_appl.cmn"
 
         if (.not. called(34)) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'act45__E> WORLD, (AXES2D) and RESET_CAPTIONS first'
           stop
         end if
@@ -934,11 +934,11 @@ c --- draw a caption:
         real tab(maxpnt,maxclm)
         logical rising
         if (npnts .gt. maxpnt) then
-          write(*,'(a)') 'colmn__E> increase MAXPNT'
+          write(iolog,'(a)') 'colmn__E> increase MAXPNT'
           stop
         end if
         if (ncolmn .gt. maxclm) then
-          write(*,'(a)') 'colmn__E> increase MAXCLM'
+          write(iolog,'(a)') 'colmn__E> increase MAXCLM'
           stop
         end if
         if ((ix.lt.1).or.(ix.gt.ncolmn)) then
@@ -1007,10 +1007,14 @@ c ----- make space for average and standard deviation:
         istdcol = 0
         call colmn(tab,istdcol,maxpnt,ncolmn,maxpnt,maxclm,ilast,.true.)
 
-        write(*,*) 'X for bars in column                 : ', iprm(1,37)
-        write(*,*) 'Y for averaging and std dev in column: ', iprm(2,37)
-        write(*,*) 'Average in column                    : ', iavrcol
-        write(*,*) 'Standard deviation in column         : ', istdcol
+        write(iolog,*) 'X for bars in column                 : ',
+     &                 iprm(1,37)
+        write(iolog,*) 'Y for averaging and std dev in column: ',
+     &                 iprm(2,37)
+        write(iolog,*) 'Average in column                    : ',
+     &                 iavrcol
+        write(iolog,*) 'Standard deviation in column         : ',
+     &                 istdcol
 
         if (ncolmn .le. (maxclm-2)) then 
 c ------- create the histogram data in the first two free columns of the
@@ -1027,7 +1031,7 @@ c ------- copy the bars over the original points:
             tab(i,iprm(2,37)) = tab(i,ncolmn+2)
           end do
         else
-          write(*,'(a)')
+          write(iolog,'(a)')
      -    'act47__E> not enough space; increase MAXCLM'
           stop
         end if
@@ -1051,11 +1055,13 @@ c ----- read the BRK file
      &              ierr,cmpr,1,0)
 
         if (index(sprm(1,56), 'PDB') .gt. 0) then
-          call readbrk(ioinp,sprm(1,12),xpdb,ypdb,zpdb,maxatm,maxres,
-     &         natm,nres,resnam,resnum,atmnam,iatmr1,iatmr2,iresatm)
+          call readbrk(ioinp,iolog,sprm(1,12),xpdb,ypdb,zpdb,maxatm,
+     &         maxres,natm,nres,resnam,resnum,atmnam,iatmr1,iatmr2,
+     &         iresatm)
         else
-          call rdxyz(ioinp,sprm(1,12),xpdb,ypdb,zpdb,maxatm,maxres,
-     &         natm,nres,resnam,resnum,atmnam,iatmr1,iatmr2,iresatm)
+          call rdxyz(ioinp,iolog,sprm(1,12),xpdb,ypdb,zpdb,maxatm,
+     &         maxres,natm,nres,resnam,resnum,atmnam,iatmr1,iatmr2,
+     &         iresatm)
         end if
 
         inp = 3
@@ -1164,7 +1170,7 @@ c ----- determine whether I specified the error column (weights for fitting)
           mstdev=.false.
           iprm(1,40) = ncolmn + 1
           if (iprm(1,40) .gt. maxclm) then
-            write(*,'(a,i4)') 'act53___E> increase maxclm: ', maxclm
+            write(iolog,'(a,i4)') 'act53___E> increase maxclm: ', maxclm
             stop
           end if
         else
@@ -1341,7 +1347,7 @@ c ----- xleg(i),yleg(i): starting positions of the first label of type i
 #include "top_appl.cmn"
 
         if (.not. called(60)) then
-          write(*,'(a)') 
+          write(iolog,'(a)') 
      -    'act61___E> WORLD, (AXES2D) and RESET_LEGEND first'
           stop
         end if
@@ -1360,7 +1366,7 @@ c ----- xleg(i),yleg(i): starting positions of the first label of type i
 #include "top_appl.cmn"
 
         if ((iprm(1,40).lt.1) .or. (iprm(1,40).gt.ncolmn)) then
-          write(*,'(a,2i4)') 
+          write(iolog,'(a,2i4)') 
      -    'act62___E> error-bar column out of range: ',
      -    iprm(1,40), ncolmn
           stop
@@ -1384,7 +1390,7 @@ c ----- (tab,y,n,line_type,symbol_type,point_font)
         integer ic,i,n
 
         if (iprm(1,60).lt.1) then
-          write(*,'(a)') 'act63___E> SELECT_COLUMN < 1'
+          write(iolog,'(a)') 'act63___E> SELECT_COLUMN < 1'
           stop
         end if
         n = 0
@@ -1401,7 +1407,8 @@ c ----- (tab,y,n,line_type,symbol_type,point_font)
           end if
         end do
         iprm(1,61) = n
-        write(*,'(a,i5)')'act63____> new number of points: ',iprm(1,61)
+        write(iolog,'(a,i5)') 'act63____> new number of points: ',
+     &                        iprm(1,61)
 
         called(63) = .true.
 
@@ -1511,7 +1518,7 @@ c ----- (tab,y,n,line_type,symbol_type,point_font)
 
         if (.not. lprm(1,35)) then
 
-          write(*,'(a)') 'act70____> writing unformatted array file'
+          write(iolog,'(a)') 'act70____> writing unformatted array file'
 
           if (sprm(1,58).eq.'XY') then
 
@@ -1531,7 +1538,7 @@ c ----- (tab,y,n,line_type,symbol_type,point_font)
 
         else
 
-          write(*,'(a)') 'act70____> writing formatted array file'
+          write(iolog,'(a)') 'act70____> writing formatted array file'
 
           do  i = 1, nxdim
             do  j = 1, nydim
@@ -1580,7 +1587,7 @@ c ----- determine whether I specified the error column (weights for fitting)
           mstdev=.false.
           iprm(1,40) = ncolmn + 1
           if (iprm(1,40) .gt. maxclm) then
-            write(*,'(a,i4)') 'act53___E> increase maxclm: ', maxclm
+            write(iolog,'(a,i4)') 'act53___E> increase maxclm: ', maxclm
             stop
           end if
         else
@@ -1606,12 +1613,12 @@ c ----- determine whether I specified the error column (weights for fitting)
           n = iprm(1,61)
         end if
 
-        write(*,'(a,99i3)') 'act72____> X columns : ', 
+        write(iolog,'(a,99i3)') 'act72____> X columns : ', 
      &             (iprm(i,47), i = 1, nx)
-        write(*,'(a,99i3)') 'act72____> Y column  : ', iy
-        write(*,'(a,99i3)') 'act72____> STD column: ', iprm(1,40)
-        write(*,'(a,99l7)') 'act72____> STD used  : ', mstdev
-        write(*,'(a,99l7)') 'act72____> Interpolat: ', lprm(1,40)
+        write(iolog,'(a,99i3)') 'act72____> Y column  : ', iy
+        write(iolog,'(a,99i3)') 'act72____> STD column: ', iprm(1,40)
+        write(iolog,'(a,99l7)') 'act72____> STD used  : ', mstdev
+        write(iolog,'(a,99l7)') 'act72____> Interpolat: ', lprm(1,40)
 
 c ----- make the X array for the lsqlib() routine:
         do  i = 1, nx
@@ -1624,7 +1631,7 @@ c ----- make the X array for the lsqlib() routine:
         do  i = 1, iprm(1,61)
           sum = sum + tab(i,iy)
         end do
-        write(*,'(a,g14.4)') 'act72____> The sum of Y_i: ', sum
+        write(iolog,'(a,g14.4)') 'act72____> The sum of Y_i: ', sum
 
         call fitmod2(x,nx,nxmax,tab(1,iy),tab(1,iprm(1,40)),iprm(1,61),
      &       sprm(1,54),rprm(1,75),nvrprm(75),nviprm(68),iprm(1,68),
@@ -1692,14 +1699,14 @@ c        end if
 
           if (istrcol(ic)) then
             if(l+1+lenr(tabstr(1,invstrs(ic))).gt.lensprm)then
-              write(*,*)'act75____E> increase LENSPRM'
+              write(iolog,*)'act75____E> increase LENSPRM'
               stop
             end if
             sprm(1,13)(l+2:) = tabstr(1,invstrs(ic))
           else
             call condns(tab(1,ic),strx,lenx)
             if (l+1+lenx .gt. lensprm) then
-              write(*,*)'act75____E> increase LENSPRM'
+              write(iolog,*)'act75____E> increase LENSPRM'
               stop
             end if
             sprm(1,13)(l+2:) = strx(1:lenx)

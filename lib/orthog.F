@@ -90,15 +90,15 @@ C---DETERMINE EIGENVALUES AND EIGENVECTORS OF REAL SYMMETRIC MATRIX A
 C
       call meign(a,d,v,3,3)
 
-c      write(*,'(3g15.5)') (a(1,j), j=1,3)
-c      write(*,'(3g15.5)') (a(2,j), j=1,3)
-c      write(*,'(3g15.5)') (a(3,j), j=1,3)
-c      write(*,*)
-c      write(*,'(3g15.5)') (v(1,j), j=1,3)
-c      write(*,'(3g15.5)') (v(2,j), j=1,3)
-c      write(*,'(3g15.5)') (v(3,j), j=1,3)
-c      write(*,*)
-c      write(*,'(3g15.5)') (d(j), j=1,3)
+c      write(iolog,'(3g15.5)') (a(1,j), j=1,3)
+c      write(iolog,'(3g15.5)') (a(2,j), j=1,3)
+c      write(iolog,'(3g15.5)') (a(3,j), j=1,3)
+c      write(iolog,*)
+c      write(iolog,'(3g15.5)') (v(1,j), j=1,3)
+c      write(iolog,'(3g15.5)') (v(2,j), j=1,3)
+c      write(iolog,'(3g15.5)') (v(3,j), j=1,3)
+c      write(iolog,*)
+c      write(iolog,'(3g15.5)') (d(j), j=1,3)
 
 C
 C---DETERMINE (EIGENVALUES)**(-1/2)

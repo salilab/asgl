@@ -2,10 +2,6 @@
 
 # program name:
 PROGRAM=asgl
-# the extension for the steering file:
-EXT=.top
-# the extension for the log file:
-LOG=.log
 
 # executable:
 EXECUTABLE=${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
@@ -15,14 +11,10 @@ DEFAULT=${PROGRAM}
 # get the argument to the program if none supplied:
 if test $# -lt 1
 then
-  DIR=.
   STEERF=${DEFAULT}
 else
-  DIR=`dirname $1`
-  STEERF=$DIR/`basename $1 ${EXT}`
-  # STEERF=`basename $1 ${EXT}`
+  STEERF=$1
 fi
-LOGF=$DIR/`basename $STEERF ${EXT}`${LOG}
 
 # Do not do this because if you just copy the installed PROGRAM from one
 # machine to the other it won't work when the installed directories
@@ -38,6 +30,5 @@ LOGF=$DIR/`basename $STEERF ${EXT}`${LOG}
 cnverr=yes ; export cnverr
 
 # run the program:
-# BIN_value/${EXECUTABLE} $STEERF > $LOGF
-${EXECUTABLE} $STEERF > $LOGF
+exec ${EXECUTABLE} $STEERF
 # nice -20 ${EXECUTABLE} $STEERF

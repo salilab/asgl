@@ -303,6 +303,7 @@ c     no blanks inbetween; s has the same idententation as s1;
 c --- user has to ensure that the string s is long enough;
       subroutine concat(s1, s2, s)
       implicit none
+#include "io.cst"
       integer len1r,l1str,len2r,len2l,l2str,l0,i,lenl,lenr
       character*(*) s1, s2, s
 c
@@ -326,11 +327,11 @@ c
 c
 c --- do tests:
       if ((l1str+l2str) .gt. l0) then
-        write(*,'(a/a,3i4)')
+        write(iolog,'(a/a,3i4)')
      &  'concat__E> output string too short',
      &  '           len(s1), len(s2), len(s3): ', l1str, l2str, l0
         do  i = 1, len(s1)
-           write(*,*) i, ' ', s1(i:i), ' ', ichar(s1(i:i))
+           write(iolog,*) i, ' ', s1(i:i), ' ', ichar(s1(i:i))
         end do
         stop
       end if
@@ -377,6 +378,7 @@ c     blanks in s2 are still put between s1 and s2; s has the same
 c     idententation as s1;
       subroutine concat2(s1, s2, s)
       implicit none
+#include "io.cst"
       integer len1r,l1str,len2r,len2l,l2str,l0,i,lenr
       character*(*) s1, s2, s
 c
@@ -400,7 +402,7 @@ c
 c
 c --- do tests:
       if ((l1str+l2str) .gt. l0) then
-        write(*,'(a/a,3i4)')
+        write(iolog,'(a/a,3i4)')
      &  'concat2_E> output string too short',
      &  '           len(s1), len(s2), len(s3): ', l1str, l2str, l0
         stop
@@ -479,6 +481,7 @@ c
 c --- will substitute cont1(istart+1:istart+n) for sub
       subroutine subs(str,istart,n,sub)
         implicit none
+#include "io.cst"
         integer maxlen,lstr,lsub,n,j,l,i,lenr,istart
         parameter (maxlen=255)
         character str*(*), sub*(*), buffer*(maxlen)
@@ -489,7 +492,7 @@ c --- will substitute cont1(istart+1:istart+n) for sub
 c        if (lsub.eq.0) stop 'Error[subs] len(sub) = 0'
         if (lstr .lt. istart) stop 'Error[subs] istart > lenr(str)'
         if ((lstr-n+lsub) .gt. len(str)) then
-          write(*,*) 'Error[subs] str too short: ',len(str),lstr,n,lsub
+          write(iolog,*) 'Error[subs] str too short: ',len(str),lstr,n,lsub
           stop
         end if
         if ((lstr-istart-n+1) .gt. maxlen)
@@ -609,12 +612,13 @@ c
 c --- transforms all characters in the string s1 into upper case in s2
       subroutine upper2(s1,s2)
         implicit none
+#include "io.cst"
         integer l1,lenr,ich,i,l2
         character s1*(*), s2*(*), ch*1
         l1 = lenr(s1)
         l2 = len(s2)
         if (l2.lt.l1) then
-          write(*,'(a,2i5)') 'upper2__E> len(s2)<lenr(s1): ', l1, l2
+          write(iolog,'(a,2i5)') 'upper2__E> len(s2)<lenr(s1): ', l1, l2
           stop
         end if
         do  i = 1, l1
@@ -765,8 +769,8 @@ c
 c      l1 = lenl_tst(str)
 c      l2 = lenl_org(str)
 c      if (l1 .ne. l2) then
-c        write(*,*) 'SHIT: L1, L2: ', l1, l2
-c        write(*,*) 'STRING: ', str
+c        write(iolog,*) 'SHIT: L1, L2: ', l1, l2
+c        write(iolog,*) 'STRING: ', str
 c        stop
 c      end if
 c      lenl = l1
@@ -912,7 +916,7 @@ c        rround = r
 
 c ----- round the number to npost digits:
         rround = r + sign(1.0,r)*0.5*10.0**(-npost-1)
-c        write(*,'(99f15.7)') r,rround,sign(1.0,r)*0.5*10.0**(-npost),
+c        write(iolog,'(99f15.7)') r,rround,sign(1.0,r)*0.5*10.0**(-npost),
 c     &       sign(1.0,r)*0.5*10.0**(-npost-1)
 
         write(fmt(3:4),  '(i2)') npre+npost
@@ -943,6 +947,7 @@ c 100   stop 'r_str___E> error writing to string'
 c --- converts integer i to string s, write out in the Inpre format.
       subroutine i_str(i, s, npre)
       implicit none
+#include "io.cst"
       integer i, npre, l
       character s*(*), fmt*5
       save fmt
@@ -950,14 +955,14 @@ c --- converts integer i to string s, write out in the Inpre format.
 
       l = len(s)
       if (npre.gt.l) then
-        write(*,'(a,i4)') 'i_str___E> string too short: ', l, npre
+        write(iolog,'(a,i4)') 'i_str___E> string too short: ', l, npre
         stop
       end if
 
       if ((npre.ge.1).and.(npre.le.99)) then
         write(fmt(3:4), '(i2)') npre
       else
-        write(*,'(a,i4)') 'i_str___E> npre out of range: ', npre
+        write(iolog,'(a,i4)') 'i_str___E> npre out of range: ', npre
         stop
       end if
 
@@ -1045,6 +1050,7 @@ c     otherwise it is everything non-blank between two blanks.
 c     Non-primed words can also occur between the primed ones.
       subroutine str_sn2(line, buffr, maxn, n)
         implicit none
+#include "io.cst"
         integer maxpos
         parameter (maxpos = 1024)
         integer lenr
@@ -1064,8 +1070,8 @@ c ------- find positions of all '
 c ------- testing:
           ni = npos / 2
           if(ni*2 .ne. npos) then
-            write(*,'(a,i4)') 'str_sn2_E> # of '' <> even:, ',npos
-            write(*,'(a,i4,1x,a)') 'Len,String: ', lenr(line),
+            write(iolog,'(a,i4)') 'str_sn2_E> # of '' <> even:, ',npos
+            write(iolog,'(a,i4,1x,a)') 'Len,String: ', lenr(line),
      &                             line(1:max(1,lenr(line)))
             stop
           end if
@@ -1173,6 +1179,7 @@ c --- returns the root of the unix file name (directory and everything after
 c     the first dot after the last '/' is eliminated):
       subroutine rootfn2(file, rot)
         implicit none
+#include "io.cst"
         integer lr,lenr,i,ibeg,iend
         character file*(*), rot*(*)
 
@@ -1199,8 +1206,8 @@ c ----- for files in the form '../file' and '.file'
         end if
 50      continue
         if (iend-ibeg-1 .le. 0) then
-          write(*,*) 'file: ', file
-          write(*,*) 'iend,ibeg: ', iend, ibeg
+          write(iolog,*) 'file: ', file
+          write(iolog,*) 'iend,ibeg: ', iend, ibeg
           stop 'Error[rootfn]: length of root <= 0'
         end if
         rot = file(ibeg+1:iend-1)
@@ -1237,8 +1244,8 @@ c ----- for files in the form '../file' and '.file'
         end if
 50      continue
         if (iend-ibeg-1 .le. 0) then
-c          write(*,*) 'file: ', file
-c          write(*,*) 'iend,ibeg: ', iend, ibeg
+c          write(iolog,*) 'file: ', file
+c          write(iolog,*) 'iend,ibeg: ', iend, ibeg
 c          stop 'Error[rootfn]: length of root <= 0'
           rot = ' '
         else
@@ -1681,6 +1688,7 @@ c     left of the ipos and ends at the first blank character to
 c     the left of ipos or at the beginning of the strin, whichever first.
       subroutine rdleft(strin, ipos, strout)
         implicit none
+#include "io.cst"
         integer ipos,i,il,ib
         character strin*(*), strout*(*)
         logical ilndsp
@@ -1706,7 +1714,7 @@ c ------- find the first position of the string to the left:
 30        ib = ib + 1
 
           if (il-ib+1 .gt. len(strout)) then
-            write(*,*) 'Error[rdleft]: strout too short.'
+            write(iolog,*) 'Error[rdleft]: strout too short.'
             return
           end if
 
@@ -1763,6 +1771,7 @@ c     words can also occur between the primed ones. This later part is
 c     like str_sn2.
       subroutine str_sn4(line, buffr, maxn, n)
         implicit none
+#include "io.cst"
         integer maxpos
         parameter (maxpos = 100)
         integer i,n,maxn,ind1,ind2,lenr,ipos(maxpos),ip,ni,i1,i2,nw,npos
@@ -1787,8 +1796,8 @@ c ------- find positions of all '
 c ------- testing:
           ni = npos / 2
           if(ni*2 .ne. npos) then
-            write(*,'(a,i4)') 'str_sn4_E> # of '' <> even:, ',npos
-            write(*,'(a,i4,1x,a)') 'Len,String: ', lenr(line),
+            write(iolog,'(a,i4)') 'str_sn4_E> # of '' <> even:, ',npos
+            write(iolog,'(a,i4,1x,a)') 'Len,String: ', lenr(line),
      &                             line(1:max(1,lenr(line)))
             stop
           end if
@@ -1829,6 +1838,7 @@ c     them in n; the word is: everything non-delimiter between two
 c     delimiters, including nothing.
       subroutine str_sn5(line, buffr, maxn, n, delim)
         implicit none
+#include "io.cst"
         integer maxn,n,lr,lenr,idelim2,idelim1
         character line*(*), buffr(maxn)*(*), delim*(*)
 
@@ -1841,7 +1851,7 @@ c     delimiters, including nothing.
           if (line(idelim2:idelim2) .eq. delim) then
             n = n + 1
             if (n .gt. maxn) then
-              write(*,'(a,i4)') 'str_sn5___E> increase MAXN: ', maxn
+              write(iolog,'(a,i4)') 'str_sn5___E> increase MAXN: ', maxn
               stop
             end if
             if (idelim2.gt.idelim1+1) then
@@ -1858,7 +1868,7 @@ c ------- The last word:
 
           n = n + 1
           if (n .gt. maxn) then
-            write(*,'(a,i4)') 'str_sn5___E> increase MAXN: ', maxn
+            write(iolog,'(a,i4)') 'str_sn5___E> increase MAXN: ', maxn
             stop
           end if
           if (idelim2.gt.idelim1+1) then
@@ -1937,6 +1947,7 @@ c --- adds string str to the beginning of string add (concat; output: add)
 c --- adds string str to the beginning of string add (concat2; output: add)
       subroutine add4str(str,add)
         implicit none
+#include "io.cst"
         integer maxstr
         parameter (maxstr=1024)
         integer lr1,lr2,lenr,lr
@@ -1947,10 +1958,10 @@ c --- adds string str to the beginning of string add (concat2; output: add)
         lr  = len(add)
         if (lr1+lr2 .gt. maxstr) stop 'Error[addstr]; increase maxstr.'
         if (lr1+lr2 .gt. lr) then
-          write(*,*) 'Error[add4str]; increase the length of add: ',
+          write(iolog,*) 'Error[add4str]; increase the length of add: ',
      &    lr1, lr2, lr
-          write(*,*) '      str :', str
-          write(*,*) '      add :', add
+          write(iolog,*) '      str :', str
+          write(iolog,*) '      add :', add
           stop
         end if
         call concat2(str, add, dummy)
@@ -2056,6 +2067,7 @@ c ----- search not successful; return 0 ;
 c --- a vector version of ifindword; exact matches;
       subroutine ifindwordn(word,nword,array,narray,iword)
         implicit none
+#include "io.cst"
         integer nword,iword(nword),ityp,narray,i,ifindword
         character word(nword)*(*), array(narray)*(*)
 
@@ -2064,7 +2076,7 @@ c --- a vector version of ifindword; exact matches;
           if (ityp.ne.0) then
             iword(i) = ityp
           else
-            write(*,190) word(i)
+            write(iolog,190) word(i)
 190         format('Error[ifindwordn]: Word not found in array; ', a)
           end if
 200     continue
@@ -2134,9 +2146,10 @@ c     str(n1,n2)*(*)
 c --- concatenate N ARGS into RES
       subroutine concat3(args,n,res)
         implicit none
+#include "io.cst"
         integer i,n
         character args(n)*(*), res*(*)
-        if (n .eq. 0) write(*,'(a)') 'concat3_w> no operands'
+        if (n .eq. 0) write(iolog,'(a)') 'concat3_w> no operands'
         res = args(1)
         do  i = 2, n
           call add2str(res, args(i))

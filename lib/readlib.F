@@ -1,6 +1,7 @@
       subroutine rdrtlin(line,natmcns,ibnd,dcatm,mcnsres,matmcns,idctyp,
      -                   imthtyp,imodal,iftyp,iphytyp)
         implicit none
+#include "io.cst"
         integer maxbuf
         parameter (maxbuf=30)
         integer ia, ic, ibnd, nbuffr
@@ -15,7 +16,7 @@
      -     stop'Error[rdrtlin]; format error 1.'
         nc = nbuffr / natmcns
         if((ibnd+nc).gt.mcnsres) then
-          write(*,*)
+          write(iolog,*)
      -      'Error[rdrtlin];increase mcnsres; ibnd,nbuffr,natmcns,',
      -      'mcnsres: ', ibnd,nbuffr,natmcns,mcnsres
           stop
@@ -107,10 +108,10 @@ c --- read the atom names of pseudo atoms:
 
 
 c --- atom names are returned left-justified!
-      subroutine readvdw(ioinp,vdwfnam,vdwatm,vdwcnt,nvdwtyp,mattyp,
-     -                   polar,electr)
+      subroutine readvdw(ioinp,iolog,vdwfnam,vdwatm,vdwcnt,nvdwtyp,
+     -                   mattyp,polar,electr)
         implicit none
-        integer ioinp,nvdwtyp,mattyp,ii
+        integer ioinp,iolog,nvdwtyp,mattyp,ii
         real vdwcnt(mattyp),polar(mattyp),electr(mattyp),wghtatm
         character vdwatm(mattyp)*(*), vdwfnam*(*)
         character line*80
@@ -129,7 +130,7 @@ c ----- '*' is a comment character
      -       electr(nvdwtyp)
           call ljust(vdwatm(nvdwtyp))
           if (ii.ne.nvdwtyp) then
-            write(*,*) 'Error[readvdw]; format error; ii<>nvdwtyp: ',
+            write(iolog,*)'Error[readvdw]; format error; ii<>nvdwtyp: ',
      -                 ii,nvdwtyp
             stop
           end if
@@ -137,7 +138,7 @@ c ----- '*' is a comment character
 100     continue
         close(ioinp)
 
-        write(*,'(a,i4)')
+        write(iolog,'(a,i4)')
      -  'readvdw__> van der Waals contact radii library read in; natm: '
      -  ,nvdwtyp
         return
@@ -219,10 +220,10 @@ C     except that lines beginning with '*' are comments and that before
 C     every residue entry there is a record: [residue name, number of atoms]
 C     in a format A3, 2X, I3 ;
 
-      subroutine readxyz(ioinp,xyzfnam,nxyzres,xlibnam,
+      subroutine readxyz(ioinp,iolog,xyzfnam,nxyzres,xlibnam,
      -                   xlibatm,xyzlib,nxyzlib,mapres,mrestyp)
         implicit none
-        integer mrestyp,nxyzres,mapres,nxyzlib(mrestyp),ioinp,iatm
+        integer mrestyp,nxyzres,mapres,nxyzlib(mrestyp),ioinp,iatm,iolog
         real xyzlib(3,mapres,mrestyp),chrglib
         character xyzfnam*(*), xlibnam(mrestyp)*(*)
         character xlibatm(mapres,mrestyp)*(*)
@@ -246,16 +247,17 @@ C     in a format A3, 2X, I3 ;
 
         close(ioinp)
 
-        write(*,*)'Standard residues library read in; nres: ', nxyzres
+        write(iolog,*) 'Standard residues library read in; nres: ',
+     -                 nxyzres
         return
       end
 
 
 c --- read charges from the same library file as the residue XYZ coordinates
-      subroutine rdchrg(ioinp,xyzfnam,nxyzres,xlibnam,
+      subroutine rdchrg(ioinp,iolog,xyzfnam,nxyzres,xlibnam,
      -                  xlibatm,chrglib,nxyzlib,mapres,mrestyp)
         implicit none
-        integer mrestyp,nxyzres,mapres,nxyzlib(mrestyp),ioinp,iatm
+        integer mrestyp,nxyzres,mapres,nxyzlib(mrestyp),ioinp,iatm,iolog
         real chrglib(mapres,mrestyp)
         real xlib,ylib,zlib,chrg
         character xyzfnam*(*), xlibnam(mrestyp)*(*)
@@ -275,7 +277,7 @@ c --- read charges from the same library file as the residue XYZ coordinates
      -             chrglib(iatm,nxyzres)
               chrg = chrg + chrglib(iatm,nxyzres)
             end do
-c            write(*,'(a,i3,1x,a3,1x,f7.2)') 
+c            write(iolog,'(a,i3,1x,a3,1x,f7.2)') 
 c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
           end if
           go to 10
@@ -283,26 +285,27 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
 
         close(ioinp)
 
-        write(*,*)'Standard charges library read in; nres: ', nxyzres
+        write(iolog,*) 'Standard charges library read in; nres: ',
+     -                 nxyzres
         return
       end
 
 
 
-      subroutine rdfeats(ioinp,matfnam,im2s,
+      subroutine rdfeats(ioinp,iolog,matfnam,im2s,
      -                   ncnsprm,ncnsatm,csrnam,
      -                   nmthcns,nfeats,nphycns,
      -                   mmthcns,mfeats,mphycns)
         implicit none
         integer mmthcns,mphycns,nphycns,mfeats,nmthcns,nfeats,ioinp,ii,i
-        integer ncnsprm(mmthcns), ncnsatm(mfeats), im2s(mmthcns)
+        integer ncnsprm(mmthcns), ncnsatm(mfeats), im2s(mmthcns),iolog
         character matfnam*(*), ch*1, csrnam(mphycns)*(*)
 
         call openf(ioinp, matfnam, 'old')
 
         read(ioinp, *) nmthcns
         if (nmthcns .gt. mmthcns) then
-          write(*,*) 
+          write(iolog,*) 
      -       'Error[rdfeats]; nmthcns > mmthcns (increase mmthcns): ',
      -       nmthcns, mmthcns
           stop
@@ -310,7 +313,7 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
 
         read(ioinp, *) nfeats
         if (nfeats .gt. mfeats) then
-          write(*,*) 
+          write(iolog,*) 
      -       'Error[rdfeats]; nfeats > mfeats (increase mfeats): ',
      -       nfeats, mfeats
           stop
@@ -318,7 +321,7 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
 
         read(ioinp, *) nphycns
         if (nphycns .gt. mphycns) then
-          write(*,*)
+          write(iolog,*)
      -      'Error[rdfeats]; nphycns > mphycns (increase mphycns): ',
      -             nphycns, mphycns
           stop
@@ -343,12 +346,12 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
         return 
       end
 
-      subroutine rdmnch(ioinp,mnchf,wmnch,rmnchm,stdvm,nmnch,maxmnch,
-     -                  mrestyp)
+      subroutine rdmnch(ioinp,iolog,mnchf,wmnch,rmnchm,stdvm,nmnch,
+     -                  maxmnch,mrestyp)
         implicit none
         real eps
         parameter (eps = 1.0E-4)
-        integer ioinp,nmnch,maxmnch,mrestyp,i,j,nrestyp
+        integer ioinp,iolog,nmnch,maxmnch,mrestyp,i,j,nrestyp
         real wmnch(maxmnch,mrestyp),rmnchm(maxmnch,2),stdvm(maxmnch,2)
         real sum
         character mnchf*(*), ch*1
@@ -356,8 +359,8 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
         call openf(ioinp, mnchf, 'old')
         read(ioinp, '(a)') ch
         read(ioinp, *) nrestyp, nmnch
-        if (nrestyp .ne. 20) 
-     -  write(*,*)'Warning[rdmnch]: are you sure NRESTYP <> 20 is ok?'
+        if (nrestyp .ne. 20) write(iolog,*)
+     -     'Warning[rdmnch]: are you sure NRESTYP <> 20 is ok?'
         read(ioinp, '(a/a)') ch,ch
         do  i = 1, nmnch
           read(ioinp,*) rmnchm(i,1),rmnchm(i,2),stdvm(i,1),stdvm(i,2)
@@ -370,7 +373,7 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
             sum = sum + wmnch(j,i)
           end do
           if (abs(sum-1.0) .gt. eps)
-     -      write(*,*) 'Warning[rdmnch]; sum <> 1; irest: ',sum,i
+     -      write(iolog,*) 'Warning[rdmnch]; sum <> 1; irest: ',sum,i
           do  j = 1, nmnch
             wmnch(j,i) = wmnch(j,i) / sum
           end do
@@ -381,12 +384,12 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
       end
 
 
-      subroutine rdsdch(ioinp,sdchf,wsdch,sdchm,stdvs,nsdch,maxsdch,
-     -                  mrestyp)
+      subroutine rdsdch(ioinp,iolog,sdchf,wsdch,sdchm,stdvs,nsdch,
+     -                  maxsdch,mrestyp)
         implicit none
         real eps
         parameter (eps=1.0E-3)
-        integer nsdch,ioinp,maxsdch,mrestyp,i,j,ichr2int,nrestyp
+        integer nsdch,ioinp,iolog,maxsdch,mrestyp,i,j,ichr2int,nrestyp
         real wsdch(maxsdch,mrestyp),sdchm(maxsdch,2,mrestyp)
         real stdvs(maxsdch,2,mrestyp),sum
         character sdchf*(*), ch*1
@@ -394,13 +397,13 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
         call openf(ioinp, sdchf, 'old')
         read(ioinp, '(a)') ch
         read(ioinp,*) nrestyp, nsdch
-        if (nrestyp .ne. 20) 
-     -  write(*,*)'Warning[rdsdch]: are you sure NRESTYP <> 20 is ok?'
+        if (nrestyp .ne. 20) write(iolog,*)
+     -       'Warning[rdsdch]: are you sure NRESTYP <> 20 is ok?'
         read(ioinp, '(a/a)') ch,ch
         do  i = 1, nrestyp
           read(ioinp, '(a)') ch
           if (ichr2int(ch) .ne. i) then
-            write(*,*) 
+            write(iolog,*) 
      -      'Error[rdsdch]; SDCH LIB format error; wrong residue ',
      -      'order: ', ch
             stop
@@ -419,7 +422,7 @@ c     -      'Index, Residue, Net charge: ',nxyzres,xlibnam(nxyzres),chrg
             sum = sum + wsdch(j,i)
           end do
 c          if (abs(sum-1.0) .gt. eps)
-c     -      write(*,*) 'Warning[rdsdch]; sum <> 1; irest: ',sum,i
+c     -      write(iolog,*) 'Warning[rdsdch]; sum <> 1; irest: ',sum,i
           do  j = 1, nsdch
             wsdch(j,i) = wsdch(j,i) / sum
           end do
@@ -543,10 +546,10 @@ c ----- parameters:
       end
 
 
-      subroutine rdgrbrk(ioinp,grmbrkf,groatm,brkatm,mrestyp,mapres,
-     -                   nresdc,natmdc,resdc)
+      subroutine rdgrbrk(ioinp,iolog,grmbrkf,groatm,brkatm,mrestyp,
+     -                   mapres,nresdc,natmdc,resdc)
         implicit none
-        integer mrestyp,ioinp,nresdc,mapres
+        integer mrestyp,ioinp,iolog,nresdc,mapres
         integer natmdc(mrestyp),ia,ir
         character groatm(mapres,mrestyp)*(*), brkatm(mapres,mrestyp)*(*)
         character line*(14),resdc(mrestyp)*(*),grmbrkf*(*)
@@ -584,19 +587,19 @@ c ----- '*' is a comment character
           end do
         end do
 
-        write(*,'(a,i4)') 
+        write(iolog,'(a,i4)') 
      -  'rdgrbrk__> GROMOS <=> BROOKHAVEN library read in: ',nresdc
 
         return
       end
 
-      subroutine rdrt(ioinp,rtfil,ndcres,dcres,ndccns,idctyp,
+      subroutine rdrt(ioinp,iolog,rtfil,ndcres,dcres,ndccns,idctyp,
      -                dcatm,mcnsres,mrestyp,matmcns)
         implicit none
         integer lenlin
         parameter (lenlin=80)
         integer matmcns,mrestyp,mcnsres,ndcres,ioinp,ndccns(mrestyp)
-        integer idctyp(4,mcnsres,mrestyp)
+        integer idctyp(4,mcnsres,mrestyp),iolog
         character dcatm(matmcns,mcnsres,mrestyp)*(*)
         character dcres(mrestyp)*(*),rtfil*(*)
         character line*(lenlin)
@@ -643,11 +646,12 @@ c --------------- new residue
 
         close(ioinp)
       
-        write(*,*)'A priori distance constraints library read in;nres: '
+        write(iolog,*)
+     -        'A priori distance constraints library read in;nres: '
      -            ,ndcres
         return
 
-888     write(*,*) 'Error[rdrt]; reading file: ', rtfil
+888     write(iolog,*) 'Error[rdrt]; reading file: ', rtfil
         stop
       end
 
@@ -711,14 +715,14 @@ c           counts only defined optima!
 
 c --- reads the library of all dihedral angles for each residue type
 c
-      subroutine rdrdih(ioinp,dihfnam,nrdih,iatdih,ndopt,dihwgh,
+      subroutine rdrdih(ioinp,iolog,dihfnam,nrdih,iatdih,ndopt,dihwgh,
      -           dihavr,dihstd,maxrdih,mrestyp,maxdopt,nresdih,degr)
         implicit none
         real eps
         parameter (eps=0.01)
         integer mrestyp,maxrdih,maxdopt,nrdih(mrestyp)
         integer iatdih(4,maxrdih,mrestyp),nresdih
-        integer ndopt(maxrdih,mrestyp),i,j,k,ioinp
+        integer ndopt(maxrdih,mrestyp),i,j,k,ioinp,iolog
         real dihwgh(maxdopt,maxrdih,mrestyp),radians
         real dihavr(maxdopt,maxrdih,mrestyp),sum
         real dihstd(maxdopt,maxrdih,mrestyp)
@@ -758,9 +762,9 @@ c --------- quick check
               sum = sum + dihwgh(k,j,i)
             end do
             if (abs(sum-1.0) .gt. eps) then
-              write(*,*) 'Warning[rdrdih]; weights do nut sum to 1: ',
-     -                   sum
-              write(*,*) '      idih,ires,wgh1: ',j,i,dihwgh(1,j,i)
+              write(iolog,*)
+     -              'Warning[rdrdih]; weights do nut sum to 1: ', sum
+              write(iolog,*) '      idih,ires,wgh1: ',j,i,dihwgh(1,j,i)
             end if
 
 c --------- for the purposes of constr5() in GETCSR (to allow use of

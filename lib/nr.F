@@ -19,6 +19,7 @@ c --- Numerical Recipes routines:
 
       subroutine gser(gamser,a,x,gln)
       implicit none
+#include "io.cst"
       integer itmax
       real eps
       parameter (itmax=100,eps=3.e-7)
@@ -29,7 +30,7 @@ c --- Numerical Recipes routines:
       gln=gammln(a)
       if(x.le.0.)then
         if(x.lt.0.) then 
-          write(*,'(a)') 'gser___E> x < 0'
+          write(iolog,'(a)') 'gser___E> x < 0'
           stop
         end if
         gamser=0.
@@ -44,7 +45,7 @@ c --- Numerical Recipes routines:
         sum=sum+del
         if(abs(del).lt.abs(sum)*eps)go to 1
 11    continue
-      write(*,*) 'Warning[gser]; A too large, ITMAX too small'
+      write(iolog,*) 'Warning[gser]; A too large, ITMAX too small'
 1     gamser=sum*exp(-x+a*log(x)-gln)
       return
       end
@@ -53,6 +54,7 @@ c --- Numerical Recipes routines:
 
       subroutine gcf(gammcf,a,x,gln)
       implicit none
+#include "io.cst"
       integer itmax
       real eps
       parameter (itmax=100,eps=3.e-7)
@@ -83,7 +85,7 @@ c --- Numerical Recipes routines:
           gold=g
         endif
 11    continue
-      write(*,*) 'Warning[gcf]; A too large, ITMAX too small'
+      write(iolog,*) 'Warning[gcf]; A too large, ITMAX too small'
 1     gammcf=exp(-x+a*log(x)-gln)*g
 
       return
@@ -274,7 +276,7 @@ CU    USES betacf,gammln
         if(abs(del-1.).lt.EPS)goto 1
 11    continue
 c      pause 'a or b too big, or MAXIT too small in betacf'
-      write(*,'(a)')
+      write(iolog,'(a)')
      &      'betacf__W> a or b too big, or MAXIT too small in betacf'
 1     betacf=h
       return

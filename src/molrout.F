@@ -197,10 +197,10 @@ c     number of bond types
 c     index,line type,color  .... for all bonds, one per line
 c     .....................
 c
-      subroutine rddraw(ioinp,drawlib,nvdwtyp,mbndtyp,nbndtyp,
+      subroutine rddraw(ioinp,iolog,drawlib,nvdwtyp,mbndtyp,nbndtyp,
      -           atypc,iatypl,btypc,ibtypl)
         implicit none
-        integer i, ioinp, nvdwtyp, mbndtyp, nbndtyp, ndummy
+        integer i, ioinp, iolog, nvdwtyp, mbndtyp, nbndtyp, ndummy
         integer iatypl(nvdwtyp),ibtypl(mbndtyp),indx
         real atypc(nvdwtyp), btypc(mbndtyp)
         character drawlib*(*)
@@ -222,7 +222,7 @@ c
 
         close(ioinp)
 
-        write(*,'(a)') 'rddraw___> molecule drawing library read in'
+        write(iolog,'(a)') 'rddraw___> molecule drawing library read in'
 
         return
       end
@@ -252,6 +252,7 @@ c     and atom name.
      -           iline,color,vdwcnt,nvdwtyp,radius,radfact,atrad,
      -           iattyp)
         implicit none
+#include "io.cst"
         integer maxatm
         parameter (maxatm=5000)
         integer indexw,ia,iresc,iatmc,ifind2word,lenl,iaa,irr,lenr
@@ -297,7 +298,7 @@ c ----- you never know, maybe these strings are values, not a variables
         selunsel = (indexw(select2, 'REMOVE') .lt. 1)
         addatm   = (indexw(select2, 'INITIALIZE') .lt. 1)
         if (.not.addatm .and. .not. selunsel) 
-     -    write(*,'(a,a)') 'selatm__W> weird SELECTION_STATUS: ',
+     -    write(iolog,'(a,a)') 'selatm__W> weird SELECTION_STATUS: ',
      -                     'both initialization and removing.'
 
 c ----- flag all atoms from which the selection will be made:
@@ -338,24 +339,24 @@ c ----- do we add all atoms in the whole residue if only
 c       one of its atoms satisfies the search criteria:
         resmod  = (indexw(mode2, 'RESIDUE') .gt. 0)
 
-        write(*,'(a,2i6)') 
+        write(iolog,'(a,2i6)') 
      -  'selatm___> Number of atoms to choose from, total: ',ns,natm
-        write(*,'(a,a)')
+        write(iolog,'(a,a)')
      -  'selatm___> Atoms are selected from the follow. sets (FROM): ',
      -  whatfrom(1:lenr(whatfrom))
-        write(*,'(a,a)')
+        write(iolog,'(a,a)')
      -  'selatm___> Atom sets to be modified (FOR): ',
      -  whatfor(1:lenr(whatfor))
-        write(*,'(a,a)') 
+        write(iolog,'(a,a)') 
      -  'selatm___> Atom types to be searched for (ATOM_TYPE): ',
      -  atmsel(1:lenr(atmsel))
-        write(*,'(a,a)') 
+        write(iolog,'(a,a)') 
      -  'selatm___> Residue types to be searched for (RES_TYPE): ',
      -  restyp(1:lenr(restyp))
-        write(*,'(a,a)') 
+        write(iolog,'(a,a)') 
      -  'selatm___> Selection mode (SELECTION_MODE): ', 
      -  mode2(1:lenr(mode2))
-        write(*,'(a,a)') 
+        write(iolog,'(a,a)') 
      - 'selatm___> What to do with atoms & sets (SELECTION_STATUS):', 
      -  select(1:lenr(select))
 
@@ -372,31 +373,31 @@ c ------- SPHERE:
               iresc = 0
             end if
             if (iresc .eq. 0) then
-              write(*,'(2a)') 'selatm__E> center residue not found: ',
-     -      cresnum
+              write(iolog,'(2a)')
+     &              'selatm__E> center residue not found: ', cresnum
               stop
             end if
           else
             iresc = ifind2word(cresnum,resnum,nres)
             if (iresc .eq. 0) then
-              write(*,'(2a)') 'selatm__E> center residue not found: ',
-     -        cresnum
+              write(iolog,'(2a)')
+     &              'selatm__E> center residue not found: ', cresnum
               stop
             end if
             iatmc = ifind2word(catmnam,atmnam(iatmr1(iresc)),
      -                         iatmr2(iresc)-iatmr1(iresc)+1)
             if (iatmc .eq. 0) then
-              write(*,'(2a)') 'selatm__E> center atom not found: ',
+              write(iolog,'(2a)') 'selatm__E> center atom not found: ',
      -        catmnam
               stop
             end if
             iatmc = iatmr1(iresc) + iatmc - 1
           end if
 
-          write(*,'(a,2i6,2x,2a6)')
+          write(iolog,'(a,2i6,2x,2a6)')
      -    'selatm___> SPHERE search; Central atom (2i,2a): ',
      -    iresc,iatmc,cresnum,catmnam
-          write(*,'(a,5f7.3)')
+          write(iolog,'(a,5f7.3)')
      -    'selatm___> Slab, sphere center translation (SLAB): ',
      -    dz1,dz2,xtrans,ytrans,ztrans
 
@@ -420,10 +421,10 @@ c ------- SEGMENT:
           ires2 = ifind2word(res2,resnum,nres)
           if (ires2 .eq. 0) ires2 = nres
 
-          write(*,'(a,2i6,2x,2a6)') 
+          write(iolog,'(a,2i6,2x,2a6)') 
      -    'selatm___> SEGMENT search; residue range (2i5,2a5): ',
      -    ires1,ires2,resnum(ires1),resnum(ires2)
-          write(*,'(a,i6)') 
+          write(iolog,'(a,i6)') 
      -    'selatm___> Selection residue step (SELECTION_STEP): ', istep
 
 c ------- to use the SEGMENT search:
@@ -441,7 +442,8 @@ c ------- to neglect the SPHERE criterion:
         end if
 
         if (ires2 .lt. ires1) then
-          write(*,'(a,2i6)') 'selatm__E> ires2 < ires1 : ',ires1,ires2
+          write(iolog,'(a,2i6)') 'selatm__E> ires2 < ires1 : ',ires1,
+     &                           ires2
           stop
         end if
 
@@ -515,11 +517,11 @@ c ------------- possibly add it to the selections:
          end if
         end do
 
-        write(*,'(a,i6)') 
+        write(iolog,'(a,i6)') 
      - 'selatm___> Number of selected atoms in DISPLAYING set: ',numsel
-        write(*,'(a,i6)') 
+        write(iolog,'(a,i6)') 
      - 'selatm___> Number of selected atoms in BONDING set   : ',numbsel
-        write(*,'(a,i6)') 
+        write(iolog,'(a,i6)') 
      - 'selatm___> Number of selected atoms in LABELLING set : ',numlsel
 
         return
@@ -594,6 +596,7 @@ c --- LPI-Fortran numerical precision fix:
       subroutine writbrk(ioout,brkname,x,y,z,natm,nres,resnam,
      -                   resnum,atmnam,iresatm)
         implicit none
+#include "io.cst"
 
         integer natm,nres,iresatm(natm),ioout,i
         real x(natm), y(natm), z(natm)
@@ -608,7 +611,7 @@ c --- LPI-Fortran numerical precision fix:
         end do
         close(ioout)
 
-        write(*,30)brkname,nres,natm
+        write(iolog,30)brkname,nres,natm
 30      format('Message[writbrk]; fname, res, atms: ',a25,2i5)
 
         return

@@ -12,6 +12,7 @@ cf ---------------------------------------------------------------------------
 
       subroutine sys(cmd, scmd)
         implicit none
+#include "io.cst"
         character sysf*10
         integer lenr2,time
         character cmd*(*), scmd*(*), ccmd*255
@@ -38,10 +39,10 @@ c         not work because of a clash with call time() below:
         return
 
 10      continue
-        write(*,'(2a)') 'sys______E> File probably does not exist: ',
+        write(iolog,'(2a)')'sys______E> File probably does not exist: ',
      &                  sysf
-        write(*,'(2a)') '            command: ', ccmd(1:lenr2(ccmd))
-        write(*,'(a)')
+        write(iolog,'(2a)') '            command: ', ccmd(1:lenr2(ccmd))
+        write(iolog,'(a)')
      &  '            Perhaps you have to increase swap space size.'
         scmd = ' '
 
