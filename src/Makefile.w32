@@ -1,0 +1,27 @@
+PROGRAM=asgl.exe
+
+FC=df
+CFLAGS=/fpp /define:WIN /f77rtl /compile_only /include:..\include
+LDFLAGS=
+
+SOURCES= \
+top.F top_misc.F top_act.F molrout.F \
+head.F psgl.F asgl.F molec.F cs.F ..\lib\lsq_lib.F \
+..\lib\io.F ..\lib\string.F ..\lib\readbrk.F ..\lib\nr.F \
+..\lib\residues.F ..\lib\readlib.F ..\lib\ratype.F \
+..\lib\degrad.F ..\lib\geom1.F ..\lib\orthog.F ..\lib\sys.F \
+..\lib\matrix.F ..\lib\wrtmsg.F
+
+OBJS= \
+top.obj top_misc.obj top_act.obj molrout.obj \
+head.obj psgl.obj asgl.obj molec.obj cs.obj ..\lib\lsq_lib.obj \
+..\lib\io.obj ..\lib\string.obj ..\lib\readbrk.obj ..\lib\nr.obj \
+..\lib\residues.obj ..\lib\readlib.obj ..\lib\ratype.obj \
+..\lib\degrad.obj ..\lib\geom1.obj ..\lib\orthog.obj ..\lib\sys.obj \
+..\lib\matrix.obj ..\lib\wrtmsg.obj
+
+.F.obj:
+	$(FC) $(CFLAGS) $< /object:$@
+
+$(PROGRAM): $(OBJS)
+	$(FC) $(LDFLAGS) $(OBJS) /link /out:$@
