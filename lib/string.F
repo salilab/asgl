@@ -1466,7 +1466,7 @@ c --- integer form is: [+-] [digits]
         character s*(*)
 
         call str_r2(s, r, ierr)
-        i = nint(r)
+        if (ierr .eq. 0) i = nint(r)
 
         return
       end
@@ -1483,7 +1483,7 @@ c --- integer form is: [+-] [digits]
         character str*(*)
 
         call str_r(str, r, ierr)
-        i = nint(r)
+        if (ierr .eq. 0) i = nint(r)
 
         return
       end
