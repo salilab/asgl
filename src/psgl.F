@@ -1217,6 +1217,13 @@ c ----- do I have to fix the smallest BoundingBox?
 c ------- this shit is neccessary because (atend) does not work with
 c         dvips.
 
+#ifdef WIN
+c         Windows doesn't have sed... or mv...
+          write(cmd,'(a,4i4)') 
+     -      '%%BoundingBox: ',
+     -      nint(bbox0),nint(bboy0),nint(bbox1),nint(bboy1)
+          call fixbbox(psf(1:lenr(psf)), cmd(1:lenr(cmd)))
+#else
           write(cmd,'(a,4i4,a,a,a,a)') 
      -      'sed -e "s/%%BoundingBox: (atend)/%%BoundingBox: ',
      -      nint(bbox0),nint(bboy0),nint(bbox1),nint(bboy1),
@@ -1225,12 +1232,48 @@ c         dvips.
      -      psf(1:lenr(psf))
 
           call mysystem(cmd)
+#endif
 
         end if
 
         return
       end
 
+#ifdef WIN
+c --- Replaces the BoundingBox information with the correct values
+      subroutine fixbbox(filenm, bbox)
+      use dfport
+      implicit none
+      character filenm*(*), bbox*(*)
+      character line*(300)
+      integer inerr, outerr
+      integer(4) renstat
+
+      open(unit=21,file=filenm,status="old",iostat=inerr)
+      open(unit=22,file="asgl.tmp.out",status="replace",iostat=outerr)
+      if (inerr .eq. 0 .and. outerr .eq. 0) then
+        do while (inerr .eq. 0)
+          read(unit=21,fmt="(A)",iostat=inerr) line
+          if (inerr .eq. 0) then
+            if (trim(line) .eq. "%%BoundingBox: (atend)") then
+              write(22, "(A)") bbox
+            else
+              write(22, "(A)") trim(line)
+            endif
+          endif
+        end do
+        inerr = 0
+        close(21)
+        close(22)
+      endif
+
+c     Only overwrite the original if both files were opened _and_
+c     no write errors were encountered
+      if (inerr .eq. 0 .and. outerr .eq. 0) then
+        renstat = rename("asgl.tmp.out",filenm)
+      endif
+      end
+#endif
 
 c --- undefines ASGL PostScript state
       subroutine undefps
