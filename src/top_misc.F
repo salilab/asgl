@@ -1,7 +1,7 @@
       subroutine topinit 
         implicit none
 #include "top_appl.cmn"
-        integer lenr
+        integer lenr, lr
         character dummy*(lenf), encaps*(5)
 
 c ----- The application initialization code here (it is run only once
@@ -21,7 +21,12 @@ c ----- initialize PS package:
         call initps
 
 c ----- is this going to be an encapsulated PS or PS file
-        call concat(commfile, '.top', dummy)
+        lr = lenr(commfile)
+        if (commfile(max(1,lr-3):lr) .eq. '.top') then
+          dummy = commfile
+        else
+          call concat(commfile, '.top', dummy)
+        endif
         call openf(ioinp, dummy, 'old')
         read(ioinp, '(a,a)') encaps, ext
         close(ioinp)

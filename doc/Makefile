@@ -20,32 +20,34 @@ SHELL=/bin/sh
 
 default: dvi
 
-manual: $(SOURCES)
+collect: collect.f
+	f77 -o collect collect.f
+
+manual: $(SOURCES) collect
 	(cd ../examples; make ps_files)
-	collect ${ROOT}.tex perl.tex
+	./collect ${ROOT}.tex perl.tex
 	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
 
-dvi: $(SOURCES)
-	(cd ../examples; make ps_files)
-	collect ${ROOT}.tex perl.tex
-	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
+dvi: manual
 	latex $(DOCUMENT)
 #	bibtex $(DOCUMENT)
 	makeindex $(DOCUMENT).idx
 	latex $(DOCUMENT)
 	latex $(DOCUMENT)
 
-html:
-	latex2html -split 3 -link 5 -init_file latex2html-init \
-		-t "ASGL 1.2 manual" ${DOCUMENT}.tex
+html: dvi
+	@rm -f examples
+	ln -s ../examples examples
+	latex2html -init latex2html-init ${DOCUMENT}.tex
+	@rm -f examples
 
-gs:
+gs: ps
 	gs ${DOCUMENT}.ps
 
-ps: 
+ps: dvi
 	dvips $(DOCUMENT) -o $(DOCUMENT).ps
 
-print:
+print: ps
 	lpr -h "${DOCUMENT}.ps"
 
 clean:
@@ -53,7 +55,7 @@ clean:
 	rm *.idx *.ind *.ilg *.blg *~ #*# .*~
 
 distclean: clean
-	rm ${DOCUMENT}.tex ${DOCUMENT}.ps
+	rm ${DOCUMENT}.tex ${DOCUMENT}.ps collect
 	rm -r ${DOCUMENT}
 
 cleanfigs:

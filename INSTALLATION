@@ -1,11 +1,11 @@
-                              INSTALLATION
+                               INSTALLATION
 
 
-                                ASGL 1.1
+                                ASGL 1.3.1
 
                            PostScript Plotting
                                                   v              
-                    Copyright(c) 1989-1993 Andrej Sali           
+                    Copyright(c) 1989-2003 Andrej Sali           
                             All Rights Reserved                  
 
 
@@ -14,11 +14,11 @@
 
 Supported computers:
 
-ASGL 1.1 runs on Silicon Graphics Iris 4D, Convex C2, Sun 4, 
-IBM RS/6000, DEC Decstation, DEC Alpha station, and compiles with 
-the public domain f2c fortran-to-c translator. To obtain f2c, use 
-the anonymous ftp service on research.att.com. Its IP address is 
-192.20.225.2; login with the username `netlib'. The f2c translator 
+ASGL 1.3.1 runs on Silicon Graphics Iris 4D, Convex C2, Sun 4, 
+IBM RS/6000, DEC Decstation, DEC Alpha station, Linux boxes, and
+compiles with the public domain f2c fortran-to-c translator. To obtain
+f2c, use the anonymous ftp service on research.att.com. Its IP address
+is 192.20.225.2; login with the username `netlib'. The f2c translator 
 allows ASGL to run on virtually any UNIX computer.
 
 
@@ -27,38 +27,35 @@ allows ASGL to run on virtually any UNIX computer.
 Installation:
 
 
-If you have the ASGL.tar.Z distribution file:
+- If you have asgl-1.3.1-1.src.rpm, and are on a RedHat Linux (or similar)
+  system, the following should generate a binary RPM from the source:
+     rpmbuild --rebuild asgl-1.3.1-1.src.rpm
+  (You may have to run this as root.)
+
+
+- If you have asgl-1.3.1-1.i386.rpm (e.g. built from the .src.rpm, above)
+  then the following should install it (run as root):
+     rpm -ivh asgl-1.3.1-1.i386.rpm
+
+
+- If you have the asgl-1.3.1.tar.gz distribution file:
  
   1) Unpack the distribution file:
 
-     zcat ASGL.tar.Z | tar xvf -
+     zcat asgl-1.3.1.tar.gz | tar xvf -
 
-     The result will be a directory ./asgl
-
-
-  2) If you use tcsh Ver 6 or later than HOSTTYPE environment variable 
-     is defined automatically and you can skip this step. 
-
-     Make sure the HOSTTYPE environment variable is defined by doing 
-     either of:
-
-     a) Define HOSTTYPE in your login script file:
-
-             for sh :  HOSTTYPE=iris4d; export HOSTTYPE
-
-             for csh:  setenv HOSTTYPE iris4d
+     The result will be a directory ./asgl-1.3.1
 
 
-        Source your login script:
-             
-             for sh :  . script_file
+  2) Make sure the ASGL_EXECUTABLE_TYPE environment variable is defined
+     for your architecture (see scripts/Makefile.include1 for a list):
 
-             for csh:  source script_file
+             for sh :  ASGL_EXECUTABLE_TYPE=g77; export ASGL_EXECUTABLE_TYPE
+
+             for csh:  setenv ASGL_EXECUTABLE_TYPE g77
 
 
-     b) Edit the script `src/hosttype' to produce the correct result
-        on your host.
-
+        (These commands could also be put in your login script.)
 
 
   3) Set the environment variable ASGLINSTALL to the directory where you
@@ -69,19 +66,14 @@ If you have the ASGL.tar.Z distribution file:
      mkdir $ASGLINSTALL
 
 
+  4) Compile and install the program:
 
-  4) Compile and install the program, library files, manual, and examples:
-
-     make all
+     make all; make install
 
      If you are not using one of the compilers listed above
      you will probably have to modify the Makefile in the 
-     src\ sub-directory. Hopefully, you won't have to modify 
+     src/ sub-directory. Hopefully, you won't have to modify 
      the fortran code.
-
-     You will also have to compile manually the program collect.f in
-     the doc\ directory before you try to create the document by
-     `make all'. Usually, `f77 collect.f -o collect' will do.
 
 
   5) Change your login script to include the following (for csh or tcsh):
@@ -89,22 +81,36 @@ If you have the ASGL.tar.Z distribution file:
      # Root directory for installed ASGL:
      setenv ASGLINSTALL /usr/local/bin/asgl
 
+     # ASGL executable type
+     setenv ASGL_EXECUTABLE_TYPE g77
+
      # Set ASGL environment variables and update the command path:
      if (-e $ASGLINSTALL/setasgl) source $ASGLINSTALL/setasgl
 
 
-   6) Source your login script. You can now start using ASGL. See
-      the examples in the tests\ directory. You may (but do not have
-      to) delete the ASGL distribution directory. 
+  6) Source your login script. You can now start using ASGL. See
+     the examples in the examples/ directory. You may (but do not
+     have to) delete the ASGL distribution directory. 
 
 
-   7) The `hosttype mechanism' allows transparent ASGL installation 
-      and use of the same installation directory on some networks of 
-      different host types. For example, at Harvard we have an NFS 
-      and Yellow Pages network with only one home directory per user
-      for almost all the machine types listed above. In such a case, 
-      to install ASGL on another host type in the same directory, 
-      you only have to login to that host, clean the distribution 
-      directory by `make distclean' and do `make all' again. Exactly 
-      the same commands (scripts) are used on all hosts to run the 
-      ASGL programs.
+  7) To make and install the documentation, once ASGL is installed,
+     run the following in the ASGL distribution directory:
+      
+     make installman
+
+     In order to create the document, 'collect' must be built from
+     'collect.f' in the doc/ directory. You may have to do this
+     manually if the Makefile is unable to do it automatically
+     (it uses 'f77 collect.f -o collect').
+
+
+  8) The `hosttype mechanism' allows transparent ASGL installation 
+     and use of the same installation directory on some networks of 
+     different host types. For example, at Harvard we have an NFS 
+     and Yellow Pages network with only one home directory per user
+     for almost all the machine types listed above. In such a case, 
+     to install ASGL on another host type in the same directory, 
+     you only have to login to that host, clean the distribution 
+     directory by `make distclean' and do `make all' again. Exactly 
+     the same commands (scripts) are used on all hosts to run the 
+     ASGL programs.

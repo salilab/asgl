@@ -1501,6 +1501,8 @@ c ----- the number of decimal places for the labels:
         if (ndecx .eq. -999) then
           if (dxtckw .ge. 1.0) then
             ndecx = -1
+          else if (dxtckw .lt. 0.0) then
+            ndecx = -20000
           else
             ndecx = -ifix(log10(dxtckw))+1
           end if

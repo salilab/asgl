@@ -1,7 +1,14 @@
+#
+# Before using this makefile, be sure to set
+# - ASGLINSTALL: to the directory where ASGL is to be installed
+# - ASGL_EXECUTABLE_TYPE: to the buildtype of your machine
+#                (e.g. g77, iris4d, next - see scripts/Makefile.include1)
+#
+
 #############################################################################
 # Installation definitions:
 # The directory where the libraires for running the program will be installed
-LIBDIR=$${ASGLLIB}
+LIBDIR=$${ASGLINSTALL}/libasgl
 # LIBDIR=/usr/local/bin/libasgl
 #############################################################################
 
@@ -9,6 +16,7 @@ LIBDIR=$${ASGLLIB}
 #
 # make all        ... create all components (default)
 # make install    ... install all components
+# make man        ... make a PS document for ASGL (requires asgl in the path)
 # make machines   ... make and install everything on all MK machines
 # make clean      ... to rm garbage from the program directories
 # make distclean  ... to rm everything in all directories except the sources
@@ -20,12 +28,8 @@ LIBDIR=$${ASGLLIB}
 # make floppy     ... puts tar file from 'make dist' on /DOS floppy (NeXT only)
 # make implicitsun... to change to the SUN's 'implicit undefined (a-z)'
 # make implicitvms... to change to the VMS's 'implicit none'
-# make man        ... make a PS document for ASGL
 # make installman ... make and install a PS document for ASGL
 # make installtop ... install example top files
-#
-# The correct compiler is selected automatically.
-#
 #
 #
 
@@ -44,7 +48,7 @@ DISTRIBUTION=${SMALLDISTRIBUTION}
 
 default: all
 
-all: opt man
+all: opt
 
 installall: all install installtop installman
 
@@ -96,7 +100,7 @@ install:
 
 installman: man
 	if [ ! -d ${LIBDIR} ] ; then mkdir ${LIBDIR} ; fi
-	(cd doc; cp manuali.ps ${LIBDIR})
+	(cd doc; cp manual.ps ${LIBDIR})
 
 installtop:
 	if [ ! -d ${LIBDIR} ] ; then mkdir ${LIBDIR} ; fi
