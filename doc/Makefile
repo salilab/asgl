@@ -39,13 +39,13 @@ html:
 	latex2html -split 3 -link 5 -init_file latex2html-init \
 		-t "ASGL 1.2 manual" ${DOCUMENT}.tex
 
-gs:
+gs: ps
 	gs ${DOCUMENT}.ps
 
-ps: 
+ps: dvi
 	dvips $(DOCUMENT) -o $(DOCUMENT).ps
 
-print:
+print: ps
 	lpr -h "${DOCUMENT}.ps"
 
 clean:
