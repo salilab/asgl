@@ -60,7 +60,7 @@ install exe/* ${libdir}
 /usr/lib/asgl/top.ini
 
 %changelog
-* Wed Oct 08 2003 Ben Webb <ben@salilab.org>
+* Thu Oct 09 2003 Ben Webb <ben@salilab.org>
 - Rebuild with most recent ASGL version
 
 * Tue Apr 30 2002 Ben Webb <ben@bellatrix.pcl.ox.ac.uk>
