@@ -2862,12 +2862,18 @@ c --- average the values in neighbouring elements of y-columns
 
 
       subroutine stamp
+#ifdef WIN
+        use dfport
+#endif
         implicit none
 #include "top_appl.cmn"
         integer lenr
         real dx, dy
         character mark*255, page*5, fn*255
         character pwd*128, val*(20)
+#ifdef WIN
+        integer(4) istat
+#endif
 
         val = sprm(1,59)
         call upper(val)
@@ -2889,7 +2895,12 @@ c         date, time, and the TOP file name
             call ljust(page)
 
 c --------- get the current directory:
+#ifdef WIN
+            istat = getcwd(pwd)
+            if (istat /= 0) pwd = ''
+#else
             call sys('pwd', pwd)
+#endif
 
 c --------- get the filename:
             fn = commfile
