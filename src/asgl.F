@@ -2880,7 +2880,7 @@ c --- average the values in neighbouring elements of y-columns
 
       subroutine stamp
 #ifdef WIN
-        use dfport
+        use ifport
 #endif
         implicit none
 #include "top_appl.cmn"

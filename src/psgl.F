@@ -1242,7 +1242,7 @@ c         Windows doesn't have sed... or mv...
 #ifdef WIN
 c --- Replaces the BoundingBox information with the correct values
       subroutine fixbbox(filenm, bbox)
-      use dfport
+      use ifport
       implicit none
       character filenm*(*), bbox*(*)
       character line*(300)

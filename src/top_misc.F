@@ -96,7 +96,7 @@ c --- post-processing:
 
       subroutine finish
 #ifdef WIN
-        use dfport
+        use ifport
 #endif
         implicit none
 #include "top_appl.cmn"
