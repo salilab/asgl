@@ -42,7 +42,7 @@ dvi: ${DOCUMENT}i.tex ${PLOTS}
 	latex ${DOCUMENT}i
 
 ps: ${DOCUMENT}i.dvi
-	dvips ${DOCUMENT}i
+	dvips -o ${DOCUMENT}i.ps ${DOCUMENT}i
 
 ${DOCUMENT}i.tex: ${SOURCES}
 	collect ${DOCUMENT}.tex ${DOCUMENT}i.tex
