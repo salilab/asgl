@@ -95,13 +95,20 @@ c --- post-processing:
 
 
       subroutine finish
+#ifdef WIN
+        use dfport
+#endif
         implicit none
 #include "top_appl.cmn"
 
         call stamp
         call closeps(iprm(1,45), psfil, bbox0, bboy0, bbox1, bboy1)
         write(iolog, '(/2a)') 'Starting time: ', datetime
+#ifdef WIN
+        datetime = ctime(time())
+#else
         call sys('date', datetime)
+#endif
         write(iolog, '(2a)') 'Closing time : ', datetime
         close(iolog)
 
