@@ -22,7 +22,7 @@ interpreter of ASGL commands similar to Fortran.
 %setup
 
 %build
-topdir=${RPM_BUILD_DIR}/asgl
+topdir=${RPM_BUILD_DIR}/%{name}-%{version}
 (cd src; ASGL_EXECUTABLE_TYPE=g77 make opt)
 mkdir exe
 cp src/top.ini src/psgl.ini data/egromos.vdw data/egromos.brk \
@@ -32,7 +32,6 @@ BIN_ASGL="${topdir}/exe"
 LIB_ASGL=${BIN_ASGL}
 export BIN_ASGL LIB_ASGL
 PATH="${PATH}:${BIN_ASGL}"
-(cd examples && make)
 (cd doc && make ps)
 
 %install
@@ -41,7 +40,7 @@ libdir=${RPM_BUILD_ROOT}/usr/lib/asgl
 install -d ${bindir}
 install -d ${libdir}
 install rpm/asgl.script ${bindir}/asgl
-rm -f exe/collect exe/asgl
+rm -f exe/asgl
 install exe/* ${libdir}
 
 %clean
