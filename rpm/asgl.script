@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# program name:
+PROGRAM=asgl
+# the extension for the steering file:
+EXT=.top
+# the extension for the log file:
+LOG=.log
+
+# executable:
+EXECUTABLE=${PROGRAM}_g77
+# default steering file name for the $PROGRAM:
+DEFAULT=${PROGRAM}
+
+# get the argument to the program if none supplied:
+if test $# -lt 1
+then
+  DIR=.
+  STEERF=${DEFAULT}
+else
+  DIR=`dirname $1`
+  STEERF=$DIR/`basename $1 ${EXT}`
+  # STEERF=`basename $1 ${EXT}`
+fi
+LOGF=$DIR/`basename $STEERF ${EXT}`${LOG}
+
+BIN_ASGL=/usr/bin
+LIB_ASGL=/usr/lib/asgl
+export BIN_ASGL LIB_ASGL
+
+# for IBM RS6000, to make ERR keyword in I/O work:
+cnverr=yes ; export cnverr
+
+# run the program:
+# BIN_value/${EXECUTABLE} $STEERF > $LOGF
+${LIB_ASGL}/${EXECUTABLE} $STEERF > $LOGF
+# nice -20 ${EXECUTABLE} $STEERF

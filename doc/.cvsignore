@@ -1,0 +1,11 @@
+manual.tex
+manual
+*.log
+*.aux
+*.dvi
+*.idx
+*.ilg
+*.ind
+*.ps
+*.toc
+collect
