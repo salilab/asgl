@@ -3,7 +3,7 @@
 
        real w2lin
 
-       character version*(11), version_date*(11), author*(11)
+       character version*(10), version_date*(11), author*(11)
 
 c ---- GENERAL:
 c ---- input stream:
