@@ -39,7 +39,7 @@ If you have the asgl-1.3.1.tar.gz distribution file:
   2) Make sure the ASGL_EXECUTABLE_TYPE environment variable is defined
      for your architecture (see scripts/Makefile.include1 for a list):
 
-             for sh :  ASGL_EXECUTABLE_TYPE=g77; export HOSTTYPE
+             for sh :  ASGL_EXECUTABLE_TYPE=g77; export ASGL_EXECUTABLE_TYPE
 
              for csh:  setenv ASGL_EXECUTABLE_TYPE g77
 
