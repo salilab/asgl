@@ -211,6 +211,7 @@ CU    USES betai
         sxy=sxy+xt*yt
 12    continue
       r=sxy/sqrt(sxx*syy)
+      if (r .lt. -1.0) r = -1.0
       z=0.5*log(((1.+r)+TINY)/((1.-r)+TINY))
       df=n-2
       t=r*sqrt(df/(((1.-r)+TINY)*((1.+r)+TINY)))
