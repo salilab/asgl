@@ -85,7 +85,7 @@ If you have the asgl-1.3.1.tar.gz distribution file:
   7) To make and install the documentation, once ASGL is installed,
      run the following in the ASGL distribution directory:
       
-     make man; make installman
+     make installman
 
      In order to create the document, 'collect' must be built from
      'collect.f' in the doc/ directory. You may have to do this
