@@ -24,14 +24,14 @@ else
 fi
 LOGF=$DIR/`basename $STEERF ${EXT}`${LOG}
 
-BIN_ASGL=/usr/bin/
-LIB_ASGL=/usr/lib/asgl/
-export BIN_ASGL LIB_ASGL ASGL
+BIN_ASGL=/usr/bin
+LIB_ASGL=/usr/lib/asgl
+export BIN_ASGL LIB_ASGL
 
 # for IBM RS6000, to make ERR keyword in I/O work:
 cnverr=yes ; export cnverr
 
 # run the program:
 # BIN_value/${EXECUTABLE} $STEERF > $LOGF
-${EXECUTABLE} $STEERF > $LOGF
+${LIB_ASGL}/${EXECUTABLE} $STEERF > $LOGF
 # nice -20 ${EXECUTABLE} $STEERF
