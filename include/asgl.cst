@@ -1,0 +1,37 @@
+       integer lenf,ioin,maxtck,maxxarr,maxyarr,maxclm,maxmrk
+       integer lbllen,maxpnt,ioou,colwdt,maxsclm
+
+       real w2lin
+
+       character version*(8), version_date*(11), author*(11)
+
+c ---- GENERAL:
+c ---- input stream:
+       parameter(ioin    =    16)  
+       parameter(ioou    =    17)  
+c ---- maximal number of tick labels:
+       parameter(maxtck  =   200)  
+c ---- dimensions of the plotting array:
+       parameter (maxxarr =   500, maxyarr=500)
+c ---- maximal number of real's columns in a data file:
+       parameter(maxclm  =     40)
+c       parameter(maxclm  =    60)
+c ---- maximal number of string columns in a data file:
+       parameter(maxsclm =    3)
+c ---- maximal number of markers for the plot:
+       parameter (maxmrk =    30)
+c ---- maximal length of a filename:
+       parameter (lenf   =    80)
+c ---- maximal length of plot labels:
+       parameter (lbllen =   100)
+c ---- maximal number of points in a curve:
+       parameter (maxpnt = 600000)
+c ---- maximal number of characters in a string column:
+       parameter (colwdt = 30)
+
+c ---- half-thickness of the A4 bounding line in the Base PS coordinates
+       parameter (w2lin  =  0.5)
+
+c ---- ASGL version
+       parameter (version = 'ASGL 1.3', version_date = '20 Oct 1999',
+     -            author = 'Andrej Sali')

@@ -1,0 +1,22 @@
+#include "psgl.cst"
+
+c --- number of defined linetypes, linefonts, symbols, 
+c     current linetype, font, symbol
+      integer nlintp, nfont, nsybtp, lintyc, ifontc, isybtc, nsize
+      integer ifsub(maxfnt),ifsup(maxfnt),ifgrk(maxfnt), ndefs, ipage
+      character ftdef(maxfnt)*(lencmd), ftcmnd(maxfnt)*(lencmd), 
+     -          ltdef(maxltp)*(lencmd), ltcmnd(maxltp)*(lencmd),
+     -          psfil*(lennam),sizstr(maxltp+maxfnt)*(lencmd),
+     -          sbdef(maxsmb)*(lencmd), sbcmnd(maxsmb)*(lencmd),
+     -          defs(maxdef)*(lendef),inifl*(lennam),
+     -          ext*(20)
+      real fnthgt(maxfnt),linwdt(maxltp)
+
+      common /inta/ nlintp, nfont, lintyc, ifontc, nsybtp, isybtc, 
+     -              nsize,ifsub,ifsup,ifgrk,ndefs, ipage
+      common /reala/ fnthgt,linwdt
+      common /chara/ ftdef, ftcmnd, ltdef, ltcmnd,inifl,
+     -               psfil,sbdef,sbcmnd,sizstr,defs,ext
+
+      logical epsf
+      common /loga/ epsf

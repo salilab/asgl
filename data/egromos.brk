@@ -1,0 +1,209 @@
+* Correspondence between GROMOS and Brookhaven atom types.
+* CODE BRK GROMOS
+*
+RESI ALA 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI CYS 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   SG    S
+ATOM    C    C
+ATOM    O    O
+*
+RESI ASP 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG    C
+ATOM  OD1   OM
+ATOM  OD2   OM
+ATOM    C    C
+ATOM    O    O
+*
+RESI GLU 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   CD    C
+ATOM  OE1   OM
+ATOM  OE2   OM
+ATOM    C    C
+ATOM    O    O
+*
+RESI PHE 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG   CB
+ATOM  CD1 CR61
+ATOM  CD2 CR61
+ATOM  CE1 CR61
+ATOM  CE2 CR61
+ATOM   CZ CR61
+ATOM    C    C
+ATOM    O    O
+*
+RESI GLY 
+ATOM    N    N
+ATOM   CA  CH2
+ATOM    C    C
+ATOM    O    O
+*
+RESI HIS 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG   CB
+ATOM  ND1 NR5*
+ATOM  CD2 CR51
+ATOM  CE1 CR51
+ATOM  NE2  NR5
+ATOM    C    C
+ATOM    O    O
+*
+RESI ILE 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH1
+ATOM  CG1  CH2
+ATOM  CG2  CH3
+ATOM  CD1  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI LYS 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   CD  CH2
+ATOM   CE  CH2
+ATOM   NZ   NT
+ATOM    C    C
+ATOM    O    O
+*
+RESI LEU 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH1
+ATOM  CD1  CH3
+ATOM  CD2  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI MET 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   SD    S
+ATOM   CE  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI ASN 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG    C
+ATOM  OD1    O
+ATOM  ND2   NT
+ATOM    C    C
+ATOM    O    O
+*
+RESI PRO 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   CD  CH2
+ATOM    C    C
+ATOM    O    O
+*
+RESI GLN 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   CD    C
+ATOM  OE1    O
+ATOM  NE2   NT
+ATOM    C    C
+ATOM    O    O
+*
+RESI ARG 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG  CH2
+ATOM   CD  CH2
+ATOM   NE   NE
+ATOM   CZ    C
+ATOM  NH1   NZ
+ATOM  NH2   NZ
+ATOM    C    C
+ATOM    O    O
+*
+RESI SER 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   OG   OA
+ATOM    C    C
+ATOM    O    O
+*
+RESI THR 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH1
+ATOM  OG1   OA
+ATOM  CG2  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI VAL 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH1
+ATOM  CG1  CH3
+ATOM  CG2  CH3
+ATOM    C    C
+ATOM    O    O
+*
+RESI TRP 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG   CB
+ATOM  CD1 CR51
+ATOM  CD2   CB
+ATOM  NE1 NR5*
+ATOM  CE2   CB
+ATOM  CE3 CR61
+ATOM  CZ2 CR61
+ATOM  CZ3 CR61
+ATOM  CH2 CR61
+ATOM    C    C
+ATOM    O    O
+*
+RESI TYR 
+ATOM    N    N
+ATOM   CA  CH1
+ATOM   CB  CH2
+ATOM   CG   CB
+ATOM  CD1 CR61
+ATOM  CD2 CR61
+ATOM  CE1 CR61
+ATOM  CE2 CR61
+ATOM   CZ   CB
+ATOM   OH   OA
+ATOM    C    C
+ATOM    O    O

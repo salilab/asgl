@@ -1,0 +1,2 @@
+      real x0p, x0p, y1p, y1p
+      common /rps/ x0p, x0p, y1p, y1p

@@ -1,0 +1,1 @@
+f90 -g -t1 -B19 -Df90 -DABSOFT -I../include ../*/*.F -lU77 -lV77 -o asgl_i386-absoft

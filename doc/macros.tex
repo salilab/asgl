@@ -1,0 +1,217 @@
+% Macros:
+% -------
+
+\def\tabtab{\rule{1cm}{0cm}}
+\def\bull{$\bullet$}
+\def\P{\\[0.2cm]}
+
+%Underline below Figure or Table
+\def\underfigtab{\vspace{-0.7cm} 
+                 \begin{center} \rule{7cm}{0.2mm} \end{center}}
+
+%A title in its own line, smaller than subsubsection
+\newcommand{\subsubsubsection}[1]{
+\bigskip
+
+{\em \noindent #1}
+
+\smallskip
+}
+
+%Broken line for indicating a new theme without a title
+\def\brokenline{\
+  \hspace{1cm}
+   \begin{center} 
+   \rule{9mm}{0.2mm} \rule{6mm}{0.0mm} \rule{9mm}{0.2mm} 
+   \rule{6mm}{0.0mm} \rule{9mm}{0.2mm} \rule{6mm}{0.0mm} \rule{9mm}{0.2mm} 
+   \end{center}
+  \hspace{1cm}
+}
+
+% Underline:
+\newcommand{\un}[1]{\underline{#1}}
+
+%TLS tensors:
+\newcommand{\TLS}{$\bf T$, $\bf L$ and $\bf S$}
+
+% Enlarge and shrink the page for one line:
+\newcommand{\longpage}{\enlargethispage{\baselineskip}}
+\newcommand{\shortpage}{\enlargethispage{-\baselineskip}}
+
+% Ensemble average
+\newcommand{\ens}[1]{\langle#1\rangle}
+
+% Figure~placeholders (won't work for tables!!!; the placement will be screwed):
+\def\figplace{\begin{center} \fbox{\hspace{8cm} \rule{0cm}{1cm}} \end{center} }
+\newcommand{\figholder}[1]{\rule{0cm}{#1}}
+\def\pageinsert{\begin{figure}[htbp] \rule{0.cm}{30cm} \end{figure}}
+\newcommand{\onepage}{\pageinsert}
+\newcommand{\twopages}{\onepage\onepage}
+\newcommand{\threepages}{\onepage\onepage\onepage}
+
+% \newcommand{\onepage}{\newpage \mbox{\ } \newpage}
+% \newcommand{\twopages}{\newpage \mbox{\ } \newpage \mbox{\ } \newpage}
+% \newcommand{\threepages}{\newpage \mbox{\ } \newpage \mbox{\ } \newpage 
+%                          \mbox{\ } \newpage}
+
+% Calpha, Cbeta, Cgamma:
+\newcommand{\Calpha}{$\mbox{C}_\alpha$}
+\newcommand{\Cbeta}{$\mbox{C}_\beta$}
+\newcommand{\Cgamma}{$\mbox{C}_\gamma$}
+\newcommand{\Cgammaone}{$\mbox{C}_{\gamma 1}$}
+\newcommand{\Cgammatwo}{$\mbox{C}_{\gamma 2}$}
+\newcommand{\Cdelta}{$\mbox{C}_\delta$}
+\newcommand{\Cdeltaone}{$\mbox{C}_{\delta 1}$}
+\newcommand{\Cdeltatwo}{$\mbox{C}_{\delta 2}$}
+\newcommand{\Cepsilonone}{$\mbox{C}_{\epsilon 1}$}
+\newcommand{\Cepsilontwo}{$\mbox{C}_{\epsilon 2}$}
+\newcommand{\Czeta}{$\mbox{C}_\zeta$}
+\newcommand{\Obeta}{$\mbox{O}_\beta$}
+\newcommand{\Ogamma}{$\mbox{O}_\gamma$}
+\newcommand{\Ogammaone}{$\mbox{O}_{\gamma 1}$}
+
+% Right margin notes:
+\newcommand{\margnote}[1] {\marginpar{\small $\leftarrow$#1}}
+
+% Subscript, superscript
+% the inclusion of \scriptsize command crashes LaTeX when the macros used
+% in caption and some other environments; this can be corrected by the
+% \protect command; The argument of the \subs or \sups command is typeset 
+% in text-mode (and can only be used in text-mode (add another \mbox around
+% the command to use it in both text and math modes, but that will 
+% crash even more). Scriptsize command is relative to the \normalsize
+% only. So, if you want to get proper size subscripts with other
+% size basic text, include the size for scripts into the argument.
+\def\subs#1{${}_{\mbox{\protect\scriptsize #1}}$}
+\def\sups#1{${}^{\mbox{\protect\scriptsize #1}}$}
+
+% Degrees Celsius, degrees, Subsite, Subsite', Position, Position'
+% In these commands, the argument is processed in math-mode and the
+% size of super/sub-scripts will be fine whatever the size of the
+% basic font; note the use of the mathmode only style \scriptstyle here,
+% as opposed the \scriptsize used in text-mode; explicit \scriptstyle
+% in math-mode prevents the error message 'scriptscriptfont undefined'.
+\def\oC{\mbox{${}^{\scriptstyle\circ}$C}}
+\def\degr{\mbox{${}^{\scriptstyle\circ}$}}
+\newcommand{\Sub}[1]{${\rm S}_{#1}$}
+\newcommand{\Subp}[1]{${\rm S}'_{\rm #1}$}
+\newcommand{\Pos}[1]{${\rm P}_{#1}$}
+\newcommand{\Posp}[1]{${\rm P}'_{\rm #1}$}
+
+% Programs:
+\newcommand{\GROMOS} {\mbox{\sc Gromos}}
+\newcommand{\COMPARER} {\mbox{\sc Comparer}}
+\newcommand{\ALIGNER} {\mbox{\sc Aligner}}
+\newcommand{\MOLSCRIPT} {\mbox{\sc Molscript}}
+\newcommand{\CLUSTALV} {\mbox{\sc Clustalv}}
+\newcommand{\CHARMM} {\mbox{\sc Charmm}}
+\newcommand{\QUANTA} {\mbox{\sc Quanta}}
+\newcommand{\RASMOL} {\mbox{\sc Rasmol}}
+\newcommand{\INSIGHT} {\mbox{\sc InsightII}}
+\newcommand{\GRASP} {\mbox{\sc Grasp}}
+\newcommand{\MATCHMAKER} {\mbox{\sc MatchMaker}}
+\newcommand{\PROFIT} {\mbox{\sc Profit}}
+\newcommand{\MODELLER} {\mbox{\sc Modeller}}
+\newcommand{\MOULDER} {\mbox{\sc Moulder}}
+\newcommand{\MOD} {\mbox{\sc Mod}}
+\newcommand{\RESTRAIN} {\mbox{\sc Restrain}}
+\newcommand{\MNYFIT} {\mbox{\sc Mnyfit}}
+\newcommand{\FRODO} {\mbox{\sc Frodo}}
+\newcommand{\ARIADNE} {\mbox{\sc Ariadne}}
+\newcommand{\DISMAN} {\mbox{\sc Disman}}
+\newcommand{\COMPOSER} {\mbox{\sc Composer}}
+\newcommand{\LOPAL} {\mbox{\sc Lopal}}
+\newcommand{\KITSCH} {\mbox{\sc Kitsch}}
+\newcommand{\PHYLIP} {\mbox{\sc Phylip}}
+\newcommand{\PROCHECK} {\mbox{\sc Procheck}}
+\newcommand{\DRAWTREE} {\mbox{\sc Drawtree}}
+\newcommand{\DRAWGRAM} {\mbox{\sc Drawgram}}
+\newcommand{\ALIGN} {\mbox{\sc Align}}
+\newcommand{\JOY} {\mbox{\sc Joy}}
+\newcommand{\TOP} {\mbox{\sc Top}}
+\newcommand{\MDT} {\mbox{\sc Mdt}}
+\newcommand{\XS} {\mbox{\sc Xs}}
+\newcommand{\DIH} {\mbox{\sc Dih}}
+\newcommand{\PLOT} {\mbox{\sc Plot}}
+\newcommand{\LSQ} {\mbox{\sc Lsq}}
+\newcommand{\CORR} {\mbox{\sc Corr}}
+\newcommand{\PSA} {\mbox{\sc Psa}}
+\newcommand{\DISULF} {\mbox{\sc Disulf}}
+\newcommand{\GETCSR} {\mbox{\sc Getcsr}}
+\newcommand{\SSTRUC} {\mbox{\sc Sstruc}}
+\newcommand{\DSSP} {\mbox{\sc Dssp}}
+\newcommand{\THREADER} {\mbox{\sc Threader}}
+\newcommand{\ACC} {\mbox{\sc Acc}}
+\newcommand{\HBD} {\mbox{\sc Hbd}}
+\newcommand{\NGH} {\mbox{\sc Ngh}}
+\newcommand{\CNT} {\mbox{\sc Cnt}}
+\newcommand{\THREED} {\mbox{\sc 3d}}
+\newcommand{\ASGL} {\mbox{\sc Asgl}}
+\newcommand{\UHBD} {\mbox{\sc Uhbd}}
+\newcommand{\ELLIPSOID} {\mbox{\sc Ellipsoid}}
+\newcommand{\RAMA} {\mbox{\sc Rama}}
+\newcommand{\DDM} {\mbox{\sc Ddm}}
+\newcommand{\TLSFIT} {\mbox{\sc Tlsfit}}
+\newcommand{\PRINCONE} {\mbox{\sc Princ1}}
+\newcommand{\PRINCTWO} {\mbox{\sc Princ2}}
+
+% Computers, OS:
+\newcommand{\PROLOG} {\mbox{\sc Prolog}}
+\newcommand{\FORTRAN} {\mbox{\sc Fortran}}
+\newcommand{\VAX} {\mbox{\sc Vax}}
+\newcommand{\UNIX} {\mbox{\sc Unix}}
+\newcommand{\PostScript} {\mbox{\sc PostScript}}
+\newcommand{\XENIX} {\mbox{\sc Xenix}}
+
+% AA, AA^2, \pH, pKa, kcat, Km, Ki, Biso, oC, tab
+\newcommand{\tab } {\rule{1cm}{0cm}}
+\newcommand{\RMS}{\mbox{\sc rms}}
+\newcommand{\DRMS}{\mbox{\sc drms}}
+\newcommand{\Ang}{\mbox{\AA}}
+\newcommand{\kB}{\mbox{$k_B$}}
+\newcommand{\Angsq}{\mbox{\Ang\sups{2}}}
+\newcommand{\pH}{{\it p}H}
+\newcommand{\pKa}{{\it p}K\subs{a}}
+\newcommand{\dGw}{$\Delta G_{\mbox{H\subs{2}O}}$}
+\newcommand{\kcat } {\mbox{\it k\subs{cat}}}
+\newcommand{\Km } {\mbox{\it K\subs{M}}}
+\newcommand{\Ki } {\mbox{\it K\subs{i}}}
+\newcommand{\Biso } {\mbox{\it B\subs{iso}}}
+% \newcommand{\kcat } {$k_{\mbox{cat}}$}
+% \newcommand{\Km } {$K_{\mbox{\protect\scriptsize M}}$}
+% \newcommand{\Ki } {$K_{\mbox{\protect\scriptsize i}}$}
+% \newcommand{\Biso } {$B_{\mbox{\protect\scriptsize iso}}$}
+
+% Latin words:
+\newcommand{\Denovo}{\mbox{\em De novo}}
+\newcommand{\denovo}{\mbox{\em de novo}}
+\newcommand{\insitu}{\mbox{\em in situ}}
+\newcommand{\Insitu}{\mbox{\em In situ}}
+\newcommand{\Abinitio}{\mbox{\em Ab initio}}
+\newcommand{\abinitio}{\mbox{\em ab initio}}
+\newcommand{\versus}{\mbox{\em versus}}
+\newcommand{\etal}{\mbox{\em et~al.}}
+\newcommand{\etc } {\mbox{\em etc}}
+\newcommand{\cf } {\mbox{\em cf}}
+\newcommand{\ie } {\mbox{\em i.e.}}
+\newcommand{\eg } {\mbox{\em e.g.}}
+\newcommand{\via } {\mbox{\em via}}
+\newcommand{\adhoc } {\mbox{\em ad~hoc}}
+\newcommand{\invivo } {\mbox{\em in~vivo}}
+\newcommand{\invacuo} {\mbox{\em in~vacuo}}
+\newcommand{\invitro } {\mbox{\em in~vitro}}
+\newcommand{\viceversa } {\mbox{\em vice~versa}}
+\newcommand{\aposteriori } {\mbox{\em a~posteriori}}
+\newcommand{\apriori } {\mbox{\em a~priori}}
+\newcommand{\cis } {\mbox{\em cis}}
+\newcommand{\trans } {\mbox{\em trans}}
+\newcommand{\dd}{ \; \mbox{d}}
+
+%Greek characters
+% \newcommand{\D}{$\Delta$}
+\newcommand{\al}{$\alpha$}
+\newcommand{\be}{$\beta$}
+\newcommand{\ga}{$\gamma$}
+\newcommand{\de}{$\delta$}
+\newcommand{\ep}{$\epsilon$}
+\newcommand{\micro}{$\mu$}

@@ -1,0 +1,92 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    TOP.CST constants define the TOP data structures.
+cf
+cf ----------------------------------------------------------------------------
+
+#include "io.cst"
+
+c --- I/O channels:
+      integer iomin, iomax, nio1, nio2
+
+      parameter (
+c --- range of streams for inputing the INCLUDE file hierarchy:
+     &          iomin      =    90,
+     &          iomax      =    99,
+c --- range of streams for user I/O
+     &          nio1       =    21,
+     &          nio2       =    89
+     &          )
+
+
+
+      integer maxact,lenfil,lenlbl,maxlbl,lensprm,lenkey,lenact,
+     &        mtypcom,maxlev,maxrout,maxloop,mrprm,miprm,msprm,mlprm,
+     &        mvrprm,mviprm,mvsprm,mvlprm,iprime
+
+      real tsmall, ttiny, teps
+
+      character commch*1, eofline*1, dirsep*1, blankc*1, varelm*1,
+     &          varvar*1
+
+
+
+c --- TOP program characters and strings:
+
+      parameter (
+c --- command line COMMENT character (top.ini and .top files)
+     &          commch     =    '#',
+c --- command line CONTINUATION character (top.ini and .top files)
+     &          eofline    =    ';',
+c --- directory separator in filenames (UNIX):
+     &          dirsep     =    '/',
+c --- ASCII code for the prime (') = a string quote:
+     &          iprime     =    39,
+c --- a blank character:
+     &          blankc     =    ' ',
+c --- a potential separator between the variable to be assigned and its values:
+     &          varelm     =    '=',
+c --- a separator between variable assignments:
+     &          varvar     =    ',')
+
+
+c --- for floating point precision:
+      parameter (tsmall = 1.0e-5, ttiny=1.0e-8, teps=1.0e-20)
+
+
+c --- various TOP program dimensions
+
+      parameter (
+c --- maximal number of actions in a whole TOP program (with routines):
+     &          maxact     = 12000,
+c --- Maximal length of a filename:
+     &          lenfil     =   256,
+c --- Maximal length of a label (in a GO_TO/LABEL pair):
+     &          lenlbl     =    30,
+c --- Maximal number of labels (in GO_TO/LABEL pairs):
+     &          maxlbl     =    30,
+c --- Maximal length of a string parameter:
+     &          lensprm    =   150,
+c --- Maximal length of an integer, real, logical and string key:
+     &          lenkey     =    30,
+c --- length of action command line:
+     &          lenact     =   512,
+c --- maximal number of types of commands/actions:
+     &          mtypcom    =   110,
+c --- maximal number of routine nesting:
+     &          maxlev     =    20,
+c --- maximal number of routines that can be called with CALL:
+     &          maxrout    =    50,
+c --- maximal number of do loops and also their nesting:
+     &          maxloop    =    30)
+      parameter (
+c --- maximal numbers of real, integer, string and logical keywords:
+     &          mrprm      =   120,
+     &          miprm      =   120,
+     &          msprm      =   120,
+     &          mlprm      =   120,
+c --- maximal number of dimensions for real,integer,string & logical keywords:
+     &          mvrprm     =    40,
+     &          mviprm     =    30,
+     &          mvsprm     =    50,
+     &          mvlprm     =    30)

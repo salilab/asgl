@@ -1,0 +1,84 @@
+\documentclass[11pt]{book}
+
+% \usepackage{modman}
+\usepackage{html}
+\usepackage{makeidx}
+% \usepackage{fullpage}
+\usepackage{jmb}
+\usepackage{epsf}
+\usepackage{cite}
+\usepackage{rotating}
+\usepackage{afterpage}
+% \usepackage{overcite}
+\usepackage{supertabular}
+
+\makeindex
+
+\input{macros}       % macro definitions
+\input{defs}      
+\input{title}      
+
+\begin{document}
+
+\frontmatter
+
+\begin{titlepage}
+  \maketitle
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\mainmatter
+
+\part{User's Guide}
+
+\chapter{Introduction}
+
+    \input{preface.tex}
+
+    \newpage
+
+\section{ASGL installation}
+
+    \begin{verbatim}
+    \input{../INSTALLATION}
+    \end{verbatim}
+
+\newpage
+
+\chapter{Using \ASGL} \label{CHAPTERASGL}
+
+    \input{asgl_incl}
+
+\newpage
+
+\chapter{\ASGL\ examples} \label{CHAPTEREXAMPLES}
+ 
+    {\small
+    \include{../examples/examples_incl.tex}
+    }
+
+\newpage
+
+\chapter{\TOP\ language} \label{CHAPTERTOP}
+    \input{top_incl.tex}
+
+\newpage
+
+\chapter{{\tt top.ini} file}
+
+    \begin{verbatim}
+    \input{../src/top.ini}
+    \end{verbatim}
+
+\backmatter
+
+% \nocite{TitlesOn}
+% \bibliographystyle{jmb}
+% \bibliography{AS}
+
+\printindex
+
+\end{document}

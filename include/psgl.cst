@@ -1,0 +1,118 @@
+      integer lnjond, lncapd, lennum
+      integer iops, maxsmb, maxfnt, maxltp, maxdef, lendef, nposit
+      integer lencod, lencmd, lennam, lftjus, cenjus, rgtjus, botaln
+      integer cenaln, topaln, maxpoly, ndec, ioscr
+
+      real tckwdt, spclin, hngovr, dtick, ftick, dysub, dysup, horizo
+      real vertlf, vertrg, dyt0, dyb0, dxl0, dxr0, dlegend
+      real derror,bbx0,bby0,bbx1,bby1
+
+      character acontin*1,grkscr*1,subscr*1,supscr*1
+
+      parameter (bbx0=0,bby0=0,bbx1=612,bby1=792)
+
+      parameter (
+c ------------------------ ASGL line continuation character
+     -  acontin = ';',
+c ------------------------ fraction of the axis span with no curve
+     -  hngovr = 0.10,
+c ------------------------ tick's length
+     -  dtick  = 0.015,
+c ------------------------ fractional little tick's length
+     -  ftick  = 0.65,
+c ------------------------ style for joining lines
+     -  lnjond = 1,
+c ------------------------ style for ending lines
+     -  lncapd = 0,
+c ------------------------ start and end of greek
+     -  grkscr = '@',
+c ------------------------ start and end of subscript
+     -  subscr = '_',
+c ------------------------ start and end of superscript
+     -  supscr = '^'
+     -          )
+
+      parameter (
+c ------------------------ the length of the legend line/symbol:
+     -  dlegend = 0.1,
+c ------------------------ half-width of a horizontal tick in error bars
+     -  derror  = 0.01
+     -          )
+
+      parameter (
+c ------------------------ maximal length of a real number for PS coordinates
+     -  lennum =  20,
+c ------------------------ maximal number of post-decimal digits for PS coords
+     -  ndec   =   4,
+c ------------------------ output PS file channel
+     -  iops   =  12,
+c ------------------------ output file for BoundingBox script
+     -  ioscr  =  13,
+c ------------------------ maximal number of symbol types
+     -  maxsmb =  20,
+c ------------------------ maximal number of font types
+     -  maxfnt =  40,
+c ------------------------ maximal number of line types
+     -  maxltp =  20,
+c ------------------------ maximal number of segments in poly-line
+     -  maxpoly= 10000
+     -          )
+
+    
+      parameter (
+c ------------------------ maximal number of general definition lines
+     -  maxdef =1000,
+c ------------------------ length of the general definition line
+     -  lendef =  80,
+c ------------------------ number of positions for labels around graph
+     -  nposit =  12,
+c ------------------------ length of the code field in the .ini file
+     -  lencod =  11,
+c ------------------------ length of the command field in the .ini file
+     -  lencmd = 244,
+c ------------------------ length of the file names
+     -  lennam =  60,
+c ------------------------ fractional change in y-position for subscripts
+     -  dysub  =-0.4,
+c ------------------------ fractional change in y-position for superscripts
+     -  dysup  = 0.5
+     -          )
+
+
+      parameter (
+c ------------------------ left justified text
+     -  lftjus = 1,
+c ------------------------ centered text
+     -  cenjus = 2,
+c ------------------------ right justified text
+     -  rgtjus = 3,
+c ------------------------ bottom aligned text
+     -  botaln = 1,
+c ------------------------ center aligned text
+     -  cenaln = 2,
+c ------------------------ top aligned text
+     -  topaln = 3,
+c ------------------------ horizontal text
+     -  horizo = 0.0,
+c ------------------------ vertical text on the left 
+     -  vertlf = 90.0,
+c ------------------------ vertical text on the right 
+     -  vertrg =-90.0
+     -          )
+    
+      parameter (
+c ------------------------ space between top of plot and first label
+     -  dyt0   = 0.03,
+c ------------------------ default space between bottom of plot and first label
+     -  dyb0   = 0.03,
+c ------------------------ space between left of plot and first label
+     -  dxl0   = 0.03,
+c ------------------------ space between right of plot and first label
+     -  dxr0   = 0.05
+     -          )
+
+      parameter (
+c ------------------------ width of the column for y-tick labels
+     -  tckwdt = 0.10,   
+c ------------------------ line height in units of character height
+     -  spclin = 1.3)

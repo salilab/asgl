@@ -1,0 +1,1295 @@
+\section{\ASGL\ commands}
+
+\Command      {\#EPSF}{produce encapsulated PostScript}
+\Commandline  {\#EPSF [ .ps \OR\ .eps ]}
+\Description  {
+If the very first line in the steering file starts with the above in the
+first column, \ASGL\ will
+create a PS file that conforms to the Encapsulated PostScript standard. 
+In this case, only one page graphics per file can be produced. Optionally, 
+you can also specify the extension for the PS filename. It is usually 
+{\tt .eps} for the Encapsulated PostScript, but you may want to keep it 
+as {\tt .ps} if you depend on it in some other programs. The default is 
+{\tt .ps}. You can only specify the extension when \C{\#EPSF} is the first 
+line. If you produce an EPSF file you can include it properly in the 
+\LaTeX\ document using: \\
+% \begin{center}
+% {\tt 
+% \\begin\{center\} \\
+%   \\leavevmode \\
+%   \\def\epsfsize\#1\#2\{scaling\_factor \#1\} \\
+%   \\epsffile\{file\_name.ps\} \\
+% \\end\{center\}
+% \end{center}
+% }
+}
+
+
+\Command      {SET STAMP\_TEXT}{stamp the page}
+\Commandline  {SET STAMP\_TEXT = \String{1} \hspace{1cm}
+                                 [ \V{DEFAULT} \OR\ \V{NONE} 
+                                   \V{your text}], STAMP\_SIZE = \Real{1} }
+\Description  {If set to \V{DEFAULT} the page will be stamped at the bottom 
+right
+corner with the \ASGL\ version, date, time, filename, and page number.
+The default value is \V{DEFAULT} for PostScript and \V{NONE} for Encapsulated
+PostScript. The command is not allowed in Encapsulated PostScript.
+}
+
+
+\Command      {READ\_TABLE}{read the Table array of data}
+
+\Options{
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\ 
+\OptLine{ADD\_DATA}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{POINT\_MODULUS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ROW\_RANGE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description{
+This command will read a text file containing a rectangular array
+of values. The columns represent vectors that can be later
+used for plotting as X and Y coordinates. This array will be referred
+to as the Table array. If \K{ADD\_DATA[1]} = \V{ON} new columns will be appended to
+the right of the existing columns. The new number of data points is the
+number of rows in the new file. If \K{ADD\_DATA[2]} = \V{ON} new rows will be 
+appended to the end of the existing rows. The new number of columns is the
+number of columns in the new file. The command will only read the points
+whose index satisfies $\mbox{mod}(i-1, \K{POINT\_MODULUS}) = 0$ and is
+within boundaries of \K{ROW\_RANGE}. \K{ROW\_RANGE} can be 0 or -999 to
+indicate that it is to be ignored. The 
+total number of points read is approximately for a factor of
+\K{POINT\_MODULUS} smaller than the total number of points between selected
+rows in a file. This option is useful for plotting very large files.
+The line can start with `\#', in which case it will be ignored as far
+as the points are concerned. There can be string columns in the file
+that can contain data for point labelling by \C{PLOT2D}.
+Number/string column identification is achieved in one of the two 
+ways: If there is a comment line `\#COLUMNS' before any non-comment line, 
+then that line is used for identification. 
+The comment line must contain a series of `N' for number columns 
+and `S' for string columns, in the correct order. 
+Otherwise, the items from the 
+first non-comment line are interpreted as numbers or strings. 
+A string is everything that cannot be interpreted as a number. If you
+want blanks in strings, quote them in single quotes '. The last line
+starting with `\#CAPTION\_TEXT' is assigned to \K{CAPTION\_TEXT}, which is
+useful for automated production of titles. Similarly for
+`\#PRINT\_TEXT' and `\#DESCRIPTION'.
+}
+
+
+\Command      {WRITE\_TABLE}{write the Table array of data}
+
+\Options{
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+It will write a text file containing an array of values, where columns
+are selected from the Table array using the \K{NO\_XY\_SCOLUMNS} and
+\K{XY\_SCOLUMNS} variables.  See \C{WORLD} for explanation of
+these variables.}
+
+
+
+\Command      {READ\_DPLOT}{read the Density array of data}
+
+\Options{
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_FORMAT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_SYMMETRIZE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_FILL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_ORIENTATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{DPLOT\_ORIENTATION}  = \String{1}  & XY \OR\ YX\\
+}
+\Description{It will read a text file containing the Density
+array of data.  Two formats are possible. In free format
+(\K{DPLOT\_FORMAT}=\V{OFF}), a text file must contain two integer dimensions
+(NX,NY) followed by data NX * NY values. The first line can contain NX and
+NY, at most. The following lines can contain a single row of an array,
+at most. The order of reading the elements is:
+
+{\tt read(ioinp,*)NX,NY \\
+   do  i = 1, NX \\
+     read(ioinp,*) (array(i,j),j=1,NY) \\
+   end do
+}
+
+This array can then be plotted using \C{DPLOT} command. The 
+array(1,1) element will appear at the coordinate system origin, in the
+lower left corner of the coordinate system. When
+formatted input is used (\K{DPLOT\_FORMAT}=\V{ON}), a text file contains any
+number of lines in the form:
+
+   I, J, \V{number\_1} \V{number\_2}, ...,  \V{number\_DPLOT\_COLUMN}, ...
+
+These lines are read and the Density array is filled in on the fly as 
+specified by the I and J indices and the value in column \K{DPLOT\_COLUMN}.
+All other numbers in a line are ignored. The elements of the Density 
+array not assigned explicitly are set to \K{DPLOT\_FILL}. 
+
+With the formatted input, when \K{DPLOT\_SYMMETRIZE} = \V{ON}, the array 
+is also symmetrized, \ie\ array(j,i)=array(i,j) for each line that is read in.
+
+If the \K{DPLOT\_ORIENTATION} is \V{YX}, instead of \V{XY}, the X and Y
+axes are swapped during reading in the data.
+}
+
+
+
+
+\Command      {WRITE\_DPLOT}{write the Density array of data}
+
+\Options{
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_FORMAT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ DPLOT\_ORIENTATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{DPLOT\_ORIENTATION}   = \String{1}  & XY \OR\ YX\\
+}
+
+\Description{It will write a text file containing the Density
+array of data.  Two formats are possible. In free format
+(\K{DPLOT\_FORMAT}=\V{OFF}), the text file will contain two integer dimensions
+(NX,NY) followed by data NX * NY values. The first line will contain NX and
+NY, at most. The following lines will contain a single row of an array,
+at most. The order of writing the elements is:
+
+{\tt 
+   read(ioinp,*)NX,NY \\
+   do  i = 1, NX \\
+     read(ioinp,*) (array(i,j),j=1,NY) \\
+   end do
+}
+
+When
+formatted output is used (\K{DPLOT\_FORMAT}=\V{ON}), the text file will contain
+a number of lines in the form:
+
+   I, J, ARRAY
+
+If the \K{DPLOT\_ORIENTATION} is \V{YX}, instead of \V{XY}, the X and Y
+axes are swapped during writing out the data.
+}
+
+
+
+\Command      {WORLD}{define the extent of your data}
+
+\Options{
+\OptLine{PERSPECTIVE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{EYE\_TO\_SCR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SCR\_TO\_TOP}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PAPER\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{POSITION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{WORLD\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{WORLD\_FRACTION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ A4\_WINDOW\_MARGIN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+This command has to be called before any plotting is done. It
+calculates the extent of the plot and initializes the Plot coordinate
+system --- it determines its position on a paper. If you selected
+automatic World bounds setting, you should have your data already
+read by the \C{READ\_TABLE}, \C{READ\_DPLOT}, or \C{READ\_PDB} commands.
+
+When plotting a PDB structure, the \K{PERSPECTIVE}, \K{EYE\_TO\_SCR}, and
+\K{SCR\_TO\_TOP} have to be set up at the time of drawing with the
+\C{BALL\_STICK} command to properly scale the plot.
+
+   \K{PAPER\_WINDOW}
+   defines the position and orientation of a window on the paper. 
+   The format is (XMIN YMIN XMAX YMAX ORIENTATION). The origin for
+   rotation is the origin of the Base PostScript coordinate system 
+   which is in the lower left corner of a paper. Units are cm and
+   degrees. This 
+   window on the paper will contain the data from \K{WORLD\_WINDOW}. Any 
+   data points outside this area will be clipped. If orientation of 
+   the window is 90\degr\ then the plot will be printed in the 
+   landscape mode.
+
+   In \K{POSITION}, 
+   if the first element is different from 0 then the \K{PAPER\_WINDOW} is 
+   defined automatically using the position codes (1--37) irrespective 
+   of the value of \K{PAPER\_WINDOW}. The following convention is used:
+
+   \begin{description}
+     \item[1 --  8]  small 1-4, left column; 5-8, right column (8 plots / page)
+     \item[9 -- 11]  medium small (3 plots / page)
+     \item[12 -- 13]  medium (2 plots / page)
+     \item[14]  medium large (1 plots / page)
+     \item[15]  large, landscape (1 plots / page)
+     \item[16 -- 37]  tiny, portrait (32 plots / page)
+   \end{description}
+
+   If the second element is 0, the aspect ratio between X and Y is set
+   to 1.3333 (horizontal rectangle), if it is 1 the aspect ratio is 1.0 
+   (square), if it is 2 the aspect ratio is 3.9 (very extended horizontal 
+   rectangle).
+
+   \K{WORLD\_WINDOW}
+   defines the coordinate axes in the World of the data to be 
+   plotted. These ranges will correspond to the \K{PAPER\_WINDOW} window. 
+   However, if any of the four values is -999 (by default this is the 
+   case), the program will try to calculate that value from the data 
+   read in by the last data input command (\C{READ\_TABLE},
+   \C{READ\_DPLOT}, or \C{READ\_PDB}).
+
+   \K{WORLD\_FRACTION}
+   defines the fraction of the number of the central points that are
+   used to get the \K{WORLD\_WINDOW} when calculated automatically.
+   By default, this is 1. This is useful when there are a small number
+   of outliers that you do not want to plot because the large scale
+   would observe the relationship between the remaining points.
+
+   \K{NO\_XY\_SCOLUMNS}
+   defines the numbers of selected columns in the Table array that 
+   are to be examined for the maximal and minimal values of X and Y, 
+   respectively, when calculating the real World extent of the graph. 
+   If any of the numbers is 0 then \K{NO\_XY\_SCOLUMNS} and \K{XY\_SCOLUMNS}
+   are set to reflect the values in \K{XY\_COLUMNS}.
+   Use this variable when automatic boundaries are required
+   for multi-line plots and it is not clear which data vector should
+   be used for bounds setup.
+
+   In multi-plot plots, do not forget that undefined \K{NO\_XY\_SCOLUMNS}
+   and \\
+   \K{XY\_SCOLUMNS} are set automatically in the first \C{WORLD} 
+   command and will stay defined until reset with \C{SET} or \C{RESET}
+   commands.
+
+   \K{XY\_SCOLUMNS}
+   defines the columns for the range searching (see also above).
+   The first \K{NO\_XY\_SCOLUMNS(1)} integers define the X-columns 
+   in the Plotting
+   array for X range and the last \K{NO\_XY\_SCOLUMNS(2)} integers are the 
+   Y columns for the Y range.
+
+   If \K{A4\_WINDOW\_MARGIN} is \V{ON} a line around the Bounding Box of the 
+   Base PostScript coordinate system is drawn, \ie\ A4 paper is bounded.
+}   
+
+
+
+\Command      {AXES2D}{draw coordinate axes, ticks, and labels}
+
+\Options{
+\OptLine{Y\_SCALE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_XLEFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_XRIGHT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{TICK\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_LABEL\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_LABEL\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_LABELS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_LABELS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_TICK}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_TICK}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_LABEL\_SHIFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_LABEL\_SHIFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_TICK\_LABEL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_TICK\_LABEL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{X\_TICK\_DECIMALS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_TICK\_DECIMALS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_AXIS\_FACTOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{Y\_AXIS\_FACTOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{AXES2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{TICK\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{TICK\_SMALL\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{EXPONENT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{Y\_SCALE}          = \String{1} & \V{LEFT} \OR\ \V{RIGHT} \\
+}
+
+\Description  {
+It will plot the axes of the coordinate system.
+
+   \K{TICK\_FONT} sets the font size for labeling the ticks.
+
+   \K{X\_LABEL\_STYLE} and \K{Y\_LABEL\_STYLE} select the labelling regime:
+   \begin{description}
+   \item[1] labels for X,Y-ticks supplied explicitly to the routine.
+   \item[2] labels calculated automatically.
+   \item[3] labels not displayed at all.
+   \end{description}
+
+   \K{X\_TICK} and \K{Y\_TICK} define, in World coordinates, the position 
+   of the first tick on the X,Y-axes, the spacing between the ticks, and the 
+   rightmost tick position.
+
+   \K{X\_LABEL\_SHIFT} and \K{Y\_LABEL\_SHIFT} shift the X/Y-axes 
+   labels. Shifts are specified in the Plot coordinates.
+
+   \K{X\_TICK\_LABEL} and \K{Y\_TICK\_LABEL} set the index of the X/Y-axes 
+   ticks that are numbered first, and also every which tick from the first 
+   one on is numbered. 
+
+   \K{X\_TICK\_DECIMALS} and \K{Y\_TICK\_DECIMALS} set the number of decimal 
+   places used in the automatic calculation of the X/Y-axes tick
+   labels. If 0, only a dot will appear after an integer. If $-1$ only
+   an integer will appear.
+
+   If \K{Y\_SCALE} is \V{RIGHT} it will plot the Y-axis ticks and their 
+   numbers on the right side of the plot. Default is \V{LEFT}.
+
+   \K{CAPTION\_XLEFT} and \K{CAPTION\_XRIGHT} are returned by \C{AXIS2D} 
+   for later use by the \C{CAPTION} command in placing the captions next
+   to the Y-axis. If these automatic values are not good you can correct 
+   them manually (rarely needed).
+
+   \K{X\_AXIS\_FACTOR} is used to scale the X-label ticks before the
+   label is written out. If \K{EXPONENT} is \V{ON} then `En' is
+   added to the tick label where 
+   $n = \mbox{nint}[\log10(\mbox{\K{X\_AXIS\_FACTOR}})]$. 
+   If \K{EXPONENT} is \V{OFF} then `En' is not added and could be
+   included in the axis label with the \C{CAPTION CAPTION\_POSITION = 4 or 5}
+   command.
+}
+
+
+
+
+\Command      {PLOT2D}{draw a 2D line or scatter plot}
+
+\Options{
+\OptLine{PLOT2D\_SYMBOL\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{POINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LABEL\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LABEL\_LOCATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LABEL\_COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COLOR\_COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COLOR\_RANGE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COLOR\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+This command will plot a line and/or the points defined by the selected
+columns in the Table array.
+
+   \K{PLOT2D\_SYMBOL\_TYPE} defines the symbol to be plotted for every point. 
+   If 0 nothing is plotted. If set to $-1$, then the centered 
+   integer indices are plotted for each point.
+
+   \K{PLOT2D\_LINE\_TYPE} defines a line type to be plotted between successive 
+   points in the Table array. If 0 no line is plotted --- used for 
+   scatter plots.
+
+   \K{XY\_COLUMNS} selects X and Y columns in the Table array. If any of 
+   the two columns is not defined, it is substituted by a vector 
+   $1,2,\ldots,N$.
+
+   \K{POINT\_FONT} selects the font for the point symbol in the case where \\
+   \K{PLOT2D\_SYMBOL\_TYPE} = $-1$.
+
+   If \K{LABEL\_COLUMN} is a string column, then the labels in that
+   column are drawn for each point. If \K{LABEL\_LOCATION} is 1,
+   the label is centered on the point, if 2 the label is to the right
+   of the point. \K{LABEL\_FONT} is the font type for the labels.
+
+   If \K{COLOR\_COLUMN} is defined, it is used to color
+   the symbols from red, yellow, green to blue in the range 
+   from \K{COLOR\_RANGE}[1]
+   to [2]. The HSB color convention is used (hue from 0.0 to 0.5).
+   If \K{COLOR\_STYLE} is \V{GRAY}, gradual coloring is done;
+   if \{BLACK}, the values within the range are of color 0 (red),
+   and those outside the range are color 0.5 (blue).
+}
+
+
+
+
+
+\Command      {SPECTRUM}{draw a bar code plot}
+
+\Options{
+\OptLine{PLOT2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_XSHIFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_WIDTH}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+This command plots an energy spectrum looking like a vertical bar code.
+
+    \K{PLOT2D\_LINE\_TYPE} defines the line type to be used for horizontal 
+    energy levels.
+
+    \K{XY\_COLUMNS} selects the Y column in the Table array that specifies 
+    energy levels. Note that Y column is plotted, not X column. This is to be 
+    consistent with the \C{WORLD} command.
+
+    \K{BAR\_XSHIFT} specifies the starting X of the energy levels in 
+    the World coordinates.
+
+    \K{BAR\_WIDTH} defines a relative width of the bars in the World 
+    coordinates.
+}
+
+
+
+
+\Command      {HIST2D}{draw a 2D histogram}
+
+\Options{
+\OptLine{BAR\_GRAYNESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_WIDTH}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_XSHIFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description{
+    This command plots a histogram of X and Y columns in the Table array.
+
+    \K{BAR\_GRAYNESS} defines the grayness of the bar on the scale from 
+    0.0 (black) to 1.0 (white).
+
+    \K{BAR\_WIDTH} defines a relative width of the bars where 1.0 would 
+    make two neighbouring bars touch each other. If less than 1 there is 
+    empty space between bars.
+
+    \K{BAR\_LINE\_TYPE} defines a linetype used to border the bar in the $\Pi$
+    shaped way. If linetype is 0 bordering is not done.
+
+    In \K{NO\_XY\_SCOLUMNS}, the first element has to be 1 because there can 
+    only be one X-column.
+    The second element is the number of Y-columns. It is 1 for normal
+    histograms and more than 1 for a histogram where bars are stacked on
+    top of each other to get a stacked bar at a single X value.
+
+    \K{XY\_SCOLUMNS} specifies X-column and Y-columns in the Table array 
+    for the histogram. The dimension of \K{XY\_SCOLUMNS} has to be 
+    \K{NO\_XY\_SCOLUMNS(1)} + \K{NO\_XY\_SCOLUMNS(2)}. The default values 
+    for \K{NO\_XY\_SCOLUMNS} and \K{XY\_SCOLUMNS} (when the inputs are 0) 
+    are obtained from \K{XY\_COLUMNS}.  If the X-column is not defined, 
+    it is substituted by a vector 
+    1,2,...,N. The X coordinate of the bar specifies its mid-point 
+    (not the left edge, for example). X-interval corresponding to
+    one bar is always calculated automatically as the difference 
+    between the first and last X divided by the number of bars less 1. 
+    This works well when you have equal spacing between the points on X 
+    axis. If not you can always correct the bar width using \K{BAR\_WIDTH}.
+
+    \K{XY\_COLUMNS} is used only when default values for 
+    \K{XY\_SCOLUMNS} are required.
+
+    \K{BAR\_XSHIFT} shifts the bars for this amount along the X-axis. This is 
+    to allow the plotting of several bars at the same X without
+    modifying the data files.
+}
+
+
+
+
+
+\Command      {DPLOT}{draw a density plot}
+
+\Options{
+\OptLine{BAR\_LEGEND}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_LEGEND\_PLACES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_GRAYNESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_PART}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_BOUNDS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NUMBER\_DENSITY\_PLOT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NUMBER\_PLACES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{POINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_DXY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{DPLOT\_PART}          = \String{1} & \V{UPPER} \OR\ \V{LOWER} \OR\ \V{FULL} \\
+% \K{DPLOT\_STYLE}   = \String{1} & \V{GRAY} \OR\ \V{BLACK} \\
+% \K{NUMBER\_DENSITY\_PLOT}  = \Logical{1} & \\
+}
+\Description   {
+This command will do a density plot of the Density array read in by the \\
+\C{READ\_DPLOT} command.
+
+   If \K{BAR\_LEGEND} is \V{ON} it will plot a gray scale code to the right of 
+   the plot.
+
+   \K{BAR\_LEGEND\_PLACES} sets the number of pre- and post-decimal point 
+   places for the labelling of the bar legend.
+
+   \K{DPLOT\_GRAYNESS} defines the grayness of the smallest and largest 
+   value to be plotted, respectively. If you want small to be 
+   white, set the first element larger than the second one.
+
+   \K{DPLOT\_LINE\_TYPE} defines the line type for the mesh plotted on the 
+   density plot.
+
+   \K{DPLOT\_PART} selects the part of the Density array to be plotted. 
+
+   \K{DPLOT\_BOUNDS} sets the real World bounds on the values of the 
+   Density array corresponding to the \K{DPLOT\_GRAYNESS} interval.
+
+   \K{DPLOT\_STYLE} selects whether the \K{DPLOT\_BOUNDS} 
+   range is to be colored with 
+   various degrees of gray (\V{GRAY}), or every cell within the range is to be 
+   coloured by the first bound of \K{DPLOT\_GRAYNESS} and all other cells by
+   the second bound of \K{DPLOT\_GRAYNESS}. 
+
+   If \K{NUMBER\_DENSITY\_PLOT} is set to \V{ON} the number is plotted for each 
+   cell instead of the gray rectangle. This number shows the height of 
+   the function. You can use the same mechanism as for \V{GRAY} to show only 
+   numbers in certain range.
+
+   \K{NUMBER\_PLACES} sets the number of spaces before and after the decimal 
+   point when \K{NUMBER\_DENSITY\_PLOT} = \V{ON}.
+
+   \K{POINT\_FONT} sets the font type for the numbers when
+   \K{NUMBER\_DENSITY\_PLOT} = \V{ON}.
+
+   \K{PRINT\_FONT} sets the font type for the numbers for the bar legend.
+
+   \K{PRINT\_DXY} will offset the X and Y of the number printed in each cell 
+   (in World coordinates).
+}
+
+
+
+
+\Command      {CAPTION}{place a caption next to an axis}
+
+\Options{
+\OptLine{CAPTION\_POSITION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_TEXT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_XLEFT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CAPTION\_XRIGHT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+This command puts text at pre-specified positions around the plot.
+
+The sequence of \C{CAPTION} commands for the same type of a caption 
+is important. The captions
+will be placed around the graph starting with the position closest to
+the graph. Therefore, a subtitle should be done before the title, but the
+X-title should be done before the X-subtitle. \K{CAPTION\_XLEFT} is the
+X-position in the Plot coordinates of the leftmost part of the 
+Y-captions (by default -0.15). \C{AXES2D} returns the precise
+values for \K{CAPTION\_XLEFT}, so use \C{CAPTION} after \C{AXES2D} without
+specifying \K{CAPTION\_XLEFT}. \K{CAPTION\_XRIGHT} is a similar variable 
+that is used when \K{Y\_SCALE} = \V{RIGHT}.
+
+The following positions with respect to the graph are available:
+\begin{description}
+\item[1] above graph, centered
+\item[2] below graph, centered
+\item[3] left of graph, centered, 
+\item[4] below graph, right
+\item[5] left of graph, top
+\item[6] right of graph, center
+\item[7] right of graph, top
+\item[8] left, top corner of graph
+\item[9] right, top corner of graph
+\item[10] right, bottom corner of graph
+\item[11] left, bottom corner of graph
+\item[12] center, top of graph
+\end{description}
+}
+
+
+
+
+
+\Command      {RESET\_CAPTIONS}{reset caption positioning}
+\Commandline  {RESET\_CAPTIONS}
+\Description{Resets the positions for the subsequent captions. 
+             This command has to be executed after the \C{WORLD} and 
+             before the \C{AXES2D} commands.}
+
+
+
+
+\Command      {LINE2D}{draw a line}
+
+\Options{
+\OptLine{LINE2D\_XY1}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LINE2D\_XY2}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LINE2D\_GRAYNESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LINE2D\_WIDTH}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LINE2D\_WIDTH\_SCALING}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LINE2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{CLIP}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+Plots a line specified in World coordinates. It uses \K{LINE2D\_LINE\_TYPE} 
+if defined (i.e. in 1..LINTYPS, where LINTYPS is the number of line types
+read from file `psgl1.ini'), otherwise it uses \K{LINE2D\_WIDTH} and 
+\K{LINE\_GRAYNESS}. If \K{LINE2D\_WIDTH\_SCALING} is \V{X}
+(case insensitive), the line width is specified in the units of
+the X-axis, otherwise in the units of the Y-axis. If \K{CLIP} is
+off, the line can occur outside the plot area, otherwise it
+is clipped.}
+
+
+
+\Command      {SET\_RECORD}{sets RECORD to selected Table elements}
+
+\Options{
+\OptLine{ NO\_XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+ }
+\Description  {
+This command puts the selected elements in the first line of
+the Table data into the \K{RECORD} variable. \K{RECORD} can then
+be used in captioning the plot or plots.
+
+This command is useful in combination with the \C{SELECT\_DATA}
+command in order to produce many different captions in one set of 
+plots, from one data file.
+}
+
+
+
+
+\Command      {PRINT}{print a text}
+
+\Options{
+\OptLine{PRINT\_XY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_DXY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COORDINATES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_ANGLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_HORIZ}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_VERT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_TEXT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_MODE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PRINT\_POINT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{PRINT\_MODE}    = \String{1} & \V{POINT} \OR\ \V{XY} \\
+}
+\Description  {
+Prints text positioned in World (\K{COORDINATES} = \V{WORLD}) or 
+Plot (\K{COORDINATES} = \V{PLOT}) coordinates
+at \K{PRINT\_XY} (\K{PRINT\_MODE} = \V{XY}).
+Alternatively, if \K{PRINT\_MODE} = \V{POINT}, the coordinates of the point
+\K{PRINT\_POINT} in the columns \K{XY\_COLUMNS} are used. If point index
+is out of range, the last point is used. In either case, (X,Y) is
+translated for \K{PRINT\_DXY}. 
+\K{PRINT\_ANGLE} is a rotation of the text, \K{PRINT\_HORIZ} is 1 for 
+left justified, 2 for centered and 3 for right justified, \K{PRINT\_VERT}
+is 1 for bottom aligned, 2 for center aligned and 3 for top aligned.
+
+For all text printing, including the one submitted to the \C{CAPTION}
+command, the following conventions hold:
+
+\begin{itemize}
+\item Superscript: embedded in \_
+\item Subscript  : embedded in $\wedge$
+\item Greek char : embedded in @
+\end{itemize}
+
+Multi-level embedding is allowed.
+
+Special characters can be printed by using the PostScript character codes.
+For example, to print the \Ang character, use `\\305'.
+}
+
+
+
+\Command      {NEW\_PAGE}{start a new page}
+\Commandline  {NEW\_PAGE  NO\_COPIES \Integer{1}}
+\Description  {Advances to the next page: the next plot will be 
+               on the new page. It can only be used when Encapsulated 
+               PostScript (EPSF) is not selected.}
+
+
+
+
+
+\Command      {ARROW}{draw an arrow}
+\Commandline  {ARROW [options] \\
+   \begin{tabular}{ll}
+    ARROW\_POSITION = \Real{4} & X1 Y1 X2 Y2 \\
+    ARROW\_SHAPE  = \Real{3} & tail thickness, arrow width, arrow length \\
+   \end{tabular}}
+\Description  {
+Draws an arrow from (X1,Y1) to (X2,Y2) (tail to tip), in World coordinates
+(\K{COORDINATES} = \V{WORLD}) or in Plot coordinates (\K{COORDINATES} = 
+\V{PLOT}). The elements of \K{ARROW\_SHAPE} are tail thickness, arrow 
+width, arrow length in Plot coordinates.}
+
+
+
+
+\Command      {POSTSCRIPT}{write a PostScript command}
+\Commandline  {POSTSCRIPT POSTSCRIPT\_TEXT = \String{1}}
+\Description {
+Takes the \K{POSTSCRIPT\_TEXT} string as a literal PostScript command and
+writes it to the output PS file.}
+
+
+
+
+
+\Command      {TRANSFORM}{transform Table or Density array data}
+
+\Options{
+\OptLine{TRF\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{TRF\_PARAMETERS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{TRF\_UNDEFINED}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+Transforms the columns of the Table array selected by \K{XY\_SCOLUMNS}
+array. If \K{NO\_XY\_SCOLUMNS} are both 0, it transforms the Density array
+instead. You must be careful with labelling the ticks (\C{AXES2D}) and
+scaling (\C{WORLD}) when using this option since it transforms the data
+itself not only plotting of them.
+
+\K{TRF\_PARAMETERS} sets any parameters that may be required for the 
+transformation. 
+
+\K{TRF\_TYPE} selects the type of transformation:
+
+  \begin{description}
+    \item[\V{LOGARITHMIC1}:]  $Y = \ln[\mbox{TRF\_PARAM(1)} + 
+                            (Y-YMIN) \cdot \mbox{TRF\_PARAM(2)}]$
+
+    \item[\V{LOGARITHMIC2}:]  $Y = \ln[\mbox{TRF\_PARAM(1)} + 
+                            Y \cdot \mbox{TRF\_PARAM(2)}]$
+
+    \item[\V{LOGARITHMIC3}:]  $Y = \mbox{log10}[\mbox{TRF\_PARAM(1)} + 
+                            (Y-YMIN) \cdot \mbox{TRF\_PARAM(2)}]$
+
+    \item[\V{LOGARITHMIC4}:]  $Y = \mbox{log10}[\mbox{TRF\_PARAM(1)} + 
+                            Y \cdot \mbox{TRF\_PARAM(2)}]$
+
+    \item[\V{CUMULATIVE}:]  $Y_i = \sum_{k=1,i} Y_k$
+
+    \item[\V{LINEAR}:]  $Y = \mbox{TRF\_PARAM(1)} + 
+                            Y \cdot \mbox{TRF\_PARAM(2)}$
+
+    \item[\V{INVERSE}:]  $Y = \mbox{TRF\_PARAM(1)} + 
+                              \mbox{TRF\_PARAM(2) / Y}$
+
+    \item[\V{EXPONENTIAL}:]  $Y = \mbox{TRF\_PARAM(1)} +
+                              \exp[\mbox{TRF\_PARAM(2)} + \mbox{TRF\_PARAM(3)}]$
+
+    \item[\V{NORMALIZE}:]  $Y = Y / \sum_i Y_i$
+   \end{description}
+
+    YMIN is the smallest value in all selected columns of the 
+    Table array or the smallest value in the Density array,
+    as appropriate. \V{CUMULATIVE} is not available for 
+    transformation of the Density array.
+
+    Any transformation that is undefined (for example, a logarithm 
+    of a non-positive argument, or a division by zero) is assigned
+    a value \K{TRF\_UNDEFINED}.
+}
+
+
+
+
+\Command      {RESET}{reset \TOP}
+\Commandline  {RESET}
+\Description{
+Reads in the {\tt top.ini} file again. Resets all parameters to its default
+values. Use \C{RESET} before plotting the second, third, \etc\ plot in the
+same \TOP\ program to prevent surprises resulting from the non-default
+values of arguments such as \K{X\_TICK}, \K{XY\_COLUMN}, \etc\ which 
+were possibly set automatically when producing the first plot.}
+
+
+
+
+
+\Command      {GET\_BARS}{calculate histogram bars}
+
+\Options{
+\OptLine{BAR\_DX}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{WORLD\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{WORLD\_WINDOW}    = \Real{4} & XMIN YMIN XMAX YMAX \\
+}
+\Description   {
+Transforms the current X vector into a histogram by counting how many
+X coordinates fall in a certain interval. The interval size must be
+specified explicitly by the real World range \K{BAR\_DX}. The centers 
+of these intervals
+are returned in X and the heights of the bars in Y.  Note that the
+current data in the Table array is erased, histogram coordinates
+are copied to the current X and Y.
+Only XMIN and XMAX are used to determine the X-range. If any of
+these two is undefined (-999) default values are supplied as the 
+largest and smallest X in the data with an added DX on both sides.
+XMAX is corrected so that XMAX = XMIN + (N+1)*BAR\_DX where N is the
+number of points (bars) in the new Table array. The first bin starts 
+at XMIN+0.5*DX and the last bin ends at XMAX-0.5*DX. For example, 
+if you have points with X-coordinates ranging from 0 to 100, you could 
+set \K{WORLD\_WINDOW} to -5 0 105 0 and \K{BAR\_DX} to 10, which
+will create bins 0--9.999, 10--19.999, ..., 90--100.0; they will
+be centered on 5, 15, 25, etc. There will also be half of the bin
+width on each side of the histograms when it is plotted (from $-5$ 
+to 105 on the X-axis).
+
+\K{XY\_COLUMNS} selects the X and Y columns. If Y column exists before
+the call, this routine also calculates the average and standard deviaton
+of the Y-values in each bin. These are returned in the two columns
+after the currently existing columns.}
+
+
+
+
+\Command      {GET\_DENSITY}{calculate Density plot data}
+
+\Options{
+\OptLine{BAR\_DX}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_DY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{WORLD\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+%\K{WORLD\_WINDOW}      = \Real{4} & XMIN YMIN XMAX YMAX \\
+}
+\Description{
+Transforms the current X and Y vectors into a density plot (3D histogram) 
+by counting how many X and Y coordinates fall in a certain interval. The 
+interval sizes must be specified explicitly by the real parameters 
+\K{BAR\_DX} and 
+\K{BAR\_DY}. The heights of the density plot are returned in the Density array. 
+All four values in \K{WORLD\_WINDOW} are used to determine the X-range. 
+If any of them is undefined (-999) default values are supplied as the 
+largest and smallest X and Y in the data with an added DX/DY on all sides. 
+This makes the WORLD exactly superposable to the world from the 1 .. NBARX,
+1..NBARY density plot. This world goes from 0,0 to NBARX+1,NBARY+1. The
+center of the first bin is at XMIN+DX,YMIN+DY and the center of the last
+bin is at XMAX-DX,YMAX-DY. This gives a 0.5*DX, 0.5*DY margin around
+the plotted bins.
+XMAX (and YMAX) is corrected so that XMAX = XMIN + (N+1)*BAR\_DX where 
+N is the number of points (bars) in the new Density array.
+\K{XY\_COLUMNS} selects the X and Y columns.
+}
+
+
+
+\Command      {SHUFFLE\_DPLOT}{re-organize the Density plot data}
+
+\Options{
+\OptLine{SHUFFLE\_OPERATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{SHUFFLE\_OPERATION}  = \String{1} & TRANSPOSE \OR\ REVERT\_X \OR\ 
+%                                      REVERT\_Y \\
+}
+\Description{
+The transpose operation only has sense for square matrices. The other
+two commands invert the order of the points along the X and Y coordinates, 
+respectively. To exchange the orientation of the X and Y axes as they
+appear on the plot, you should use the \K{DPLOT\_ORIENTATION} option
+of the \C{READ\_DPLOT} command.}
+
+
+
+
+\Command      {DENSITY\_TO\_XY}{Density to XY data}
+\Commandline  {DENSITY\_TO\_XY \\
+}
+\Description{
+Copies the current density array to the XY table.
+}
+
+
+
+\Command      {XY\_TO\_DENSITY}{XY to density data}
+\Commandline  {XY\_TO\_DENSITY \\
+}
+\Description{
+Copies the current XY table to the density array.
+}
+
+
+
+\Command      {LEGEND}{draw a legend}
+
+\Options{
+\OptLine{SYMBOL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LEGEND\_POSITION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT2D\_SYMBOL\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BAR\_GRAYNESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DESCRIPTION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DESCRIPTION\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{SYMBOL}   = \String{1} & \V{LINE}  \OR\  \V{POINT}  \OR\  \V{BAR}    \\
+}
+\Description{
+Plots the legend for objects (curves, points, and bars).
+The legend is in the form 'symbol symbol\_description'.
+Successive \C{LEGEND} commands print legends one per line, starting at the
+top. \C{RESET\_LEGEND} has to be issued before \C{LEGEND}. Note that you can
+use this command to place text right to the plot if you specify
+invisible object types (0). The value of the \K{SYMBOL} 
+keyword determines the type of the object symbol in the legend (POINT, LINE,
+or BAR).
+\K{DESCRIPTION} is the text describing the symbol. \K{LEGEND\_POSITION} can
+have the same values as \K{CAPTION\_POSITION}.}
+
+
+
+
+\Command      {RESET\_LEGEND}{reset legend positioning}
+\Commandline  {RESET\_LEGEND}
+\Description  {Resets the starting Y position of the next legend
+               to the initial value at the top of the plot.}
+
+
+
+
+
+\Command      {PLOT\_ERROR\_BARS}{draw error bars}
+
+\Options{
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ERROR\_COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ERROR\_SIGN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT2D\_SYMBOL\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT2D\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{POINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description{
+This command plots error bars. It relies on X and Y columns selected
+by the \K{XY\_COLUMNS} argument (as in the PLOT2D command), and on the
+\K{ERROR\_COLUMN} argument which selects the column in the Table array that
+contains the error in Y-coordinate for each (X,Y) point. The graphical
+attributes are the same as those used for the \C{PLOT2D} command.  The
+error-bar is a vertical line with two short horizontal caps on top and
+bottom. The error line extends for `error' units below the central
+point and for `error' units above the central point; thus, the total
+height of the error bar is twice the error. \K{PLOT2D\_SYMBOL\_TYPE} 
+selects the symbol type used to plot at the center of the error bar.
+If \\ \K{PLOT2D\_SYMBOL\_TYPE} is $-1$ then \K{POINT\_FONT} font
+is used to print the points indices instead of point symbols.
+\K{PLOT2D\_LINE\_TYPE} selects the line type used for plotting the
+error bars. IF \K{ERROR\_SIGN} contains word \V{UP}, the error value will
+be added to the y-value. If it contains \V{DOWN}, the error value
+will be subtracted from the y-value. \K{ERROR\_SIGN} contains both 
+by default, \V{UP DOWN}.}
+
+
+
+
+\Command      {SELECT\_DATA}{select some rows in Table array}
+\Commandline  {SELECT\_DATA SELECT\_COLUMN = \Integer{1},
+                            SELECT\_RANGE = \Real{2}}
+\Description  {
+This command selects the lines of the Table array that have a value
+in a specified column in a specified range. This is useful when you
+want to plot only a subset of data, for example make a (X,Y) plot at
+a fixed Z.}
+
+
+
+
+\Command      {SWITCH\_PS}{open a new PostScript file}
+\Commandline  {SWITCH\_PS FILE = \String{1}}
+\Description  {This command will close the current PS file and open
+               another one for subsequent output.}
+
+
+
+
+\Command      {FIT}{non-linear least-squares fit of data}
+
+\Options{
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ERROR\_COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FIT\_MODEL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FIT\_PARAM\_INITIAL}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FIT\_PARAM\_INDICES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FIT\_CUTOFFS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FIT\_WORLD}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{WORLD\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_SPLINE\_POINTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{FIT\_MODEL}  = \String{1} & \V{POLYNOMIAL} \OR\ \V{NORMAL} \OR\ \\
+%                           & \V{LOG-NORMAL} \OR\ \V{EXPONENTIAL} \OR\ \\
+%                           & \V{EXPONENTIAL2} \OR\ \V{EXPONENTIAL3} \OR\ \\
+%                           & \V{LOGARITHMIC} \OR\ \\
+%                           & \V{POLYGAUSS} \OR\ \V{POLYGAUSS360} \OR\ \\
+%                           & \V{POWER} \OR\ \V{DISSOCIATION} \\
+}
+\Description{This command does a non-linear least-squares fitting of the
+(X,Y) data in columns \K{XY\_COLUMNS} to the model selected by \K{FIT\_MODEL}.
+The standard errors of the data points can be specified in column 
+\K{ERROR\_COLUMN}.
+If this column index is undefined, all errors are set to 1. 
+\K{FIT\_PARAM\_INITIAL} specifies the initial estimates for all the parameters.
+\K{FIT\_PARAM\_INDICES} specifies the indices of parameters to be
+actually varied in the fitting. \K{FIT\_CUTOFFS} specifies the convergence
+criterion: when the absolute and relative change in the chi-square is
+smaller than specified in two consecutive cycles, the fitting exits.
+If \K{FIT\_WORLD} is \V{OFF}, the Y-column contains the function values for 
+the corresponding X.
+If \K{FIT\_WORLD} is \V{ON}, the X column is changed to \K{NO\_SPLINE\_POINTS}
+points that equidistantly span \K{WORLD\_WINDOW} X-range and Y-column
+is filled with the function values calculated at these new X-points. Note
+that Xmin and Xmax of the World are specified as the first and third
+element of \K{WORLD\_WINDOW}.
+}
+
+
+
+\Command      {FIT2}{non-linear least-squares fit of data}
+\Commandline  {FIT2 [options] \\
+}
+\Description{Downward compatible with \C{FIT}, except that it can also do
+multidimensional least-squares fitting. Should replace \C{FIT} with time.
+}
+
+
+
+
+\Command      {SMOOTH\_TABLE}{smooth the Table array data}
+
+\Options{
+\OptLine{SMOOTH\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_SPLINE\_POINTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_COLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NO\_XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{XY\_SCOLUMNS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{HALF\_WINDOW}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{PLOT\_POINTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{SMOOTH\_TYPE}  = \String{1}  & \V{SPLINE} \OR \V{AVERAGE} \\
+}
+\Description{Smoothes data in the Table array using one of the two methods
+selected by \K{SMOOTH\_TYPE}: the cubic spline or running average method.
+The main appearance difference between the two methods is that spline
+smoothing goes through the original points (if they were evenly
+distributed), whereas window averaging changes the original points.
+
+In the spline method, \K{NO\_SPLINE\_POINTS} is the number of points to
+be calculated by spline smoothing. It is returned in \K{PLOT\_POINTS}.
+Columns X and Y are selected by \K{XY\_COLUMNS}; note the difference with
+the running average method.
+
+In the running average method, the weight of point $j$ is proportional
+to $(\K{HALF\_WINDOW}-|i-j|+1)$ where $i$ is
+the central point and \K{HALF\_WINDOW} is the number of points left and right
+of point $i$ that are in the window. Only the columns specified by
+\K{NO\_XY\_SCOLUMNS} and \K{XY\_SCOLUMNS} are smoothed; note the difference
+with the spline method. \K{PLOT\_POINTS} is not changed.
+}
+
+
+
+
+\Command      {READ\_PDB}{read a Brookhaven molecular structure}
+\Commandline  {READ\_PDB FILE = \String{1}, PDB\_FORMAT = \String{1}}
+\Description  {Reads in the PDB file according to the format specified.
+               Format can be \V{PDB} or \V{XYZ}. The former is the 
+               Brookhaven Protein Databank format. The latter consists
+               only of x,y,z for one atom per line.}
+
+
+
+
+\Command      {WRITE\_PDB}{write a Brookhaven molecular structure}
+\Commandline  {WRITE\_PDB FILE = \String{1}}
+\Description  {Writes out the PDB file.}
+
+
+
+
+\Command      {MAKE\_BONDS}{make a list of bonds}
+
+\Options{
+\OptLine{BOND\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COVALENT\_BOND}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BOND\_COLOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BOND\_LINE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BOND\_TAPER}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{BOND\_WIDTH\_FACTO}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ADD\_BONDS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{BOND\_TYPE}  = \String{1} &  \V{COVALENT} \OR\ \V{SEQUENTIAL} \\
+}
+\Description{Constructs the bonds between the currently selected bonding
+set of atoms and either adds them to the list of existing bonds or creates
+this list from scratch, depending on the logical variable \K{ADD\_BONDS}.
+
+\K{BOND\_COLOR} sets the color of the current bonds.
+The coloring scheme is from PostScript: 0 for
+black and 1 for white; intermediate values select various shades of gray.
+
+\K{COVALENT\_BOND} defines the distance cuttoff between which the atom
+pair is recognized as bonded to each other. If any of the two values is
+undefined (i.e. -999), then the covalent bond exists when a distance
+between the two atoms is less than 0.55 times the sum of the two van der 
+Waals radii and more than half of that value. The radii are obtained
+from the PDB atom names by first recognizing an extended atom type in
+the residue, and then looking into the radii library file for all
+atom types in all residue types. Hydrogen atoms are treated separetely 
+--- they are just recognized as such directly and their radii
+assigned accordingly.
+
+\K{BOND\_LINE} sets the line type for drawing the current bonds.
+If the line type is negative than only the line of the type
+-\K{BOND\_LINE} is drawn, not the polygon with caps.
+
+\K{BOND\_WIDTH\_FACTOR} sets the bond width. If too large (approx 1),
+bond coordinates may be undefined.
+
+\K{BOND\_TAPER} is a factor that is multiplied by the delta Z of the
+bond and its width to increase the width of the nearer end, and decrease
+the width of the further end. It should be 0 or larger than 0.
+}
+
+
+
+
+\Command      {LABEL\_ATOMS}{label the selected atoms}
+
+\Options{
+\OptLine{LABEL\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LABEL\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{LABEL\_LOCATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{LABEL\_STYLE} = \String{1} & [\V{ATOM\_TYPE} \OR\ \V{RESIDUE\_TYPE1} \OR\ \\
+%                             &  \V{RESIDUE\_TYPE3} \OR\ \V{ATOM\_INDEX} \OR\ \\
+%                             &  \V{RESIDUE\_NUMBER} \OR\ \V{RESIDUE\_INDEX}] \\
+% \K{LABEL\_LOCATION} = \Integer{1} & 1 ... label centered on the atom \\
+%                                 & 2 ... label right to the atom \\
+}
+\Description  {Labels the currently selected labelling set of atoms with the
+currently selected labelling style. Labelling style is a string and
+can be any sequence of the items listed above, in any order.}
+
+
+
+
+\Command      {DEFAULT\_ATOM\_COLOR}{color all the atoms}
+\Commandline  {DEFAULT\_ATOM\_COLOR}
+\Description  {Assigns default attributes to all the atoms: atom color
+and atom lines. Useful to do after \C{SELECT\_ATOMS} which assigns
+a specific color and line; if you need generic coloring for different
+atom types.
+}
+
+
+
+
+
+\Command      {SELECT\_ATOMS}{select atoms in a molecule}
+
+\Options{
+\OptLine{SELECTION\_SEARCH}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FROM}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{FOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{RES\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ATOM\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SELECTION\_MODE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SELECTION\_STATUS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{RADIUS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{RADIUS\_FACTOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ATOM\_COLOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{ATOM\_LINE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SELECTION\_SEGMENT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SELECTION\_STEP}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SPHERE\_CENTER}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SLAB}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+% \K{SELECTION\_SEARCH} = \String{1} & \V{SPHERE}  \OR\ \V{SEGMENT} \\
+% \K{FROM}              = \String{1} & \V{ALL} \OR\ \V{DISPLAYING} \OR\ \V{BONDING} \OR\
+%                         \V{LABELLING} \\
+% \K{FOR}               = \String{1}    & \V{DISPLAYING} \OR\ \V{BONDING} \OR\
+%                          \V{LABELLING} \\
+% \K{RES\_TYPE}         = \String{0} & \V{ALL}  \OR\ three letter codes \\
+% \K{ATOM\_TYPE}        = \String{0} & \V{ALL} \OR\ \V{SDCH} \OR\ \V{MNCH}
+%                         \OR\ atom names \\
+% \K{SELECTION\_MODE}   = \String{1} & \V{ATOM} \OR\ \V{RESIDUE} \\
+% \K{SELECTION\_STATUS} = \String{1}   & \V{ADD} \OR\ \V{REMOVE} \OR\
+%                         \V{INITIALIZE} \\
+%\multicolumn{2}{l}{SEARCH = \V{SEGMENT}:} & \\
+% \K{SELECTION\_SEGMENT} = \String{2} & \#RES1 \#RES2 \\
+%\multicolumn{2}{l}{SEARCH = \V{SPHERE}:} & \\
+% \K{SPHERE\_CENTER}     = \String{2} & \#RES1 ATOM\_NAME \\
+% \K{SLAB}       = \Real{5}   & dz1 dz2 xtrans ytrans ztrans    \\
+}
+\Description{Adds atoms to, removes atoms from, or initializes the \ASGL\
+atom sets selected by \K{FOR}. \K{SELECTION\_STATUS} determines whether
+the selected atoms are added (\V{ADD}), removed (\V{REMOVED}), or a set is
+initialized and then the selected atoms are added (\V{INITIALIZE}). There
+are three sets of atoms in \ASGL: (1) the atoms that are selected for
+display (\C{BALL\_STICK}), (2) the atoms that are selected for calculation
+of bonds (\C{MAKE\_BONDS}) and (3) the atoms that are selected for labelling
+(\C{LABEL\_ATOMS}). The \K{FOR} variable is a scalar string that can contain
+any combination of the three selections: The selection of atoms is a
+hierarchical process: First, \K{FROM} specifies which of the three atom
+sets are used for scanning; if \K{FROM} = \V{ALL}, all atoms in the input
+pdb file are used for scanning. \K{ATOM\_TYPE} and \K{RES\_TYPE} constrain
+scanning to specified atom and residue types, respectively. They can
+contain several atom and residue types in one quoted string. \K{SELECTION\_MODE}
+determines whether only an atom satisfying all search criteria is to
+be selected or all atoms in a residue of a found atom are to be selected.
+
+The \K{SEARCH\_STRING} specifies \V{SEGMENT} or \V{SPHERE} search; this
+determines the other possible arguments.
+
+The \V{SEGMENT} search scanns only a single segment specified by the
+beginning and ending residue number (as found in the input atom file),
+\K{SEGMENT\_RANGE}. The value of the residue number can be \V{X}, which
+implies the first or last residue, as appropriate.  \K{SELECTION\_STEP}
+is a step in the residue index used in scanning for the atoms. This is
+useful in labelling only every 5-th CA atom, for example.
+
+The \V{SPHERE} search scanns only over those atoms that are closer than
+\K{SPHERE\_RADIUS} to the \K{SPHERE\_CENTER} atom, after the center
+atom was translated by (xtrans, ytrans, ztrans) specified in \K{SLAB}.
+If the first element of \K{SPHERE\_CENTER} is \V{INDEX} then the second element
+is an atom index of the center atom; otherwise, the first and second
+element are the residue number (as in the input atom file) and the atom
+type, respectively. \K{SLAB} specifies the interval on Z-axis relative
+to Z of the translated central atom that imposes another condition on
+the selected atoms: $Zcen+dz1 < Z+ztrans < Zcen+dz2$. This is useful
+to make less crowded plots. Larger Z is on front, so dz1 specifes the
+plane that is further away than the dz2 plane. To get any atoms,
+$dz1 < dz2$.
+
+The radii of the currently selected display set of
+atoms is set to \K{RADIUS} * \K{RADIUS\_FACTOR}. If the final
+atom radii is 0, the atom is not drawn. If \K{RADIUS} is undefined
+(-999) then the van der Waals radius of that atom type is used.
+
+\K{ATOM\_COLOR} sets the color of the currently selected display set of atoms.
+The coloring scheme is from PostScript: 0 for
+black and 1 for white; intermediate values select various shades of gray.
+
+\K{ATOM\_LINE} sets the line type for drawing the currently selected
+display set of atoms.
+}
+
+
+
+\Command      {BALL\_STICK}{draw a molecule}
+
+\Options{
+\OptLine{PERSPECTIVE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{EYE\_TO\_SCREEN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{SCREEN\_TO\_TOP}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {Plots a ball-and-stick plot of the currently selected
+               display set of atoms and of the selected bonds.}
+
+
+
+
+\Command      {ROTATE\_MOL}{rotate the molecule using rotation matrix}
+\Commandline  {ROTATE\_MOL ROTATION\_MATRIX = \Real{9}}
+\Description  {Rotates the whole molecule according to the rotation matrix.}
+
+
+
+
+
+\Command      {ROTATE\_MOL\_AXIS}{rotate the molecule around the axis}
+\Commandline  {ROTATE\_MOL\_AXIS AXIS \Real{3}, DEGREES = \Real{1}}
+\Description  {Rotates the whole molecule around the axis \K{AXIS} for
+               \K{DEGREES} degrees.}
+
+
+
+\Command      {TRANSLATE\_MOL}{translate the molecule}
+\Commandline  {TRANSLATE\_MOL SHIFT = \Real{3}}
+\Description  {Translates the whole molecule for \K{SHIFT} \AA ngstroms.}
+
+
+\Command      {CENTER\_MOL}{center the molecule}
+\Commandline  {CENTER\_MOL}
+\Description  {Center the whole molecule.}

@@ -1,0 +1,64 @@
+* GROMOS atoms' van der Waals radii --- A.S., Birkbeck, 1991 assignment.
+*
+* CHARMM parameters for Lennard-Jones potentials.
+* 
+* Atom labels are all left justified.
+* 
+* Radii are for all atoms as if they had all hydrogens on.
+*
+* Atoms have to be in GROMOS order.
+*
+* The list is to be used with the topology file stripped of hydrogens, but
+* otherwise unchanged. The `*' marks the atom whose radius has been increased
+* artificially (0.05 A per hydrogen; as in CHARMM) to account for the artificial
+* stripping of H atoms in the residue topology file. Note that new atom types 
+* could not be invented without changing interaction function parameter file! 
+* Radii are taken from CHARMM (PARAM4 parameter set). Radii with `-' after the
+* number were taken from: Book of Data, Chemistry, Physical Science, Physics,
+* ed. R.D. Harrison, Nuffield Advanced Science, 1982, Longman, p54.
+* 
+* ALPHA is polarizability from CHARMM PARAM4
+* N is effective number of outer shell electrons from CHARMM PARAM4
+*
+* ! indicates arbitrary ALPHA and N
+* 
+* (a1,i4,1x,a4,1x,f8.4,1x,f7.4,f7.4,f8.4)
+*  # GROMOS Atm.mass     Ri ALPHAi Ni Remark        Description
+* ----------------------------------------------------------------------------
+    1    O  15.9994  1.6000 0.8400  6.              CARBONYL OXYGEN (C=O)
+    2   OM  15.9994  1.6000 2.1400  6.              CARBOXYL OXYGEN (CO-)
+    3   OA  15.9994  1.6500 1.2000  7.      *       HYDROXYL OXYGEN (OH)
+    4   OW  15.9994  1.6500 1.2000  7.      *       WATER OXYGEN
+    5    N  14.0067  1.6500 1.4000  7.      *       PEPTIDE NITROGEN (N OR NH)
+    6   NT  14.0067  1.7000 1.7000  8.      *       TERMINAL NITROGEN (NH2)
+    7   NL  14.0067  1.7500 2.1300  9.      *       TERMINAL NITROGEN (NH3)
+    8  NR5  14.0067  1.6500 1.1000  6.      *       AROMATIC N (5-RING,2 BONDS)
+    9 NR5*  14.0067  1.6000 1.1000  6.              AROMATIC N (5-RING,3 BONDS)
+   10   NP  14.0067  1.6000 1.1000  6.          !   PORPHYRIN NITROGEN
+   11    C  12.011   1.8000 1.6500  5.              BARE CARBON (PEPTD,C=O,C-N)
+   12  CH1  13.019   1.8500 1.3500  6.              ALIPHATIC CH-GROUP
+   13  CH2  14.027   1.9000 1.7700  7.              ALIPHATIC CH2-GROUP
+   14  CH3  15.035   1.9500 2.1700  8.              ALIPHATIC CH3-GROUP
+   15 CR51  13.019   1.9000 2.0700  6.              AROMATIC CH-GROUP (5-RING)
+   16 CR61  13.019   1.9000 2.0700  6.              AROMATIC CH-GROUP (6-RING)
+   17   CB  12.011   1.8000 1.6500  5.              BARE CARBON (5-,6-RING)
+   18    H   1.008   0.8000 0.0440  1.              HYDROGEN BONDED TO NITROGEN
+   19   HO   1.008   0.8000 0.0440  1.              HYDROXYL HYDROGEN
+   20   HW   1.008   0.8000 0.0440  1.              WATER HYDROGEN
+   21   HS   1.008   0.8000 0.0440  1.              HYDROGEN BONDED TO SULFUR
+   22    S  32.06    1.9500 0.3400 16.      *       SULFUR
+   23   FE  55.847   0.6500 0.0100  0.0001          IRON (3+)
+   24   ZN  65.37    0.7400 1.0000  1.      -   !   ZINC (2+)
+   25   NZ  14.0067  1.7000 1.7000  8.      *   !   ARG NH (NH2)
+   26   NE  14.0067  1.6500 1.4000  8.      *   !   ARG NE (NH)
+   27    P  30.9738  1.9000 1.0000  1.      -       PHOSPHOR
+   28   OS  15.9994  1.6000 1.2000  6.          !   SUGAR OR ESTER OXYGEN
+   29  CS1  13.019   1.8500 1.3500  1.      *   !   SUGAR CH-GROUP
+   30  NR6  14.0067  1.6500 1.1000  6       *   !   AROMATIC N (6-RING,2 BONDS)
+   31 NR6*  14.0067  1.6000 1.1000  6           !   AROMATIC N (6-RING,3 BONDS)
+   32  CS2  14.027   1.9000 1.7700  7.      *   !   SUGAR CH2-GROUP
+   33   SI  28.08    2.2400 1.0000  1.      -   !   SILICON
+   34   NA  22.9898  0.9800 1.0000  1.      -   !   SODIUM (1+)
+   35   CL  35.453   1.8100 1.0000  1.      -   !   CHLORINE (1-)
+   36   CA  40.08    0.9400 1.0000  1.      -   !   CALCIUM (2+)
+   37   MG  24.305   0.6500 1.0000  1.      -   !   MAGNESIUM (2+)

@@ -1,0 +1,137 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    NUMBERS.CST constants are general number and string constants.
+cf
+cf    nundf     = -999        ... an undefined quantity (integer or real)
+cf    rundf2    = 9999.9      ... an undefined quantity (integer or real)
+cf    tenm1     = 1.0E-1
+cf    tenm2     = 1.0E-2
+cf    tenm3     = 1.0E-3
+cf    tenm4     = 1.0E-4
+cf    tenm5     = 1.0E-5
+cf    tenm6     = 1.0E-6
+cf    tenm7     = 1.0E-7
+cf    tenm8     = 1.0E-8
+cf    tenm9     = 1.0E-9
+cf    tenm10    = 1.0E-10
+cf    tenm20    = 1.0E-20
+cf    ten1      = 1.0E1
+cf    ten2      = 1.0E2
+cf    ten3      = 1.0E3
+cf    ten4      = 1.0E4
+cf    ten5      = 1.0E5
+cf    ten6      = 1.0E6
+cf    ten7      = 1.0E7
+cf    ten8      = 1.0E8
+cf    ten9      = 1.0E9
+cf    ten10     = 1.0E10
+cf    ten20     = 1.0E20
+cf    fpequal   = 1E+1*eps          ... for judging the equality of two reals
+cf
+cf    cal2joul  = 4.1868      ... conversion factor for Joules from calories
+cf    deg2rad   = 0.017453293 ... conversion factor for radians from degrees
+cf    rad2deg   = 57.29577951 ... conversion factor for degrees from radians
+cf
+cf    pi        = 3.14159265358979323846
+cf    pi2       = 2.0*pi
+cf    pidegr    = 180.0
+cf    pi2degr   = 2.0*pidegr
+cf    spi2      = 2.50662827  ... sqrt(2 * pi)
+cf    gascst    = 8.31441E-10 ... gas constant 
+cf                                [kg Angstrom^2 / (femtosecond^2 mol K)]
+cf    cmass     = 0.012011    ... mass in kg of 1 mol of atoms of the type 
+cf                                that will be used in MD (12C)
+cf
+cf    rt        = 0.5900991   ... RT / 1000 cal2joul) [kcal/mole]; 
+cf                                T = 297.15 K; R = 8.31441 J/mol K;
+cf    rthalf    = 0.5*rt
+cf    srthalf   = 0.54318464  ... SQRT(RTHALF) ; T = 297.15 K; 
+cf                                R = 8.31441 J/mol K
+cf
+cf    eps0    =  8.854187818E-12 ... permitivity of vacuum [F/m = C/V/m]
+cf    echrg   =  1.6021892E-19   ... electron charge [C=Amp s]
+cf    planck  =  1.0545887E-34   ... Planck constant / (2pi) 
+cf                                   [Js = Nms = kg m^2 s^2]
+cf    avogdr  =  6.022045E+23    ... Avogadro number [/mol]
+cf    emass   =  9.109534E-31    ... electron rest mass [kg]
+cf
+cf
+cf
+cf    delme     = '####'      ... MODELLER atmnam code for marking the atom 
+cf                                for deletion
+cf    psdext    = '.psd'      ... extension for the pseudo atoms file.
+cf
+cf ----------------------------------------------------------------------------
+
+
+#if PRECISION==2
+#include "numbers_double.cst"
+#else
+#include "numbers_single.cst"
+#endif
+
+      integer nundf
+
+      real rt,rthalf,srthalf,fpequal,rundf2
+      real spi2,pi2,pi,pidegr,pi2degr,cal2joul,deg2rad,rad2deg
+      real tenm1,tenm2,tenm3,tenm4,tenm5,tenm6,tenm7,tenm8
+      real tenm9,tenm10,tenm20
+      real ten1,ten2,ten3,ten4,ten5,ten6,ten7,ten8
+      real ten9,ten10,ten20
+      real cmass, gascst
+
+      real eps0, echrg, planck, emass, avogdr
+      parameter (eps0    =  8.854187818E-12,
+     &           echrg   =  1.6021892E-19,
+     &           planck  =  1.0545887E-34,
+     &           avogdr  =  6.022045E+23,
+     &           emass   =  9.109534E-31)
+
+      parameter (cmass  = 0.012011)
+      parameter (gascst = 8.31441E-10)
+
+      parameter (nundf    = -999)
+      parameter (rundf2   =  9999.9)
+
+      parameter (cal2joul =  4.1868, 
+     &           deg2rad  =  0.0174532925199433,
+     &           rad2deg  =  57.295779513082320877)
+
+      parameter (pi       = 3.14159265358979323846,
+     &           pi2      = 2.0*pi,
+     &           pidegr   = 180.0, 
+     &           pi2degr  = 2.0*pidegr,
+     &           spi2     = 2.50662827,
+     &           rt       = 0.5900991, 
+     &           rthalf   = 0.5*rt,
+     &           srthalf  = 0.54318464)
+
+      parameter (tenm1    = 1.0E-1,
+     &           tenm2    = 1.0E-2,
+     &           tenm3    = 1.0E-3,
+     &           tenm4    = 1.0E-4,
+     &           tenm5    = 1.0E-5,
+     &           tenm6    = 1.0E-6,
+     &           tenm7    = 1.0E-7,
+     &           tenm8    = 1.0E-8,
+     &           tenm9    = 1.0E-9,
+     &           tenm10   = 1.0E-10,
+     &           tenm20   = 1.0E-20,
+     &           fpequal  = 1E+1*eps)
+
+      parameter (ten1    = 1.0E1,
+     &           ten2    = 1.0E2,
+     &           ten3    = 1.0E3,
+     &           ten4    = 1.0E4,
+     &           ten5    = 1.0E5,
+     &           ten6    = 1.0E6,
+     &           ten7    = 1.0E7,
+     &           ten8    = 1.0E8,
+     &           ten9    = 1.0E9,
+     &           ten10   = 1.0E10,
+     &           ten20   = 1.0E20)
+
+      character delme*(4), psdext*(4)
+
+      parameter (delme   = '####',
+     &           psdext  = '.psd')

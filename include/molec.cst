@@ -1,0 +1,20 @@
+      integer maxres,maxatm,mattyp,maxbond,lenalbl,mrestyp,mapres,
+     -        mbndtyp
+
+      parameter (
+c --- Maximal number of residues in a model:
+     -           maxres   =        400,
+c --- Maximal number of atoms in a model
+     -           maxatm   =  10*maxres,
+c --- Maximal number of bonds in a model
+     -           maxbond  =   2*maxatm,
+c --- Maximal length of an atom label:
+     -           lenalbl  =   20,
+c --- Maximal number of atom types:
+     -           mattyp   =         40,
+c --- Maximal number of residue types:
+     *           mrestyp  =         50,
+c --- Maximal number of bond types:
+     *           mbndtyp  =         20,
+c --- Maximal number of atoms per residue:
+     *           mapres   =         50)

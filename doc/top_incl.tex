@@ -1,0 +1,562 @@
+\TOP\ is an interpreter of a scripting language specialized for certain
+areas. Its use includes programs \MODELLER\ and \ASGL. Its syntax resembles 
+that of \FORTRAN.
+
+
+\section{The source file}
+
+\label{SECTION:topsource}
+
+Each \TOP\ program or include file is stored in a file named \Z{program.top}. 
+The \V{.top} extension is mandatory.
+
+The \TOP\ program consists of a series of commands. The order of
+commands is important. An example of the \TOP\ program that
+writes integers 1 to 10 to the output file is:
+
+\begin{verbatim}
+# Define a variable:
+DEFINE_INTEGER VARIABLES = IVAR
+
+# Open a file for appending
+OPEN IO_UNIT = 21, OBJECTS_FILE = 'output.file', FILE_ACCESS = 'APPEND'
+
+# Loop from 1 to 10:
+DO  IVAR = 1, 10, 1
+  # Append IVAR to the output file:
+  WRITE IO_UNIT = 21, OBJECTS = IVAR
+END_DO
+
+# Close a file
+CLOSE IO_UNIT = 11
+
+# Exit:
+STOP
+\end{verbatim}
+
+
+There can be at most one command per line. Each command or line can be
+at most \V{LENACT} (512) characters long.  The command can extend
+over several lines if a continuation character `;' is used to indicate 
+the end of the current line.  Everything on that line after the 
+continuation character is ignored.
+
+A comment character `\#' can be used anywhere on the line to ignore
+everything that occurs after the comment character.
+
+Blank lines are allowed. They are ignored. 
+
+TAB characters are replaced by blank characters.
+
+\TOP\ converts all commands to upper case, except for the string 
+constants that are quoted in single quotes '. Thus, \TOP\ is case
+insensitive, except for the quoted strings.
+
+There are two groups of commands: flow control commands and commands that 
+perform certain tasks. The next two sections describe the flow control 
+commands and those `performing' commands that are an integral part of \TOP.  
+There are also additional commands specific to each application of \TOP, 
+such as \MODELLER\ and \ASGL, which are described elsewhere. 
+
+The usual \UNIX\ conventions are used for typesetting the rules.
+Table~\ref{tab:vartypes} explains the shorthand used to describe
+different variables and constants:
+
+% \vspace{5mm}
+
+\begin{table}[hbt]
+\begin{center}
+\begin{tabular}{ll}
+\Integer{1}\         & an integer variable or constant \\
+\Real{1}\            & a real variable or constant \\
+\String{1}\          & a string variable or constant \\
+\Logical{1}\         & a logical variable or constant \\
+\vartype{var\_}{1}   & prefix for a variable \\
+\vartype{const\_}{1} & prefix for a constant \\
+\Variable{1}\        & \vartype{var\_integer}{1} \OR\ \vartype{var\_real}{1} 
+                       \OR\ \vartype{var\_string}{1} \OR\ 
+                            \vartype{var\_logical}{1} \\
+\Constant{1}\        & \vartype{const\_integer}{1} \OR\ 
+                       \vartype{const\_real}{1} \OR\ 
+                       \vartype{const\_string}{1} \OR\ 
+                       \vartype{const\_logical}{1} \\
+\Number{1}\          & \Integer{1}  \OR\ \Real{1} \\
+\Quantity{1}\        & \Variable{1} \OR\ \Constant{1} \\
+\Quantity{0}\        & a vector of any length with elements \Quantity{1} \\
+\Quantity{N}\        & a vector of $N$ elements \Quantity{1}\\
+\end{tabular}
+\end{center}
+\newcommand{\vartypes}{{\em List of variable types in \TOP.}}
+\caption[\vartypes]
+{\latex{\vartypes}}
+\label{tab:vartypes}
+\underfigtab
+\end{table}
+
+All the variables are formally vectors. When a variable is referred to
+in a scalar context its first element is used. All elements of one
+vector are of the same type. All variables, including a vector of 
+the variable length, must have at least one element.
+
+There are four different variable types: integer, real, string and
+logical.
+
+The real constant is (\FORTRAN\ real number representation):
+\begin{verbatim}
+  [+|-][digits][.][digits][{e|E|d|D}{+|-}digits]
+\end{verbatim}
+
+The integer constant is (\FORTRAN\ integer number representation): 
+\begin{verbatim}
+  [+|-][digits] 
+\end{verbatim}
+
+The logical constant can be either \V{on} or \V{off} (case insensitive).
+
+The string constant can contain any character except for a prime
+'. It can be optionally
+enclosed in primes.  If it is not quoted it is converted to
+upper case and its extent is determined by the position of the blanks
+on each side of the contiguous string of non-blank characters.
+
+
+\section{\TOP\ Commands}
+
+There are `flow control' and `performing' commands. If general, 
+the `performing' commands have the following syntax:
+
+{\bf ACTION} [{\bf ASSIGNMENT}, {\bf ASSIGNMENT}, \ldots, {\bf ASSIGNMENT}]
+
+{\bf ACTION} specifies what action to take. {\bf ASSIGNMENT} sets the
+variable to the specified value.  The values assigned in this way are
+kept until the next assignment. For example, 
+\V{CALL ROUTINE = 'routine\_name', IVAR = 3} sets the integer variable 
+{\bf IVAR} to 3 and then calls routine {\tt routine\_name}; if {\bf IVAR} is
+not changed in the routine, its value will remain to be 3 after the call
+to the routine.
+
+There can be any number of assignments in a command. They must be
+separated by commas. The assignment is of the form:
+
+\Variable{0}\ = [-]\Quantity{0}
+
+The `=' character is optional (can be replaced with a blank). 
+
+\Integer{1}\ and \Real{1}\ can be assigned to each other. When a real number 
+is assigned to an integer variable, the decimal places are ignored.
+That is, the result is the same as if the \FORTRAN\ function \V{IFIX()} was
+used. There must be no space between the optional $-$ and \Quantity{0}.
+If a vector variable is assigned to a variable, all its elements
+are used.
+
+Real, integer, and logical variables can also be assigned to a string variable.
+The conversion of a real variable to a string value is guided by the
+\TOP\ variable \K{NUMBER\_PLACES} which is of type \Integer{2}. The 
+first element of \K{NUMBER\_PLACES}
+sets the number of places before the decimal point, and the second element
+the number of places after the decimal point. If the latter is $-1$, an
+integer number without a decimal point is obtained, if 0 there is a
+decimal point without any decimal places.
+
+Assignments can follow any command, except \C{DO}, \C{END\_DO}, 
+\C{GO\_TO}, \C{LABEL}, \C{STOP}, and \C{END\_\-SUBROUTINE}.
+
+
+
+\Command      {DEFINE\_INTEGER}{define integer variables}
+
+\Options {
+\OptLine{VARIABLES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command defines user integer variables. All 
+variables used in the \TOP\ program must be defined.
+An exception are the pre-defined \TOP\ variables listed 
+at the end of this section.}
+
+
+\Command      {DEFINE\_LOGICAL}{define logical variables}
+
+\Options {
+\OptLine{VARIABLES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION}  
+}
+
+\Description  {This command defines user logical variables.}
+
+
+
+\Command      {DEFINE\_REAL}{define real variables}
+
+\Options{
+\OptLine{VARIABLES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION}  
+}
+
+\Description  {This command defines user real variables.}
+
+
+
+\Command      {DEFINE\_STRING}{define string variables}
+
+\Options {
+\OptLine{VARIABLES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command defines user string variables.}
+
+
+
+
+\Command      {SET}{set variable}
+
+\Commandline {SET [ASSIGNMENT, [ASSIGNMENT, \ldots [ASSIGNMENT]]]}
+
+\Description  {This command sets the values of variables of any of 
+the four types. See the description of {\bf ASSIGNMENT} above.
+
+There can be \UNIX\ shell environment variables in any input or output 
+filename. The environment variables have to be in the format {\tt
+\$\{VARNAME\}} or {\tt \$(VARNAME)}. Also, four predefined macros are 
+available for string variables: 
+
+Four predefined macros are available for string variables:
+
+\begin{itemize}
+\item \Z{\$\{LIB\}} is expanded into \V{\$LIB\_APPLICATION} shell 
+      environment variable,
+      where APPLICATION is the name-version of the program (\eg, MODELLER5);
+\item \Z{\$\{DIR\}} is expanded into the \TOP\ variable \K{DIRECTORY},
+\item \Z{\$\{JOB\}} is expanded into the root of the \TOP\ script filename,
+\item \Z{\$\{DEFAULT\}} is expanded into \V{(ROOT\_NAME)(FILE\_ID)(ID1)(ID2)(FILE\_EXT)},
+      where \K{ROOT\_\-NAME}, \K{FILE\_ID}, \K{ID1}, \K{ID2}, and \K{FILE\_EXT} are
+      \TOP\ variables. \K{FILE\_ID} is a string that may be set to
+      \Z{default}. In that case, a hard-wired short string is used instead of
+      \K{FILE\_ID}. Otherwise, the explicitly specified \K{FILE\_ID} is
+      applied instead.  In any case, \K{FILE\_ID} is not modified by the
+      filename generation routine so that it can be used more than once
+      without resetting it to the \Z{default} value. Four digits are used
+      for both \K{ID1} and \K{ID2}. For example, \Z{2ptn.B99990001}
+      results from \K{ROOT\_NAME} = \Z{2ptn}, \K{FILE\_EXT} = \Z{.B},
+      \K{ID1} = 9999, and \K{ID2} = 1.
+\end{itemize}
+}
+
+\Command      {OPERATE}{perform mathematic operation}
+
+\Options{
+\OptLine{OPERATION}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{RESULT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{ARGUMENTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command performs a specified mathematical operation.
+There can be up to \V{MRPRM} (120) operands for the \Z{SUM} 
+and \Z{MULTIPLY} operations, but only two for \Z{DIVIDE} 
+and \Z{POWER}. The \K{RESULT} value has to be the name of a real variable.}
+
+
+
+\Command      {STRING\_OPERATE}{perform string operation}
+
+\Options{
+\OptLine{OPERATION}{TYPE}{VALUES}{DEFAULT}{operation to perform: \V{CONCATENATE}} 
+\OptLine{RESULT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{STRING\_ARGUMENTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command performs a specified string operation.
+There can be up to \V{MSPRM} (130) operands for the 
+\V{CONCATENATE} operation.  The \K{RESULT} value has to 
+be a name of the string variable.}
+
+
+
+\Command      {RESET}{reset \TOP}
+
+\Description  {This command resets the internal state of
+\TOP\ and its predefined variables to their initial 
+values. It does this by calling the initialization 
+routine that reads the \Z{top.ini} file. This command
+also undefines all user defined variables.}
+
+
+
+\Command      {OPEN}{open input file}
+
+\Options{
+\OptLine{IO\_UNIT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{OBJECTS\_FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{FILE\_ACCESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{FILE\_STATUS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command opens a specified file on the specified I/O 
+stream for formatted access. \FORTRAN\ conventions apply
+to \K{FILE\_ACCESS} and \K{FILE\_STATUS}.}
+
+
+
+
+\Command      {WRITE}{write \TOP\ objects}
+
+\Options{
+\OptLine{IO\_UNIT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{OBJECTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{NUMBER\_PLACES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{OUTPUT\_DIRECTORY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command writes the specified objects to a single line 
+which is then written to a selected I/O stream. 
+Each element of the \K{OBJECTS} vector is first tested
+if it is a name of a variable of any type. If it is
+the contents of that variable is written out. If it is 
+not, the element is treated as a string constant.
+The first and second element of \K{NUMBER\_PLACES} set the 
+numbers of places before and after the decimal point,
+respectively, for real and integer objects.}
+
+
+
+
+
+\Command      {READ}{read record from input file}
+
+\Options {
+\OptLine{IO\_UNIT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{RECORD}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command reads a line from the file on the I/O channel 
+\K{IO\_UNIT}. The line goes into the string variable \K{RECORD}.}
+
+
+\Command      {CLOSE}{close an input file}
+
+\Options {
+\OptLine{IO\_UNIT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command closes a specified I/O stream.}
+
+
+
+
+\Command      {WRITE\_TOP}{write the \TOP\ program}
+
+\Options{
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{OUTPUT\_DIRECTORY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{FILE\_ACCESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command writes the current \TOP\ program in memory to a
+               specified file.}
+
+
+
+
+\Command      {SYSTEM}{execute system command}
+
+\Options {
+\OptLine{COMMAND}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command executes the specified UNIX command.}
+
+
+\Command      {INQUIRE}{check if file exists}
+
+\Options {
+\OptLine{FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command assigns 1 to \K{FILE\_EXISTS} if the 
+specified file exists,
+otherwise it assigns 0. You can use it with a subsequent 
+\C{IF} command for the flow control.}
+
+
+
+\Command      {GO\_TO}{jump to label}
+
+\Commandline  {GO\_TO \String{1}}
+
+\Description  {The `go\_to' statement, which transfers execution to the 
+\TOP\ statement occurring after the \C{LABEL} statement with
+the same name.}
+
+
+
+
+\Command      {LABEL}{place jump label}
+
+\Commandline  {LABEL \String{1}}
+
+\Description  {This command labels a target position for the \C{GO\_TO} 
+statement with the same name.}
+
+
+
+\Command      {INCLUDE}{include \TOP\ file}
+
+\Options {
+\OptLine{INCLUDE\_FILE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command includes a \TOP\ file \K{INCLUDE\_FILE}. 
+You do not have to specify the {\tt .top} extension. 
+First, the given filename is
+tried. Second, the directory specified in the {\tt 
+\$BIN\_APPLICATION} environment variable is prefixed and 
+the open function is tried again. \C{INCLUDE} command is 
+useful for including standard subroutines.}
+
+
+
+\Command      {CALL}{call \TOP\ subroutine}
+
+\Options {
+\OptLine{ROUTINE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command calls a \TOP\ subroutine \K{ROUTINE}.}
+
+
+
+
+\Command      {SUBROUTINE}{define \TOP\ subroutine}
+
+\Options {
+\OptLine{ROUTINE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command is the first \TOP\ statement for any routine. 
+It has to have a matching \C{END\_\-SUBROUTINE}. No nesting of subroutine
+definitions is allowed, although the definitions can be located anywhere 
+in a file.}
+
+
+
+\Command      {RETURN}{return from \TOP\ subroutine}
+
+\Description  {This command will exit the execution from the current routine. 
+It is optional.}
+
+
+
+
+\Command      {END\_SUBROUTINE}{end definition of \TOP\ subroutine}
+
+\Description  {This command has to be present at the end of each routine. 
+Possibly used instead of \C{RETURN}
+if \C{RETURN} not present.}
+
+
+
+\Command      {DO}{DO loop}
+
+\Commandline  
+{
+\C{DO} {\bf VAR} = \V{START}, \V{END}, \V{STEP} \\
+  \hspace{2.0cm} commands \\
+\C{END\_DO}
+}
+
+\Description{Commas after \V{START} and \V{END} can be omitted. This loop 
+is exactly like a \FORTRAN\ \V{DO} loop except that real
+values are allowed for any of the four controlling 
+variables. {\bf VAR} must be a variable, while \V{START}, 
+\V{END} and \V{STEP} can also be constants.}
+
+
+\Command      {IF}{conditional statement for numbers}
+
+\Options{
+\OptLine{OPERATION}{TYPE}{VALUES}{DEFAULT}{\V{EQ} \OR\ \V{GT} \OR\ \V{LT} \OR\
+         \V{GE} \OR\ \V{LE} \OR\ \V{NE}} \\
+}
+
+\Description  {This command performs conditional IF operation on two
+real arguments. The possible operations are equal
+(\V{EQ}), greater than (\V{GT}), less than (\V{LT}), greater or
+equal (\V{GE}), less or equal (\V{LE}), and not equal
+(\V{NE}). If the condition
+is true, the command specified in the \K{THEN} variable
+is executed. Otherwise the command in the \K{ELSE}
+variable is executed. Typically, these commands are 
+\C{GO\_TO} statements.}
+
+
+
+\Command      {STRING\_IF}{conditional statement for strings}
+
+\Options{
+\OptLine{OPERATION}{TYPE}{VALUES}{DEFAULT}{\V{EQ} \OR\ \V{NE}\ \OR\ \V{INDEX}} 
+\OptLine{STRING\_ARGUMENTS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{THEN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+\OptLine{ELSE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} 
+}
+
+\Description  {This command performs conditional IF operation on two
+string arguments. The possible operations are equal
+(\V{EQ}), not equal (\V{NE}), and the \FORTRAN\ {\tt index()}
+function (\V{INDEX}), which returns true if there is 
+`argument2' substring within `argument1'. If the condition
+is true, the command specified in the \K{THEN} variable
+is executed. Otherwise the command in the \K{ELSE}
+variable is executed. Typically, these commands are 
+\C{GO\_TO} statements.}
+
+
+\Command      {STOP}{exit \TOP}
+
+\Description  {This command stops the execution of the \TOP\ program.}
+
+
+{
+\section{Predefined \TOP\ variables}
+\samepage
+\vspace{5mm}
+\begin{table}[hbt]
+\begin{center}
+
+\begin{tabular}{ll} \hline
+Name              &  Type         \\ \hline
+\K{ARGUMENTS}         &  \Real{0}     \\
+\K{IO\_UNIT}          &  \Integer{1}  \\
+\K{ID1}               &  \Integer{1}  \\
+\K{ID2}               &  \Integer{1}  \\
+\K{NUMBER\_PLACES}    &  \Integer{2}  \\
+\K{FILE\_EXISTS}      &  \Integer{1}  \\
+\K{OUTPUT\_CONTROL}   &  \Integer{4}  \\
+\K{STOP\_ON\_ERROR}   &  \Integer{1}  \\
+\K{ERROR\_STATUS}     &  \Integer{1}  \\
+\K{OBJECTS}           &  \String{0}   \\
+\K{VARIABLES}         &  \String{0}   \\
+\K{ROUTINE}           &  \String{1}   \\
+\K{ROOT\_NAME}        &  \String{1}   \\
+\K{DIRECTORY}         &  \String{1}   \\
+\K{FILE\_ID}          &  \String{1}   \\
+\K{OPERATION}         &  \String{1}   \\
+\K{RESULT}            &  \String{1}   \\
+\K{STRING\_ARGUMENTS} &  \String{0}   \\
+\K{OBJECTS\_FILE}     &  \String{1}   \\
+\K{INCLUDE\_FILE}     &  \String{1}   \\
+\K{FILE}              &  \String{1}   \\
+\K{RECORD}            &  \String{1}   \\
+\K{THEN}              &  \String{1}   \\
+\K{ELSE}              &  \String{1}   \\
+\K{COMMAND}           &  \String{1}   \\
+\K{FILE\_EXT}         &  \String{1}   \\
+\K{OUTPUT\_DIRECTORY} &  \String{1}   \\
+\K{FILE\_ACCESS}      &  \String{1}   \\
+\K{FILE\_STATUS}      &  \String{1}   \\ \hline
+\end{tabular}
+\end{center}
+\newcommand{\predefinedvar}{{\em Predefined \TOP\ variables}}
+\caption[\predefinedvar]
+{\latex{\predefinedvar}}
+\label{tab:predefinedvar}
+\underfigtab
+\end{table}
+}

@@ -1,0 +1,79 @@
+\section{What is \ASGL ?}
+
+
+\begin{description}
+
+\item[Purpose:] 
+      Easy creation of PostScript files containing scientific plots.
+
+
+\item[Capabilities:] \ 
+
+\begin{itemize}
+\item 2D plots: 
+      scatter plots, curve plots, smoothed curve plots, transformation 
+      of axes, histograms, spectra, general axes, and plot labelling;
+
+\item 3D plots: density plots;
+
+\item molecule plots: 
+      ball-and-stick plots of a molecule in a Brookhaven Protein Databank
+      format file; general labelling; virtual Calpha-Calpha 
+      bonds; stereo plots;
+
+\item the attributes of the objects to be drawn can be varied by the user;
+   for example, the grayness and width of lines, the size of fonts,
+   the grayness of histogram bars, \etc.
+\end{itemize}
+
+    
+\item[Use:] \ 
+
+\ASGL\ is used via a steering file. A steering file contains commands 
+specialized for creation of plots. This file is interpreted by \TOP\ which 
+then calls appropriate Fortran subroutines to create the PostScript output
+file. See Chapter~\ref{CHAPTERTOP} for description of \TOP.
+\end{description}
+
+
+\newpage
+
+
+\section{Using \ASGL\ with the \TOP\ steering file}
+
+The \ASGL\ program is run by:
+
+{\tt asgl job}
+
+\noindent where {\tt job} is the root of the steering file --- the actual 
+steering file must have an extension {\tt .top}. By default, the output of 
+the program is then written to the {\tt job.ps} file that can be printed on the
+PostScript printer, previewed with a PostScript previewer, modified,
+or included in other documents, such as \TeX\ files.
+
+\ASGL\ reads PostScript definitions of line types, font types and
+symbols from text file {\tt src/psgl1.ini}. This file can be edited to
+extend the capabilities of \ASGL. For example, line widths, grayness,
+dash-dot combinations, font types and sizes, symbol types and sizes
+can be customized in this way.
+
+There are four coordinate systems (or windows) used by \ASGL. The Base
+PostScript system corresponds to the PostScript device and has the
+Bounding Box (0,0,612,792). The Paper coordinate system is used 
+to specify the Bounding Box and its orientation of the window 
+on the paper that will contain the plot. It overlaps with
+the Base PostScript system except that it uses cm; its Bounding Box
+is (0,0,21.59,27.94). The World coordinate system is defined by 
+the data to be plotted. It overlaps with the window specified in 
+the Paper coordinate system. The Plot coordinate system is used for 
+creating the plot. The origin of the Plot coordinate system is always (0,0),
+XMAX is always 1, and YMAX is such that it retains the X/Y aspect 
+of the Paper coordinate system. It overlaps with the window specified
+in the Paper and World coordinate systems.
+
+Probably the easiest way to use \ASGL\ is to take an example \TOP\ file
+from {\tt examples} sub-directory that is closest to what you need and
+edit it to suit your requirements exactly. The example \TOP\ files
+and their output are given in Chapter~\ref{CHAPTEREXAMPLES}.
+
+A complete list of \ASGL\ commands is given in Chapter~\ref{CHAPTERASGL}.

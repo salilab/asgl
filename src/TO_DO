@@ -1,0 +1,10 @@
+Introduce XYZ for bonds and atoms so that multiple molecules can be drawn
+with the right kind of overlapp (maybe will have to introduce MAKE_ATOMS
+command, similar to MAKE_BONDS).
+
+AXES2D should also give ybottom and ytop (for CAPTION 1 when there is no
+label of x-axis ticks)
+
+CONTOUR and 3D plotting
+
+smoothing of density array

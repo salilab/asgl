@@ -1,0 +1,14 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    IO.CST constants define the general input and output channels. This 
+cf    is used both by TOP and MODELLER, or any other component of the
+cf    program.
+cf
+cf    ioinp = 11   ... general input stream
+cf    iolog =  6   ... general output log stream
+cf
+cf ----------------------------------------------------------------------------
+
+      integer ioinp, iolog
+  
+      parameter (iolog = 6, ioinp = 11)

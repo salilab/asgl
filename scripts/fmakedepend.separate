@@ -1,0 +1,132 @@
+#!/usr/local/bin/perl
+#
+# Usage: fmakedepend -e OBJEXT [-f file] [-I incdir] file ...
+#
+# Fortran makedepend program, with apologies to Larry Wall and
+# Randal Schwartz.  It assumes your files have an extension of .f
+# or .F (a bug?).
+#
+# Version 3: Added -f and -I options
+# Version 2: added recursive search for includes in include files.
+#
+# The [-f file] switch is used to change the name of the current
+# Makefile.
+#
+# The [-I incdir] option tells sfmakedepend to look in alternate
+# directories for the include files.  There can be several "-I dir"
+# options used at once.  The current directory is still searched
+# first.  Note that there must be a space between the "-I" and the
+# directory name.  Also, the option matching is case insensitive
+# so it can just as well be "-i".
+#
+# The -e OBJEXT option must be used to specify the extension of the object 
+# files. [Andrej Sali]
+#
+# BUGS
+#	It doesn't keep track of what is in the included files.
+#	If you have five files which all include foo.h then foo.h
+#	(and files it includes) will be searched five times.
+#
+# Please let me know if you have any problems with it-
+#	Kate Hedstrom
+#	kate@ahab.rutgers.edu
+#
+# First extract the include lines from each file, checking for
+# duplicate includes.
+
+sub findfile {
+  local($file) = @_;
+  local($found, $i);
+
+  $found = 0;
+DIR:
+  foreach $i (0 .. $#incdirs) {
+    $filepath = $incdirs[$i]."/".$file;
+    if ( -f $filepath ) {
+      $found = 1;
+      last DIR;
+    }
+  }
+  if ( ! $found) {
+    warn "Can't find file: $file\n";
+    $filepath = "";
+  }
+}
+
+sub dofile {
+  local($file,$topfile) = @_;
+  local(@new);
+
+  open(FILE, $file) || warn "Can't open $file: $!\n";
+  while (<FILE>) {
+    if (/^#include\s*['"]([^"']*)["']/i) {
+      $included = $1;
+      &findfile($included);
+      if ( $filepath ) {
+        $new[$#new+1] = $filepath
+	  unless (index($includes{$topfile},$filepath) > -1);
+        $includes{$topfile} .= $filepath . ' '
+	  unless (index($includes{$topfile},$filepath) > -1);
+      }
+    }
+  }
+# recursively search the included files for includes
+  foreach $file (@new) {
+    &dofile($file,$topfile);
+  }
+}
+
+require 'newgetopt.pl';
+do NGetOpt("e=e", "f=s", "I=s@");
+
+# list of directories to search, starting with current directory
+@incdirs = (".", @opt_i);
+
+# Search for the includes in all the files
+foreach $file (@ARGV) {
+  &dofile($file,$file);
+}
+
+# Create new Makefile with new dependencies.
+
+$mystring = '# DO NOT DELETE THIS LINE - used by make depend';
+
+if ($opt_f) {
+  $mf = $opt_f;
+} elsif (-f "makefile") {
+  $mf = 'makefile';
+} else {
+  $mf = 'Makefile';
+}
+
+open(MFILE, $mf) || die "can't read Makefile $mf: $!\n";
+open(NMFILE, "> Makefile.depend") || die "can't write Makefile.depend: $!\n";
+open(NMFILE2, "> Makefile.no.depend") || die "can't write Makefile.no.depend: $!\n";
+select(NMFILE2);
+
+while (<MFILE>) {
+  if (!/$mystring/) {
+    print;
+  } else {
+    last;
+  }
+}
+
+select(NMFILE);
+
+print $mystring, "\n";
+
+# Now print out dependencies in sorted order.
+
+foreach $target (sort keys(%includes)) {
+  $dependencies = $includes{$target};
+  $target =~ s/\.f$/$opt_e/i;
+  print "$target: $dependencies\n";
+}
+
+# Sort out the Makefiles
+
+# rename($mf, "$mf.old") || warn "can't overwrite $mf.old: $!\n";
+# rename('Makefile.depend', $mf) ||
+#      warn "can't move Makefile.depend to $mf: $!\n";
+

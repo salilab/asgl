@@ -1,0 +1,43 @@
+                                ASGL 1.2
+
+                           PostScript Plotting
+                                                  v              
+                    Copyright(c) 1989-1993 Andrej Sali           
+                            All Rights Reserved                  
+
+                      E-mail: sali@tammy.harvard.edu
+
+
+Description:
+
+ASGL program produces a PostScript or Encapsulated PostScript file
+that can contain scatter plots, line plots, histograms, 2D density
+plots, and/or bond-and-stick plots of molecules.  Input are data 
+files and a TOP program guiding the creation of a plot. TOP is an
+interpretor of ASGL commands similar to Fortran. ASGL is written in
+Fortran 77 and is meant to run on UNIX systems. The GNU gs previewer 
+under X11 and NeXT's Preview program can be used to preview the output 
+before printing it. You can also include the plots in other documents 
+(tex) or edit them with other programs (Draw, Adobe Illustrator).
+
+
+Contents of the distribution:
+
+Entry             Brief Description
+-----------------------------------------------------------------------
+src\              sources
+lib\              common routines
+data\             data files
+scripts\          script files
+doc\              documentation for ASGL and TOP
+examples\         example TOP files and their documentation
+notes\            miscellaneous notes
+README            this file
+INSTALLATION      installation instructions
+
+
+
+
+Installation:
+
+See the file INSTALLATION.

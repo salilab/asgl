@@ -1,0 +1,5 @@
+#!/bin/csh
+
+setenv BIN_ASGL /data/sali/bin/scripts/libasgl
+setenv LIB_ASGL /data/sali/bin/scripts/libasgl
+setenv ASGL     /data/sali/bin/scripts/libasgl

@@ -1,0 +1,12 @@
+      real xwpscale,ywpscale,xwptrans,ywptrans
+      real bbox0,bboy0,bbox1,bboy1,x0plt,y0plt,x1plt,y1plt
+      real pbrot11,pbrot12,pbrot21,pbrot22,pbangle
+      real xpbscale,ypbscale,xpbtrans,ypbtrans
+
+
+      common /real2/ xwpscale,ywpscale,xwptrans,ywptrans,
+     -               bbox0, bboy0, bbox1, bboy1,
+     -               x0plt, y0plt, x1plt, y1plt, 
+     -               pbrot11,pbrot12,pbrot21,pbrot22,
+     -               xpbscale,ypbscale,xpbtrans,ypbtrans,
+     -               pbangle

@@ -1,0 +1,52 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    DOUBLE PRECISION (REAL*8; from machar.f)
+cf
+cf
+cf
+cf    eps       = 2.3E-16          ... double floating-point precision 
+cf    largest   = 4.4E+307         ... largest double FP number (machar.f)
+cf    smallest  = 2.3E-308         ... smallest double FP number (machar.f)
+cf    divisor   = 1.0E-150         ... smallest FP number for accurate division
+cf                                     implies the largest divided number
+cf                                     (|MAX / divisor| < largest)
+cf    acconmin  = eps              ... accuracy for CONMIN()
+cf
+cf
+cf    When a normalized feature violation is larger than rgauss1, the
+cf    second regime starts and goes up to rgauss2; when rgauss2 is reached, 
+cf    arg in exp(arg) is rviolmax. If the transformed violation is larger 
+cf    than rviolmax, then print error message and ignore the term.
+cf
+cf    rviolmax  = 37.0             ... 1/2*rviolmax^2 has to be smaller than
+cf                                     the largest argument to exp().
+cf                                     the largest argument to exp() 
+cf                                     ( 88 for single FP precision)
+cf                                     (709 for double FP precision)
+cf    rgauss1 =  10.0
+cf    rgauss2 = 200.0
+cf    agauss  = 1.0/rviolmax*(rgauss2-rviolmax)/(rgauss2-rgauss1)
+cf    bgauss  = rgauss2/rviolmax*(rviolmax-rgauss1)/(rgauss2-rgauss1)
+cf
+cf
+cf ----------------------------------------------------------------------------
+
+      real eps,rviolmax,largest,smallest,acconmin,agauss,bgauss
+      real rgauss1,rgauss2,divisor
+
+c --- make sure that these numbers apply to and are within the range of all machines:
+      parameter (
+     &           eps      = 2.3E-16,
+     &           acconmin = eps,
+     &           divisor  = 1.0E-150,
+     &           smallest = 2.3E-308,
+     &           largest  = 4.4E+307)
+
+
+        parameter (rviolmax =   37.0,
+     &             rgauss1  =   10.0,
+     &             rgauss2  =  200.0,
+     &             agauss   =  1.0/rviolmax*(rgauss2-rviolmax)/
+     &                         (rgauss2-rgauss1),
+     &             bgauss   =  rgauss2/rviolmax*(rviolmax-rgauss1)/
+     &                         (rgauss2-rgauss1))

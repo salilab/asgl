@@ -1,0 +1,37 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    TOP.CMN is the TOP include file that defines most of the TOP
+cf    variables.
+cf
+cf ----------------------------------------------------------------------------
+
+#include "top.cst"
+
+      integer iaction(maxact), nactions, indxca, nrprm, niprm, nsprm
+      integer nvrprm(mrprm),nviprm(miprm),nvsprm(msprm),nvlprm(mlprm)
+      integer ntypcom, iprm(mviprm,miprm), nlbl, ilbl(maxlbl)
+      integer nrout,indrout(2,maxrout),ilevel, nlprm
+      integer indlev(maxlev),ibegloop(maxloop)
+      integer ictrloop(4,maxloop)
+      common /itop1/ iaction, nactions,indxca, nrprm, niprm, nsprm,
+     &       nlprm,nvrprm,nviprm,nvsprm,nvlprm,ntypcom,iprm,nlbl,ilbl,
+     &       nrout,indrout,ilevel,indlev,ibegloop,ictrloop
+
+      real rprm(mvrprm,mrprm)
+      common /rtop1/ rprm
+
+      character commfile*(lenfil), action(maxact)*(lenact)
+      character cmdlst(mtypcom)*25,bindir*(lenfil)
+      character prmrlst(mrprm)*(lenkey), prmilst(miprm)*(lenkey)
+      character prmslst(msprm)*(lenkey), prmllst(mlprm)*(lenkey)
+      character sprm(mvsprm,msprm)*(lensprm),inifil*(lenfil)
+      character lbl(maxlbl)*(lenlbl),rout(maxrout)*(lenfil)
+      character topdir*(lenfil),tcntrl(4,maxloop)*1,libdir*(lenfil)
+      character datetime*20,job*(lenfil)
+      common /ctop1/ action,commfile,cmdlst,bindir,prmilst,
+     &               prmrlst, prmslst, prmllst, sprm, lbl, rout,
+     &               inifil, topdir, tcntrl, libdir, datetime, job
+
+      logical lprm(mvlprm,mlprm), chkl(mlprm), chki(miprm), chkr(mrprm)
+      logical chks(msprm), called(mtypcom), ioopnd(nio2-nio1+1)
+      common /ltop1/  lprm, chkl, chki, chkr, chks, called, ioopnd

@@ -1,0 +1,575 @@
+# Define DDEFS when calling make if you want to produce SMALL or HUGE 
+# (as opposed to medium) sized MODELLER; for example:
+#
+#        make opt "DDEFS=-DHUGE"
+#
+#        make opts "DDEFS=-DSMALL"
+#
+#
+# To do: use ${MAKE} instead of make for recursive calls
+# (may not work for all make programs);
+#
+
+SHELL=/bin/sh
+
+.PHONY: default clean distclean depend install check lintfor flint flint1 flint2
+
+FTNCHEK=ftnchek
+CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
+	-nopure -noverbose -nosixchar -extern -wordsize=4
+
+# convex c2 can only read *.f files, not *.F files;
+# Do not know about CRAY.
+
+.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o
+
+# F2C
+.F.m88k_o:
+	/lib/cpp -P ${INCLUDE} ${DDEFS} $*.F > $*.f
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+	rm $*.f
+
+.F.f2c_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+#	/lib/cpp -P ${INCLUDE} ${DDEFS} $*.F > $*.f
+#	f2c ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f
+#	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+#	rm $*.f
+
+# F2C without a driver:
+.F.i386-linux_o:
+	f77 ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $*.i386-linux_o ; fi
+#	/lib/cpp -P -traditional ${INCLUDE} -Df2c ${DDEFS} $*.F > $*.f
+#	f2c ${INCLUDE} -Df2c ${DDEFS} ${FFLAGS} $*.f
+#	gcc -O3 ${INCLUDE} ${DDEFS} -c ${*F}.c -o $*.i386-linux_o
+#	rm $*.f ${*F}.c
+
+.F.i386-absoft_o:
+	f90 ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $*.i386-absoft_o ; fi
+
+# F2C
+.F.next_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F
+#	${FC} ${INCLUDE} ${DDEFS} -DSMALL ${FFLAGS} -c $*.F
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+
+.F.sun4_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o ${*F}.o
+#	${FC} ${INCLUDE} ${DDEFS} -DSMALL ${FFLAGS} -c $*.F -o ${*F}.o
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+
+.F.sol2_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o ${*F}.o
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+
+.F.sol2f90_o:
+	/usr/ccs/lib/cpp -P ${INCLUDE} ${DDEFS} -Df90 $*.F > $*.f
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+	rm $*.f
+
+# F2C:
+.F.sun4-5.3_o:
+	cpp -P ${INCLUDE} ${DDEFS} $*.F > $*.f
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+	rm $*.f
+
+.F.hp9000s700_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.cray_o:
+	${FC} ${INCLUDE} ${DDEFS} -Dcray ${FFLAGS} -c $*.F
+	@if [ -f ${*F}.o -a ${*F}.o != $@  ] ; then mv ${*F}.o $@ ; fi
+
+.F.alpha_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.alphaf90_o:
+	${FC} ${INCLUDE} ${DDEFS} -DALPHA ${FFLAGS} -c $*.F -o $@
+
+.F.decstation_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.iris4d_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.r10000_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.f90_o:
+	${FC} ${INCLUDE} -Df90 ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+# For debugging on IRIS4D:
+.F.iris4dt_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.g77_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.convex_o:
+	ln $*.F $*.f
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f -o $@
+	rm $*.f
+
+# It seems that R8000 f77 compiler cannot do both CPP and F77 at the same time
+# anymore:
+.F.r8000_o:
+	${FC} ${INCLUDE} ${DDEFS} -P $*.F
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c ${*F}.i -o $@
+	rm ${*F}.i
+
+# .F.r8000_o:
+# ${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.rs6000.o:
+	/lib/cpp -P ${INCLUDE} -DAIX ${DDEFS} $*.F > $*.f
+	${FC} ${FFLAGS} -c $*.f -o $@
+	rm $*.f
+
+# $*     ... directory/root
+# $<     ... directory/root.source
+# $@     ... directory/root.target
+# ${*F}  ... filename part (* can also be < or @)
+# ${*D}  ... directory part (* can also be < or @)
+
+# @ before command does not print it on STDOUT
+# - before command continues with execution even if an error
+
+# ---------------------------------------------------------------------
+# These are level 1 targets:
+
+default: help
+
+help:
+	@echo "This Makefile will compile a single program with an appropriate "
+	@echo "compiler, provided that the ASGL_EXECUTABLE_TYPE variable is defined."
+	@echo ""
+	@ASGL_EXECUTABLE_TYPE=`${ASGL_EXECUTABLE_TYPE}` ; \
+	echo "Current ASGL_EXECUTABLE_TYPE: $${ASGL_EXECUTABLE_TYPE}"
+	@echo ""
+	@echo "   make help        to print this message"
+	@echo "   make deb         to compile with all debugging options - DOUBLE"
+	@echo "   make opt         to compile with all optimizing options - DOUBLE"
+	@echo "   make debs        to compile with all debugging options - SINGLE"
+	@echo "   make opts        to compile with all optimizing options - SINGLE"
+	@echo "   make check       to use ftnchek"
+	@echo "   make flint1      to prepare for make flint in ../flint/"
+	@echo "   make flint       to use IPT flint on an SGI (after make flint1)"
+	@echo "   make flint2      to move .F files back from ../flint/ (if you changed them)"
+	@echo "   make lintfor     to use lintfor on an HP"
+	@echo "   make clean       to remove object files on current host"
+	@echo "   make cleaner     to remove object files and executable on current host"
+	@echo "   make distclean   to remove everything but sources"
+	@echo "   make install     to install the executable"
+	@echo "   make depend      to create the dependency list"
+	@echo ""
+
+cpp:
+	for file in ${FILES} ; do \
+	outf=`dirname $${file}`/`basename $${file} .F`.f ; \
+	/lib/cpp -P ${INCLUDE} ${DDEFS} $${file} > $${outf} ; \
+	touch `dirname $${file}`/`basename $${file} .F`.rs6000_o ; \
+	done
+
+# We are using recursive make here because the shell $${} variables only retain
+# their values within one shell line. So, for these shell variables to be 
+# passed to other parts of make, we have to call make with arguments that
+# assign the shell $${} variables to new make ${} variables.
+
+deb:
+	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE}   \
+	DEBUGGING   DOUBLE_PRECISION
+	@echo
+	@echo
+	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
+	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
+	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}d" \
+		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS} -DDOUBLE_PRECISION" flags ; \
+	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
+
+opt:
+	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "   \
+	OPTIMIZING   DOUBLE_PRECISION"
+	@echo
+	@echo
+	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
+	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
+	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}" \
+		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS} -DDOUBLE_PRECISION" flags ; \
+	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
+
+debs:
+	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "  \
+	DEBUGGING    SINGLE_PRECISION"
+	@echo
+	@echo
+	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
+	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
+	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}ds" \
+		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
+	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
+
+opts:
+	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "   \
+	OPTIMIZING   SINGLE_PRECISION"
+	@echo
+	@echo
+	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
+	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
+	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}s" \
+		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
+	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
+
+clean: rmhostobj
+
+cleaner: rmhostobj rmhostexec rmmisc
+
+cleanobj: rmallobj rmmisc
+
+distclean: rmallobj rmallexec rmmisc
+	@if [ -f Makefile.* ] ; then rm Makefile.* ; fi
+
+rmhostobj:
+	@ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	OBJECTS=`echo ${FILES} | sed -e "s;\.F;.$${ASGL_EXECUTABLE_TYPE}_o;g"` ; \
+	for file in $${OBJECTS} ; do \
+	   if [ -f $${file} ] ; then rm $${file} ; fi ; \
+	done
+
+rmhostexec:
+	@ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	EXEC=${PROGRAM}_$${ASGL_EXECUTABLE_TYPE} ; \
+	if [ -f $${EXEC} ] ; then rm $${EXEC} ; fi
+
+rmallobj:
+	@for file in ${FILES:.F=.*_o} ; do \
+	   if [ -f $${file} ] ; then rm $${file} ; fi ; \
+	done
+	@for file in ${FILES:.F=.o} ; do \
+	   if [ -f $${file} ] ; then rm $${file} ; fi ; \
+	done
+
+rmallexec:
+	@-if [ -f ${PROGRAM}_* ] ; then rm ${PROGRAM}_* ; fi
+
+rmmisc:
+	@-if [ -f *.cpp ] ; then rm *.cpp ; fi
+	@-if [ -f *.ln ] ; then rm *.ln ; fi
+	@-if [ -f *.f ] ; then rm *.f ; fi
+	@-if [ -f *.out ] ; then rm *.out ; fi
+	@-if [ -f all.chk ] ; then rm all.chk ; fi
+	@-if [ -f Makefile.old ] ; then rm Makefile.old ; fi
+	@-if [ -f \#*\# ] ; then rm \#*\# ; fi
+	@-if [ -f *~?~ ] ; then rm *~?~ ; fi
+	@-if [ -f *.ana ] ; then rm *.ana ; fi
+	@-if [ -f core ] ; then rm core ; fi
+	@-if [ -f *.bak ] ; then rm *.bak ; fi
+	@-if [ -f *.ps ] ; then rm *.ps ; fi
+	@-if [ -f *.aux ] ; then rm *.aux ; fi
+	@-if [ -f *.toc ] ; then rm *.toc ; fi
+	@-if [ -f *.log ] ; then rm *.log ; fi
+	@-if [ -f cv* ] ; then rm -r cv* ; fi
+	@-if [ -f test* ] ; then rm -r test* ; fi
+	@-if [ -f flint* ] ; then rm -r flint* ; fi
+
+# Works on my tamika.harvard.edu only (NeXTstation)
+check:
+	for F in ${FILES} ; do (/usr/lib/cpp -P ${INCLUDE} $${F} > $${F}f); done
+#	for F in ${FILES} ; do (fcpp -P ${INCLUDE} $${F} > $${F}f); done
+	${FTNCHEK} ${CHECK_OPTS} ${FILES:.F=.Ff} > all.chk
+	rm ${FILES:.F=.Ff}
+
+# FLINT works on SGI:
+
+# -B ... create database .fdb
+# -f ... hints
+# -g ... global analysis
+# -m ... report the use of implicit typing
+# -P ... portability to target system
+# -V ... dialect of f77/f90
+# -s ... print statistics
+# -t ... generate call tree
+# -u ... variable usage checking
+# -w ... report warnings
+# -W ... output width
+# -x ... report cross-references
+# -+ ... show progress during parsing
+# -7 ... set to F77
+# -9 ... set to F90
+# -Xline ... enable line resoution for xlint
+# -P ANSI -V ANSI
+
+# Move .F files from ../ to ../flint/
+# Because stupid xlint cannot use more than one directory for source files:
+# Do 'make xlint1' before xlint and do 'make xlint2' after xlint;
+# And of course make a backup copy of the sources before any of this.
+
+flint1:
+	if [ ! -d ../flint ] ; then mkdir ../flint ; fi ; \
+	for file in ${FILES} ; do cp $${file} ../flint ; done
+
+flint:
+	cd ../flint ; flint -Sflint -Bflint -fgmstuwx+7 -Xline -W 132 -Pansi -VSGI ${INCLUDE} $${DDEFS} *.F
+
+# Move the possibly edited files back to their original location:
+flint2:
+	for file in ${FILES} ; do mv -f ../flint/`basename $${file}` $${file} ; done
+	rm -r ../flint
+
+# Works on HP only (lintfor crashes frequently)
+lintfor:
+	lintfor -p ${INCLUDE} $${DDEFS} ${FILES}
+#	lintfor -p -x 1010,1011,1012,1008,1017 ${INCLUDE} $${DDEFS} ${FILES}
+
+install: 
+	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
+	make "PROGRAM=${PROGRAM}" "BINDIR=${BINDIR}" "LIBDIR=${LIBDIR}" \
+	"EXECSCRIPT=${EXECSCRIPT}" "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" \
+	"LIBFILES=${LIBFILES}" "BINFILES=${BINFILES}" \
+	installtarget
+
+depend: ${FILES}
+	${FMAKEDEPEND} -e .OBJEXT ${FILES}
+
+#
+# ------------------------------------------------------------------------
+# Second level install target called by make install:
+# 
+installtarget: 
+	if [ ! -d ${BINDIR}  ] ; then ${MKDIRS} ${BINDIR} ; fi
+	if [ ! -d ${LIBDIR}  ] ; then ${MKDIRS} ${LIBDIR} ; fi
+	-if [ `echo ${BINFILES} | wc -w` -gt 0 ] ; then cp ${BINFILES} ${BINDIR}; fi
+	-if [ `echo ${LIBFILES} | wc -w` -gt 0 ] ; then cp -r ${LIBFILES} ${LIBDIR}; fi
+	-cp ${PROGRAM}_${ASGL_EXECUTABLE_TYPE} ${BINDIR}/${PROGRAM}_${ASGL_EXECUTABLE_TYPE}; \
+	strip ${BINDIR}/${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+	sed -e "s;BIN_value;${BINDIR};" \
+		-e "s;LIB_value;${LIBDIR};" \
+		asgl.script > ${BINDIR}/${EXECSCRIPT}
+	chmod a+rwx ${BINDIR}
+	chmod a+rwx ${LIBDIR}
+	chmod a+rw ${BINDIR}/*
+	chmod a+rw ${LIBDIR}/*
+	chmod a+rwx ${BINDIR}/${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+	chmod a+rwx ${BINDIR}/${EXECSCRIPT}
+
+
+# Select the right compilation flags given COMPILER selection. The whole 
+# selection has to be on one line because shell variables FC and FFLAGS are
+# only valid on one line. 
+#
+# next   ... NeXT, optimize, double precision
+# nextd  ... NeXT, debug, double precision
+# nexts  ... NeXT, optimize, single precision
+# nextds ... NeXT, debug, single precision
+#
+# The following compilers have CPP built in (with the appropriate flags):
+#    convex: -fpp
+#    iris4d: by default
+#    alpha: -cpp
+#    HP:  .F
+#    SUN: .F
+#    f2c
+#
+#    Try the optimizing preprocessor on HP (+OP4 P,     +OPunroll)
+#
+#    iris4d: -sopt produces worse code; remains to be tested: -pfa.
+#       Jack Perry says -O2 -mips2 -OPT:IEEE_arithmetic=3 is best for R4000
+#       but -mips2 does not work with R3000
+#
+#    on SGI, use -mips1 to produce IRIX4/R3000 code.
+#
+#    hp9000s700ds: +FPVZOUI, Floating point fussyness crashes everything.
+#    hp9000s700:   MODELLER does not work with +O3, -O is OK
+#	cray        ) FC=cf77;  FFLAGS="-Zv -Wf'-o inline'";; \
+#	crayd       ) FC=cf77;  FFLAGS="-g -Wf'-e o'";; \
+#	crays       ) FC=cf77;  FFLAGS="-Zv -Wf'-o inline'";; \
+#	crayds      ) FC=cf77;  FFLAGS="-g -Wf'-e o'";; \
+#
+#    alpha: -automatic crashes at least ngh.f and psa.f
+#
+#	Rusty's r10000     ) FC=f77;   FFLAGS="-automatic -r10000 -mips4 -O2 -n32 -r8 -LNO -IPA -GCM:aggressive_speculation=ON -OPT:roundoff=3:IEEE_arith=1"; LDFLAGS="-lfastm" ;; \
+# 	My R10000 opt:	r10000      ) FC=f77;   FFLAGS="-automatic -r10000 -mips4 -64 -r8 -O2 -GCM:aggressive_speculation=ON -OPT:roundoff=3"; LDFLAGS="-lfastm" ;; \
+#
+flags:
+	@case ${COMPILER} in \
+	convex      ) FC=fc ;   FFLAGS="-r8 -O3 -fpp";; \
+	convexd     ) FC=fc ;   FFLAGS="-r8 -g -cs -fpp";; \
+	convexs     ) FC=fc ;   FFLAGS="-O3 -fpp";; \
+	convexds    ) FC=fc ;   FFLAGS="-g -cs -fpp";; \
+	next        ) FC=f77;   FFLAGS="-r8 -O";; \
+	nextd       ) FC=f77;   FFLAGS="-r8 -g -C";; \
+	nexts       ) FC=f77;   FFLAGS="-O";; \
+	nextds      ) FC=f77;   FFLAGS="-g -C";; \
+        m88k        ) FC=f77;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq300";; \
+        m88kd       ) FC=f77;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq300";; \
+        m88ks       ) FC=f77;   FFLAGS="-O -Nx400 -Nn1604 -Nq300";; \
+        m88kds      ) FC=f77;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq300";; \
+        f2c         ) FC=fc ;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq300";; \
+        f2cd        ) FC=fc ;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq300";; \
+        f2cs        ) FC=fc ;   FFLAGS="-O -Nx400 -Nn1604 -Nq300";; \
+        f2cds       ) FC=fc ;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq300";; \
+	i386-absofts  ) FC=f90 ;   FFLAGS="-O -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
+        i386-absoftds ) FC=f90 ;   FFLAGS="-g -Rb -Rc -Rs -Rp -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
+	i386-absoft  ) FC=f90 ;   FFLAGS="-O -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
+        i386-absoftd ) FC=f90 ;   FFLAGS="-g -Rb -Rc -Rs -Rp -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
+	i386-linux  ) FC=fc ;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77 -lF77 -lU77";; \
+        i386-linuxd ) FC=fc ;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77";; \
+        i386-linuxs ) FC=fc ;   FFLAGS="-O"; LDFLAGS="-lU77 -lV77 -lF77 -II77";; \
+        i386-linuxds) FC=fc ;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77 -lF77";; \
+	hp9000s700  ) FC=f77;   FFLAGS="+e +autodblpad -R8 -O +U77";; \
+	hp9000s700d ) FC=f77;   FFLAGS="+e +autodblpad -R8 -g -C +U77";; \
+	hp9000s700s ) FC=f77;   FFLAGS="+e -O +U77";; \
+	hp9000s700ds) FC=f77;   FFLAGS="+e -g -C +U77";; \
+	cray        ) FC=cf77;  FFLAGS="-Zv";; \
+	crayd       ) FC=cf77;  FFLAGS="-g";; \
+	crays       ) FC=cf77;  FFLAGS="-Zv";; \
+	crayds      ) FC=cf77;  FFLAGS="-g";; \
+	iris4dtd    ) FC=f77;   FFLAGS="-automatic -r8 -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
+	iris4d      ) FC=f77;   FFLAGS="-automatic -r8 -O2";; \
+	iris4dd     ) FC=f77;   FFLAGS="-automatic -r8 -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
+	iris4ds     ) FC=f77;   FFLAGS="-automatic -O2";; \
+	iris4dds    ) FC=f77;   FFLAGS="-automatic -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
+	r8000       ) FC=f77;   FFLAGS="-OPT:roundoff=3 -backslash -G 4 -automatic -r8 -O3 -64 -mips4"; LDFLAGS="-lfastm" ;; \
+	r8000d      ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -r8 -g -C -O0 -64 -mips4"; LDFLAGS="-lfastm" ;; \
+	r8000s      ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -O3 -64 -mips4"; LDFLAGS="-lfastm" ;; \
+	r8000ds     ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -g -C -O0 -64 -mips4"; LDFLAGS="-lfastm" ;; \
+ 	r10000      ) FC=f77;   FFLAGS="-automatic -mips2 -r8 -O2 -OPT:roundoff=3"; LDFLAGS="-lfastm" ;; \
+	r10000d     ) FC=f77;   FFLAGS="-automatic -mips2 -r8 -g -C -O0"; LDFLAGS="-lfpe";; \
+	r10000s     ) FC=f77;   FFLAGS="-automatic -mips2 -O2 -OPT:roundoff=3"; LDFLAGS="-lfastm" ;; \
+	r10000ds    ) FC=f77;   FFLAGS="-automatic -mips2 -g -C -O0"; LDFLAGS="-lfpe";; \
+ 	f90         ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -O2 -n32 -r8 -LNO -IPA -OPT:roundoff=3:IEEE_arith=1"; LDFLAGS="-lfastm" ;; \
+	f90d        ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -r8 -g -C -O0";; \
+	f90s        ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -O2 -n32 -LNO -IPA -OPT:roundoff=3:IEEE_arith=1"; LDFLAGS="-lfastm" ;; \
+	f90ds       ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -g -C -O0";; \
+	g77         ) FC=g77;   FFLAGS="-r8 -O";; \
+	g77d        ) FC=g77;   FFLAGS="-r8 -g";; \
+	g77s        ) FC=g77;   FFLAGS="-O -ffast-math -fno-f2c";; \
+	g77ds       ) FC=g77;   FFLAGS="-O -fpedantic -finit-local-zero -fbackslash -fsymbol-case-lower -Wsurprising -Wuninitialized -Wunused -Wimplicit -Wredundant-decls -W -Wall";; \
+	sun4        ) FC=f77;   FFLAGS="-r8 -O4 -Nx800"; LDFLAGS="-nolib -Bstatic -lF77 -lV77 -lm -lc" ;; \
+	sun4d       ) FC=f77;   FFLAGS="-r8 -g -Nx800"; LDFLAGS="-lV77" ;; \
+	sun4s       ) FC=f77;   FFLAGS="-O4 -Nx800"; LDFLAGS="-lV77" ;; \
+	sun4ds      ) FC=f77;   FFLAGS="-g -Nx800"; LDFLAGS="-lV77" ;; \
+	sol2        ) FC=f77;   FFLAGS="-r8 -O3 -Nx800"; LDFLAGS="-lV77";; \
+	sol2d       ) FC=f77;   FFLAGS="-r8 -g -Nx800"; LDFLAGS="-lV77";; \
+	sol2s       ) FC=f77;   FFLAGS="-O4 -Nx800"; LDFLAGS="-lV77";; \
+	sol2ds      ) FC=f77;   FFLAGS="-g -Nx800"; LDFLAGS="-lV77";; \
+	sun4-5.3    ) FC=f77;   FFLAGS="-r8 -O -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
+	sun4-5.3d   ) FC=f77;   FFLAGS="-r8 -g -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
+	sun4-5.3s   ) FC=f77;   FFLAGS="-O -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
+	sun4-5.3ds  ) FC=f77;   FFLAGS="-g -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
+	sol2f90s     ) FC=f90;   FFLAGS="-O3 -xchip=ultra -xarch=v8plus"; LDFLAGS="";; \
+	decstation  ) FC=f77;   FFLAGS="-cpp -r8 -O3";; \
+	decstationd ) FC=f77;   FFLAGS="-cpp -r8 -g";; \
+	decstations ) FC=f77;   FFLAGS="-cpp -O3";; \
+	decstationds) FC=f77;   FFLAGS="-cpp -g";; \
+	alphaf90    ) FC=f90;   FFLAGS="-r8 -O5 -fast -om -non_shared -cpp";; \
+	alphaf90d   ) FC=f90;   FFLAGS="-r8 -g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
+	alphaf90s   ) FC=f90;   FFLAGS="-O5 -fast -om -non_shared -cpp";; \
+	alphaf90ds  ) FC=f90;   FFLAGS="-g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
+	alpha       ) FC=f77;   FFLAGS="-r8 -O5 -fast -inline speed -om -non_shared -cpp";; \
+	alphad      ) FC=f77;   FFLAGS="-r8 -g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
+	alphas      ) FC=f77;   FFLAGS="-O5 -fast -inline speed -om -non_shared -cpp";; \
+	alphads     ) FC=f77;   FFLAGS="-g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
+	stardent    ) FC=fc ;   FFLAGS="-r8 -O";; \
+	stardentd   ) FC=fc ;   FFLAGS="-r8 -g -O0";; \
+	stardents   ) FC=fc ;   FFLAGS="-O";; \
+	stardentds  ) FC=fc ;   FFLAGS="-g -O0";; \
+	rs6000      ) FC=xlf;   FFLAGS="-qautodbl=dbl -qdpc -O -qcharlen=4096 -qAUX_SIZE=16384";; \
+	rs6000d     ) FC=xlf;   FFLAGS="-bnoquiet -qautodbl=dbl -qdpc -C -g -qextchk -qflttrap -qnosave -qspnans -qcharlen=4096 -qAUX_SIZE=16384 -qinitauto=00";; \
+	rs6000s     ) FC=xlf;   FFLAGS="-O -qcharlen=4096 -qAUX_SIZE=16384";; \
+	rs6000ds    ) FC=xlf;   FFLAGS="-bnoquiet -C -g -qextchk -qflttrap -qnosave -qspnans -qcharlen=4096 -qAUX_SIZE=16384 -qxflag=dd24 -qinitauto=00";; \
+	undefined   ) FC=f77;   FFLAGS="";; \
+	*           ) FC=f77;   FFLAGS="";; \
+	esac ; \
+	make -f Makefile.${ASGL_EXECUTABLE_TYPE} "FC=$${FC}" "FFLAGS=$${FFLAGS}" \
+	"ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE}" "INCLUDE=${INCLUDE}" "DDEFS=${DDEFS}" \
+	"LDFLAGS=$${LDFLAGS}" "DECFORT_DEBUG=T" ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+#	set DECFORT_DEBUG=T; export DECFORT_DEBUG; \
+
+#	FOR LATEST XLF 4.x COMPILER: add -qinitauto=00 option for debugging
+
+
+# Linking rules:
+
+${PROGRAM}_m88k: ${FILES:.F=.m88k_o}
+	${FC} ${FFLAGS} ${FILES:.F=.m88k_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_f2c: ${FILES:.F=.f2c_o}
+	${FC} ${FFLAGS} ${FILES:.F=.f2c_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_i386-linux: ${FILES:.F=.i386-linux_o}
+	f77 ${FILES:.F=.i386-linux_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_i386-absoft: ${FILES:.F=.i386-absoft_o}
+	f90 ${FILES:.F=.i386-absoft_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_iris4d: ${FILES:.F=.iris4d_o}
+	${FC} ${FFLAGS} ${FILES:.F=.iris4d_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_r10000: ${FILES:.F=.r10000_o}
+	${FC} ${FFLAGS} ${FILES:.F=.r10000_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_f90: ${FILES:.F=.f90_o}
+	${FC} ${FFLAGS} ${FILES:.F=.f90_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_iris4dt: ${FILES:.F=.iris4dt_o}
+	${FC} ${FFLAGS} ${FILES:.F=.iris4dt_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_r8000: ${FILES:.F=.r8000_o}
+	${FC} ${FFLAGS} ${FILES:.F=.r8000_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_g77: ${FILES:.F=.g77_o}
+	${FC} ${FFLAGS} ${FILES:.F=.g77_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_next: ${FILES:.F=.next_o}
+	${FC} ${FFLAGS} ${FILES:.F=.next_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_sun4: ${FILES:.F=.sun4_o}
+	${FC} ${FFLAGS} ${FILES:.F=.sun4_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_sol2: ${FILES:.F=.sol2_o}
+	${FC} ${FFLAGS} ${FILES:.F=.sol2_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_sol2f90: ${FILES:.F=.sol2f90_o}
+	${FC} ${FFLAGS} ${FILES:.F=.sol2f90_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_sun4-5.3: ${FILES:.F=.sun4-5.3_o}
+	${FC} ${FFLAGS} ${FILES:.F=.sun4-5.3_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_alpha: ${FILES:.F=.alpha_o}
+	${FC} ${FFLAGS} ${FILES:.F=.alpha_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_alphaf90: ${FILES:.F=.alphaf90_o}
+	${FC} ${FFLAGS} ${FILES:.F=.alphaf90_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_convex: ${FILES:.F=.convex_o}
+	${FC} ${FFLAGS} ${FILES:.F=.convex_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_rs6000: ${FILES:.F=.rs6000.o}
+	${FC} ${FFLAGS} ${FILES:.F=.rs6000.o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_decstation: ${FILES:.F=.decstation_o}
+	${FC} ${FFLAGS} ${FILES:.F=.decstation_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_cray: ${FILES:.F=.cray_o}
+	${FC} ${FFLAGS} ${FILES:.F=.cray_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_hp9000s700: ${FILES:.F=.hp9000s700_o}
+	${FC} ${FFLAGS} ${FILES:.F=.hp9000s700_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_stardent: ${FILES:.F=.stardent_o}
+	${FC} ${FFLAGS} ${FILES:.F=.stardent_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}

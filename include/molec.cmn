@@ -1,0 +1,29 @@
+#include "molec.cst"
+
+      integer iresatm(maxatm),natm,nres,iatmr1(maxres),
+     -        iatmr2(maxres),iattyp(maxatm),isel(maxatm),
+     -        numsel,ibond(2,maxbond),numbond,nresdc,
+     -        natmdc(mrestyp),nvdwtyp,ialine(maxatm),
+     -        ibline(maxbond),iatypl(mattyp),ibtypl(mbndtyp),
+     -        nbndtyp,ibndtyp(maxbond),numlsel,isell(maxatm),
+     -        numbsel,iselb(maxatm)
+      common /imol1/ iresatm,natm,nres,iatmr1,iatmr2,iattyp,isel,
+     -       numsel,ibond,numbond,nresdc,natmdc,nvdwtyp,ialine,
+     -       ibline,iatypl,ibtypl,nbndtyp,ibndtyp,numlsel,isell,
+     -       numbsel,iselb
+
+      real xpdb(maxatm),ypdb(maxatm),zpdb(maxatm),atrad(maxatm),
+     -     electr(mattyp),vdwcnt(mattyp),polar(mattyp),
+     -     acolor(maxatm),bcolor(maxbond),atypc(mattyp),
+     -     btypc(mbndtyp),bond_fact(maxbond),taper(maxbond)
+      common /rmol1/ xpdb,ypdb,zpdb,atrad,electr,vdwcnt,polar,
+     -       acolor,bcolor,atypc,btypc,bond_fact,taper
+
+
+      character resnam(maxres)*3, resnum(maxres)*5,res1nam(maxres)*1,
+     -          atmnam(maxatm)*4,vdwfnam*(lenf),vdwatm(mattyp)*4,
+     -          labls(maxatm)*(lenalbl),grbrkf*(lenf),
+     -          groatm(mapres,mrestyp)*4,brkatm(mapres,mrestyp)*4,
+     -          resdc(mrestyp)*3,drawlib*(lenf)
+      common /cmol1/ resnam,resnum,res1nam,atmnam,vdwfnam,vdwatm,
+     -          labls,grbrkf,groatm,brkatm,resdc,drawlib

@@ -1,0 +1,26 @@
+#include "psgl.cmn"
+#include "asgl.cst"
+#include "molec.cmn"
+#include "cs.cmn"
+
+
+      integer ncolmn, nxdim, nydim, inp, ilast, istrs(maxsclm)
+      integer invstrs(maxclm), nstrs
+
+      common /int1/ ncolmn, nxdim, nydim, inp, ilast, istrs, invstrs,
+     &              nstrs
+
+
+      real tab(maxpnt,maxclm),arr(maxxarr,maxyarr),xpos(maxmrk)
+      real ypos(maxmrk),xleg(maxmrk), yleg(maxmrk)
+
+      common /real1/ tab, arr, xpos, ypos, xleg, yleg
+
+      character xlabl(maxtck)*(lbllen)
+      character ylabl(maxtck)*(lbllen),tabstr(maxpnt,maxsclm)*(colwdt)
+
+      common /char1/ xlabl, ylabl,tabstr
+
+      logical istrcol(maxclm)
+
+      common /log1/ istrcol

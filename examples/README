@@ -1,0 +1,3 @@
+Use make to produce an examplesi.ps document that will contain example
+TOP files together with the pictures they produce. It will also contain
+the definitions of ASGL line types, etc.

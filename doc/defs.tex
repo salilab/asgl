@@ -1,0 +1,79 @@
+% Various LaTeX2e definitions:
+
+% Change the default page sizes:
+%
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+% \addtolength{\topmargin}{-\headheight}
+% \addtolength{\topmargin}{-\headsep}
+\textheight 9.3in
+\oddsidemargin -0.2in
+\evensidemargin \oddsidemargin
+\marginparwidth 0.4in
+\textwidth 6.9in
+
+\newcommand{\beautylb}{\linebreak}
+\newcommand{\beautypb}{\clearpage}
+
+\pagestyle{headings}     % numbering style  (or plain, empty, myheadings)
+
+\renewcommand{\baselinestretch}{1.00}    %  relative line spacing
+
+\parskip 1.2mm      %  additional vertical paragraph spacing
+
+\newcommand{\Command}[2]{\subsection{#1 --- #2} \index{#1@{\bf #1}}}
+
+\newcommand{\Commandline}[1]{\begin{description} \item[Command:]
+                             #1
+                             \end{description}}
+
+\newcommand{\Output}[1]{\begin{description} \item[Output:]
+                             #1
+                             \end{description}}
+
+\newcommand{\Requirements}[1]{\begin{description} \item[Requirements:]
+                             #1
+                             \end{description}}
+
+\newcommand{\Description}[1]{\begin{description} \item[Description:]
+                             #1
+                             \end{description}}
+
+%\begin{htmlonly}
+%  \newenvironment{newenv}{{}{}}
+%\end{htmlonly}
+
+\latex{\newcommand{\Options}[1]{{\noindent\bf Options:} \\ #1 }}
+\html{\newcommand{\Options}[1]{{\noindent\bf Options:} \\ % #1}}
+                          \begin{figure}[Hhtb] #1 \end{figure}}}
+
+\newcommand{\OptLine}[5]{\tabtab
+      \parbox[t]{2.40in}{{\small\sloppy \K{#1} = #2{#3}}}\hspace{0.016in}
+      \parbox[t]{1.35in}{{\small\sloppy\tt #4}}\hspace{0.016in}
+      \parbox[t]{2.75in}{{\small\sloppy #5}}\\[1mm]}
+
+\newcommand{\SeeExample}[1]{{\noindent\bf Example:} See #1 command.}
+
+\newenvironment{Examples}
+{\begin{description} \item[Example:] \ \\[-6mm]}
+{\end{description} \ \\[-2mm]}
+
+% Special formatting codes for special objects
+\newcommand{\Scr}[1]{{\tt \_\_#1}}       % modeller script
+\newcommand{\V}[1]{{\tt #1}}            % computer value (filename, variable, term, ...)
+\newcommand{\Z}[1]{{\tt '#1'}}          % string
+\newcommand{\K}[1]{{\sf #1}\index{#1@{\sf #1}}}  % TOP keyword
+\newcommand{\C}[1]{{\bf #1}\index{#1@{\bf #1}}}  % TOP command
+\newcommand{\OR}{{\tt |}}
+\newcommand{\AND}{{\tt \&}}
+% write :N after the keyword:
+\newcommand{\vartype}[2]{\mbox{$\langle{\tt #1:#2}\rangle$}}
+\newcommand{\Real}[1]{\vartype{real}{#1}}
+\newcommand{\Integer}[1]{\vartype{integer}{#1}}
+\newcommand{\String}[1]{\vartype{string}{#1}}
+\newcommand{\Logical}[1]{\vartype{logical}{#1}}
+\newcommand{\Quantity}[1]{\vartype{quantity}{#1}}
+\newcommand{\Variable}[1]{\vartype{variable}{#1}}
+\newcommand{\Constant}[1]{\vartype{constant}{#1}}
+\newcommand{\Number}[1]{\vartype{number}{#1}}

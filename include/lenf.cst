@@ -1,0 +1,5 @@
+      integer lenf
+
+c --- Maximal length of a filename:
+      parameter (lenf = 128)
+

@@ -1,0 +1,22 @@
+cf ----------------------------------------------------------------------------
+cf
+cf    TOP_APPL.CMN is the master TOP include file which includes all
+cf    other include files of the application.
+cf
+cf ----------------------------------------------------------------------------
+
+#include "top.cmn"
+
+c --- Application specific code --> edit
+
+      character applic*20,appenv*(lenfil),binenv*(lenfil)
+      character libenv*(lenfil),keyenv*(lenfil),license*(lenfil)
+      parameter (applic  = 'asgl')
+      parameter (appenv  = 'LIB_ASGL')
+      parameter (libenv  = 'LIB_ASGL')
+      parameter (binenv  = 'BIN_ASGL')
+      parameter (keyenv  = 'NOT-USED-IN-ASGL')
+      parameter (license = 'NOT-USED-IN-ASGL')
+
+c ---, Include the right COMMON file here:
+#include "asgl.cmn"
