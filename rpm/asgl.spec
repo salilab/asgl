@@ -41,7 +41,7 @@ bindir=${RPM_BUILD_ROOT}/usr/bin
 libdir=${RPM_BUILD_ROOT}/usr/lib/asgl
 install -d ${bindir}
 install -d ${libdir}
-install asgl.script ${bindir}/asgl
+install rpm/asgl.script ${bindir}/asgl
 rm -f exe/collect
 install exe/* ${libdir}
 
