@@ -1224,7 +1224,7 @@ c         dvips.
      -      ' > asgl.sed.tmp ; mv asgl.sed.tmp ',
      -      psf(1:lenr(psf))
 
-          call system(cmd)
+          call mysystem(cmd)
 
         end if
 
