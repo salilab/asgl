@@ -20,14 +20,17 @@ SHELL=/bin/sh
 
 default: dvi
 
-manual: $(SOURCES)
+collect: collect.f
+	f77 -o collect collect.f
+
+manual: $(SOURCES) collect
 	(cd ../examples; make ps_files)
-	collect ${ROOT}.tex perl.tex
+	./collect ${ROOT}.tex perl.tex
 	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
 
-dvi: $(SOURCES)
+dvi: $(SOURCES) collect
 	(cd ../examples; make ps_files)
-	collect ${ROOT}.tex perl.tex
+	./collect ${ROOT}.tex perl.tex
 	./options.pl perl.tex > ${DOCUMENT}.tex ; rm perl.tex
 	latex $(DOCUMENT)
 #	bibtex $(DOCUMENT)
@@ -53,7 +56,7 @@ clean:
 	rm *.idx *.ind *.ilg *.blg *~ #*# .*~
 
 distclean: clean
-	rm ${DOCUMENT}.tex ${DOCUMENT}.ps
+	rm ${DOCUMENT}.tex ${DOCUMENT}.ps collect
 	rm -r ${DOCUMENT}
 
 cleanfigs:
