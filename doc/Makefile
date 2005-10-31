@@ -51,7 +51,7 @@ print: ps
 	lpr -h "${DOCUMENT}.ps"
 
 clean:
-	rm *.dvi *.log *.aux *.toc *.bbl *.tof *.lof *.lot *.ana *.lot
+	rm *.dvi *.log *.aux *.toc *.bbl *.tof *.lof *.lot *.ana *.lot *.out
 	rm *.idx *.ind *.ilg *.blg *~ #*# .*~
 
 distclean: clean
