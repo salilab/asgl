@@ -21,7 +21,7 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 # convex c2 can only read *.f files, not *.F files;
 # Do not know about CRAY.
 
-.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o .i386-intel_o
+.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o .i386-intel_o .mac10v4-xlf_o
 
 # F2C
 .F.m88k_o:
@@ -114,6 +114,9 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 .F.i386-intel_o:
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
 
+.F.mac10v4-xlf_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
 .F.convex_o:
 	ln $*.F $*.f
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.f -o $@
@@ -156,10 +159,8 @@ help:
 	echo "Current ASGL_EXECUTABLE_TYPE: $${ASGL_EXECUTABLE_TYPE}"
 	@echo ""
 	@echo "   make help        to print this message"
-	@echo "   make deb         to compile with all debugging options - DOUBLE"
-	@echo "   make opt         to compile with all optimizing options - DOUBLE"
-	@echo "   make debs        to compile with all debugging options - SINGLE"
-	@echo "   make opts        to compile with all optimizing options - SINGLE"
+	@echo "   make deb         to compile with all debugging options"
+	@echo "   make opt         to compile with all optimizing options"
 	@echo "   make check       to use ftnchek"
 	@echo "   make flint1      to prepare for make flint in ../flint/"
 	@echo "   make flint       to use IPT flint on an SGI (after make flint1)"
@@ -186,52 +187,26 @@ cpp:
 
 deb:
 	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE}   \
-	DEBUGGING   DOUBLE_PRECISION
+	DEBUGGING
 	@echo
 	@echo
 	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
 	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
 	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
 	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}d" \
-		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS} -DDOUBLE_PRECISION" flags ; \
+		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
 	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
 
 opt:
 	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "   \
-	OPTIMIZING   DOUBLE_PRECISION"
+	OPTIMIZING"
 	@echo
 	@echo
 	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
 	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
 	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
 	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}" \
-		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS} -DDOUBLE_PRECISION" flags ; \
-	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
-	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
-
-debs:
-	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "  \
-	DEBUGGING    SINGLE_PRECISION"
-	@echo
-	@echo
-	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
-	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
-	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
-	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}ds" \
-		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
-	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
-	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
-
-opts:
-	@echo "COMPILING: " ${PROGRAM} "  ON  " ${ASGL_EXECUTABLE_TYPE} "   \
-	OPTIMIZING   SINGLE_PRECISION"
-	@echo
-	@echo
-	ASGL_EXECUTABLE_TYPE=${ASGL_EXECUTABLE_TYPE} ; \
-	sed -e "s;\.OBJEXT:;.$${ASGL_EXECUTABLE_TYPE}_o:;" \
-	Makefile > Makefile.$${ASGL_EXECUTABLE_TYPE} ; \
-	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}s" \
 		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
 	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
@@ -410,94 +385,52 @@ flags:
 	@case ${COMPILER} in \
 	convex      ) FC=fc ;   FFLAGS="-r8 -O3 -fpp";; \
 	convexd     ) FC=fc ;   FFLAGS="-r8 -g -cs -fpp";; \
-	convexs     ) FC=fc ;   FFLAGS="-O3 -fpp";; \
-	convexds    ) FC=fc ;   FFLAGS="-g -cs -fpp";; \
 	next        ) FC=f77;   FFLAGS="-r8 -O";; \
 	nextd       ) FC=f77;   FFLAGS="-r8 -g -C";; \
-	nexts       ) FC=f77;   FFLAGS="-O";; \
-	nextds      ) FC=f77;   FFLAGS="-g -C";; \
         m88k        ) FC=f77;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq300";; \
         m88kd       ) FC=f77;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq300";; \
-        m88ks       ) FC=f77;   FFLAGS="-O -Nx400 -Nn1604 -Nq300";; \
-        m88kds      ) FC=f77;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq300";; \
         f2c         ) FC=fc ;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq300";; \
         f2cd        ) FC=fc ;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq300";; \
-        f2cs        ) FC=fc ;   FFLAGS="-O -Nx400 -Nn1604 -Nq300";; \
-        f2cds       ) FC=fc ;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq300";; \
-	i386-absofts  ) FC=f90 ;   FFLAGS="-O -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
-        i386-absoftds ) FC=f90 ;   FFLAGS="-g -Rb -Rc -Rs -Rp -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
 	i386-absoft  ) FC=f90 ;   FFLAGS="-O -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
         i386-absoftd ) FC=f90 ;   FFLAGS="-g -Rb -Rc -Rs -Rp -Df90 -DABSOFT"; LDFLAGS="-lU77 -lV77";; \
 	i386-linux  ) FC=fc ;   FFLAGS="-r8 -O -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77 -lF77 -lU77";; \
         i386-linuxd ) FC=fc ;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77";; \
-        i386-linuxs ) FC=fc ;   FFLAGS="-O"; LDFLAGS="-lU77 -lV77 -lF77 -II77";; \
-        i386-linuxds) FC=fc ;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77 -lF77";; \
 	i386-intel  ) FC=ifort;   FFLAGS="-O3 -Df90"; LDFLAGS="-i-static";; \
 	i386-inteld ) FC=ifort;   FFLAGS="-g -Df90"; LDFLAGS="-i-static";; \
-	i386-intels ) FC=ifort;   FFLAGS="-O3 -Df90"; LDFLAGS="-i-static";; \
-	i386-intelds) FC=ifort;   FFLAGS="-g -Df90"; LDFLAGS="-i-static";; \
+	mac10v4-xlf  ) FC=xlf95_s;   FFLAGS="-qfixed=72 -qsuffix=o=mac10v4-xlf_o -O3 -WF,-Df90"; LDFLAGS="-lSystemStubs";; \
+	mac10v4-xlfd ) FC=xlf95_s;   FFLAGS="-qfixed=72 -qsuffix=o=mac10v4-xlf_o -g -WF,-Df90"; LDFLAGS="-lSystemStubs";; \
 	hp9000s700  ) FC=f77;   FFLAGS="+e +autodblpad -R8 -O +U77";; \
 	hp9000s700d ) FC=f77;   FFLAGS="+e +autodblpad -R8 -g -C +U77";; \
-	hp9000s700s ) FC=f77;   FFLAGS="+e -O +U77";; \
-	hp9000s700ds) FC=f77;   FFLAGS="+e -g -C +U77";; \
 	cray        ) FC=cf77;  FFLAGS="-Zv";; \
 	crayd       ) FC=cf77;  FFLAGS="-g";; \
-	crays       ) FC=cf77;  FFLAGS="-Zv";; \
-	crayds      ) FC=cf77;  FFLAGS="-g";; \
 	iris4dtd    ) FC=f77;   FFLAGS="-automatic -r8 -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
 	iris4d      ) FC=f77;   FFLAGS="-automatic -r8 -O2";; \
 	iris4dd     ) FC=f77;   FFLAGS="-automatic -r8 -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
-	iris4ds     ) FC=f77;   FFLAGS="-automatic -O2";; \
-	iris4dds    ) FC=f77;   FFLAGS="-automatic -g -C -check_bounds -w0 -O0 -trapuv"; LDFLAGS="-lfpe";; \
 	r8000       ) FC=f77;   FFLAGS="-OPT:roundoff=3 -backslash -G 4 -automatic -r8 -O3 -64 -mips4"; LDFLAGS="-lfastm" ;; \
 	r8000d      ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -r8 -g -C -O0 -64 -mips4"; LDFLAGS="-lfastm" ;; \
-	r8000s      ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -O3 -64 -mips4"; LDFLAGS="-lfastm" ;; \
-	r8000ds     ) FC=f77;   FFLAGS="-backslash -G 0 -automatic -g -C -O0 -64 -mips4"; LDFLAGS="-lfastm" ;; \
  	r10000      ) FC=f77;   FFLAGS="-automatic -mips2 -r8 -O2 -OPT:roundoff=3"; LDFLAGS="-lfastm" ;; \
 	r10000d     ) FC=f77;   FFLAGS="-automatic -mips2 -r8 -g -C -O0"; LDFLAGS="-lfpe";; \
-	r10000s     ) FC=f77;   FFLAGS="-automatic -mips2 -O2 -OPT:roundoff=3"; LDFLAGS="-lfastm" ;; \
-	r10000ds    ) FC=f77;   FFLAGS="-automatic -mips2 -g -C -O0"; LDFLAGS="-lfpe";; \
  	f90         ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -O2 -n32 -r8 -LNO -IPA -OPT:roundoff=3:IEEE_arith=1"; LDFLAGS="-lfastm" ;; \
 	f90d        ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -r8 -g -C -O0";; \
-	f90s        ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -O2 -n32 -LNO -IPA -OPT:roundoff=3:IEEE_arith=1"; LDFLAGS="-lfastm" ;; \
-	f90ds       ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -g -C -O0";; \
 	g77         ) FC=g77;   FFLAGS="-r8 -O";; \
 	g77d        ) FC=g77;   FFLAGS="-r8 -g";; \
-	g77s        ) FC=g77;   FFLAGS="-O -ffast-math -fno-f2c";; \
-	g77ds       ) FC=g77;   FFLAGS="-O -fpedantic -finit-local-zero -fbackslash -fsymbol-case-lower -Wsurprising -Wuninitialized -Wunused -Wimplicit -Wredundant-decls -W -Wall";; \
 	sun4        ) FC=f77;   FFLAGS="-r8 -O4 -Nx800"; LDFLAGS="-nolib -Bstatic -lF77 -lV77 -lm -lc" ;; \
 	sun4d       ) FC=f77;   FFLAGS="-r8 -g -Nx800"; LDFLAGS="-lV77" ;; \
-	sun4s       ) FC=f77;   FFLAGS="-O4 -Nx800"; LDFLAGS="-lV77" ;; \
-	sun4ds      ) FC=f77;   FFLAGS="-g -Nx800"; LDFLAGS="-lV77" ;; \
 	sol2        ) FC=f77;   FFLAGS="-r8 -O3 -Nx800"; LDFLAGS="-lV77";; \
 	sol2d       ) FC=f77;   FFLAGS="-r8 -g -Nx800"; LDFLAGS="-lV77";; \
-	sol2s       ) FC=f77;   FFLAGS="-O4 -Nx800"; LDFLAGS="-lV77";; \
-	sol2ds      ) FC=f77;   FFLAGS="-g -Nx800"; LDFLAGS="-lV77";; \
 	sun4-5.3    ) FC=f77;   FFLAGS="-r8 -O -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
 	sun4-5.3d   ) FC=f77;   FFLAGS="-r8 -g -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
-	sun4-5.3s   ) FC=f77;   FFLAGS="-O -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
-	sun4-5.3ds  ) FC=f77;   FFLAGS="-g -Nx800 -Nn1604 -Nq300"; LDFLAGS="-lV77";; \
 	sol2f90s     ) FC=f90;   FFLAGS="-O3 -xchip=ultra -xarch=v8plus"; LDFLAGS="";; \
 	decstation  ) FC=f77;   FFLAGS="-cpp -r8 -O3";; \
 	decstationd ) FC=f77;   FFLAGS="-cpp -r8 -g";; \
-	decstations ) FC=f77;   FFLAGS="-cpp -O3";; \
-	decstationds) FC=f77;   FFLAGS="-cpp -g";; \
 	alphaf90    ) FC=f90;   FFLAGS="-r8 -O5 -fast -om -non_shared -cpp";; \
 	alphaf90d   ) FC=f90;   FFLAGS="-r8 -g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
-	alphaf90s   ) FC=f90;   FFLAGS="-O5 -fast -om -non_shared -cpp";; \
-	alphaf90ds  ) FC=f90;   FFLAGS="-g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
 	alpha       ) FC=f77;   FFLAGS="-r8 -O5 -fast -inline speed -om -non_shared -cpp";; \
 	alphad      ) FC=f77;   FFLAGS="-r8 -g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
-	alphas      ) FC=f77;   FFLAGS="-O5 -fast -inline speed -om -non_shared -cpp";; \
-	alphads     ) FC=f77;   FFLAGS="-g -C -fpe -check overflow -check underflow -trapuv -synchronous_exceptions -warn argument_checking -cpp";; \
 	stardent    ) FC=fc ;   FFLAGS="-r8 -O";; \
 	stardentd   ) FC=fc ;   FFLAGS="-r8 -g -O0";; \
-	stardents   ) FC=fc ;   FFLAGS="-O";; \
-	stardentds  ) FC=fc ;   FFLAGS="-g -O0";; \
 	rs6000      ) FC=xlf;   FFLAGS="-qautodbl=dbl -qdpc -O -qcharlen=4096 -qAUX_SIZE=16384";; \
 	rs6000d     ) FC=xlf;   FFLAGS="-bnoquiet -qautodbl=dbl -qdpc -C -g -qextchk -qflttrap -qnosave -qspnans -qcharlen=4096 -qAUX_SIZE=16384 -qinitauto=00";; \
-	rs6000s     ) FC=xlf;   FFLAGS="-O -qcharlen=4096 -qAUX_SIZE=16384";; \
-	rs6000ds    ) FC=xlf;   FFLAGS="-bnoquiet -C -g -qextchk -qflttrap -qnosave -qspnans -qcharlen=4096 -qAUX_SIZE=16384 -qxflag=dd24 -qinitauto=00";; \
 	undefined   ) FC=f77;   FFLAGS="";; \
 	*           ) FC=f77;   FFLAGS="";; \
 	esac ; \
@@ -544,6 +477,9 @@ ${PROGRAM}_g77: ${FILES:.F=.g77_o}
 
 ${PROGRAM}_i386-intel: ${FILES:.F=.i386-intel_o}
 	${FC} ${FFLAGS} ${FILES:.F=.i386-intel_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_mac10v4-xlf: ${FILES:.F=.mac10v4-xlf_o}
+	${FC} ${FFLAGS} ${FILES:.F=.mac10v4-xlf_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
 
 ${PROGRAM}_next: ${FILES:.F=.next_o}
 	${FC} ${FFLAGS} ${FILES:.F=.next_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
