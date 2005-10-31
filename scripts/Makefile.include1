@@ -21,7 +21,7 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 # convex c2 can only read *.f files, not *.F files;
 # Do not know about CRAY.
 
-.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o
+.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o .i386-intel_o
 
 # F2C
 .F.m88k_o:
@@ -109,6 +109,9 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
 
 .F.g77_o:
+	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.i386-intel_o:
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
 
 .F.convex_o:
@@ -429,6 +432,10 @@ flags:
         i386-linuxd ) FC=fc ;   FFLAGS="-r8 -g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77";; \
         i386-linuxs ) FC=fc ;   FFLAGS="-O"; LDFLAGS="-lU77 -lV77 -lF77 -II77";; \
         i386-linuxds) FC=fc ;   FFLAGS="-g -C -Nx400 -Nn1604 -Nq400"; LDFLAGS="-lI77 -lF77";; \
+	i386-intel  ) FC=ifort;   FFLAGS="-O3 -Df90"; LDFLAGS="-i-static";; \
+	i386-inteld ) FC=ifort;   FFLAGS="-g -Df90"; LDFLAGS="-i-static";; \
+	i386-intels ) FC=ifort;   FFLAGS="-O3 -Df90"; LDFLAGS="-i-static";; \
+	i386-intelds) FC=ifort;   FFLAGS="-g -Df90"; LDFLAGS="-i-static";; \
 	hp9000s700  ) FC=f77;   FFLAGS="+e +autodblpad -R8 -O +U77";; \
 	hp9000s700d ) FC=f77;   FFLAGS="+e +autodblpad -R8 -g -C +U77";; \
 	hp9000s700s ) FC=f77;   FFLAGS="+e -O +U77";; \
@@ -534,6 +541,9 @@ ${PROGRAM}_r8000: ${FILES:.F=.r8000_o}
 
 ${PROGRAM}_g77: ${FILES:.F=.g77_o}
 	${FC} ${FFLAGS} ${FILES:.F=.g77_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_i386-intel: ${FILES:.F=.i386-intel_o}
+	${FC} ${FFLAGS} ${FILES:.F=.i386-intel_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
 
 ${PROGRAM}_next: ${FILES:.F=.next_o}
 	${FC} ${FFLAGS} ${FILES:.F=.next_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}

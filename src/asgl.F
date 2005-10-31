@@ -1402,7 +1402,7 @@ c ----- number of positions, ratio between x and y spans
         data  x0  /  3,  3,  3,  3, 13, 13, 13, 13,  7.2,  7.2,  
      -               7.2, 4.5, 4.5, 3.2,16.5,
      -               8*1.5, 8*6.5, 8*11.5, 8*16.5/
-        data  y0  / 22, 15,  8,  1, 22, 15,  8,  1, 20, 11,  
+        data  y0  / 21, 14.7,  8.4,  2.1, 21, 14.7,  8.4,  2.1, 20, 11,
      -               2,16, 3,13,   5, 
      -              24.0, 20.8, 17.6, 14.4, 11.2, 8.0, 4.8, 1.6,
      -              24.0, 20.8, 17.6, 14.4, 11.2, 8.0, 4.8, 1.6,
@@ -2935,8 +2935,8 @@ c --------- get the filename:
           end if
 
 c ------- assume that the current PS is the original PS device CS system
-          dx = (bbx1-bbx0)*0.025
-          dy = (bby1-bby0)*0.025
+          dx = (bbx1-bbx0)*0.067
+          dy = (bby1-bby0)*0.055
           call gsave
           write(iops, '(a,f8.2,a)') '/Helvetica findfont ',rprm(1,79), 
      &         ' scalefont setfont'
