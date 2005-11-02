@@ -956,6 +956,8 @@ c ----- maximal number of font changes in a text, max numb of char in text:
         character s1*(lennum), s2*(lennum), escapc*1
         logical saved
 
+        if (lenr(txt) .eq. 0) return
+
 c ----- The PostScript special characters:
 c       The ASGL special characters (_,@) must not be PS spec chars!
 c ----- '\'

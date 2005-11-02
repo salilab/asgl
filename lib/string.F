@@ -659,16 +659,19 @@ c     for parts between two unprotected primes;
       end
 
 
-#if defined(f90)
+c --- it seems len_trim() on XLF Mac OS 10.4 does not quite work yet 
+c     (returns non-zero length for strings with ichar=0)
 
-      integer function lenr(text)
-      implicit none
-      character text*(*)
-      lenr = len_trim(text)
-      return
-      end
+c #if defined(f90)
 
-#else
+c       integer function lenr(text)
+c       implicit none
+c       character text*(*)
+c       lenr = len_trim(text)
+c       return
+c       end
+
+c #else
 
 c --- the index of the first printable character from the right:
 c       (if no printable character, 0 is returned)
@@ -703,7 +706,7 @@ C         Nothing left to check
       return
       end
 
-#endif
+c #endif
 
 
 c --- this one is about 3 times slower than lenr()

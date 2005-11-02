@@ -2888,6 +2888,7 @@ c --- average the values in neighbouring elements of y-columns
         real dx, dy
         character mark*255, page*5, fn*255
         character pwd*128, val*(20)
+        integer i
 #ifdef WIN
         integer(4) istat
 #endif
@@ -2941,7 +2942,7 @@ c ------- assume that the current PS is the original PS device CS system
           write(iops, '(a,f8.2,a)') '/Helvetica findfont ',rprm(1,79), 
      &         ' scalefont setfont'
           call moveto(bbx1-dx, bby0+dy)
-          write(iops, '(a)')'(', mark(1:lenr(mark)), ') dup' 
+          write(iops, '(3a)')'(', mark(1:lenr(mark)), ') dup' 
           write(iops, '(a)')'stringwidth neg exch neg exch rmoveto show'
           call grestore
 
