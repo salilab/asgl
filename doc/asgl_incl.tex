@@ -490,6 +490,7 @@ This command plots an energy spectrum looking like a vertical bar code.
 \OptLine{BAR\_LEGEND}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{BAR\_LEGEND\_PLACES}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{DPLOT\_GRAYNESS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_COLOR}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{DPLOT\_LINE\_TYPE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{DPLOT\_PART}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{DPLOT\_BOUNDS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
@@ -499,9 +500,9 @@ This command plots an energy spectrum looking like a vertical bar code.
 \OptLine{POINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{PRINT\_FONT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 \OptLine{PRINT\_DXY}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
-% \K{DPLOT\_PART}          = \String{1} & \V{UPPER} \OR\ \V{LOWER} \OR\ \V{FULL} \\
-% \K{DPLOT\_STYLE}   = \String{1} & \V{GRAY} \OR\ \V{BLACK} \\
-% \K{NUMBER\_DENSITY\_PLOT}  = \Logical{1} & \\
+\OptLine{DPLOT\_PART}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{DPLOT\_STYLE}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{NUMBER\_DENSITY\_PLOT}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
 }
 \Description   {
 This command will do a density plot of the Density array read in by the \\
@@ -515,7 +516,15 @@ This command will do a density plot of the Density array read in by the \\
 
    \K{DPLOT\_GRAYNESS} defines the grayness of the smallest and largest 
    value to be plotted, respectively. If you want small to be 
-   white, set the first element larger than the second one.
+   white, set the first element larger than the second one; they have to 
+   lie between 0 and 1, per PostScript convention. 
+
+   \K{DPLOT\_COLOR} defines the RGB triplets of the smallest and largest 
+   RGB value to be plotted, respectively. For example, 0 0 0 1 1 1
+   is equivalent to setting \K{DPLOT\_GRAYNESS} to 0 1; 0 0 0 1 0 0 
+   is equivalent to spanning from black to red. To span from small
+   to large in white to blue, use 1 1 1 0 0 1. Instead of pure blue
+   0 0 1, you could use a nicer darker blue of 0.1 0.1 0.7.
 
    \K{DPLOT\_LINE\_TYPE} defines the line type for the mesh plotted on the 
    density plot.
@@ -525,10 +534,10 @@ This command will do a density plot of the Density array read in by the \\
    \K{DPLOT\_BOUNDS} sets the real World bounds on the values of the 
    Density array corresponding to the \K{DPLOT\_GRAYNESS} interval.
 
-   \K{DPLOT\_STYLE} selects whether the \K{DPLOT\_BOUNDS} 
-   range is to be colored with 
-   various degrees of gray (\V{GRAY}), or every cell within the range is to be 
-   coloured by the first bound of \K{DPLOT\_GRAYNESS} and all other cells by
+   \K{DPLOT\_STYLE} selects whether the \K{DPLOT\_BOUNDS} range is to be
+   (i) colored in RGB color (\V{COLOR}), (ii) shadowed with various degrees 
+   of gray (\V{GRAY}), or (iii) every cell within the range is to be 
+   shaded by the first bound of \K{DPLOT\_GRAYNESS} and all other cells by
    the second bound of \K{DPLOT\_GRAYNESS}. 
 
    If \K{NUMBER\_DENSITY\_PLOT} is set to \V{ON} the number is plotted for each 

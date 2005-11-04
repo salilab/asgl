@@ -1023,9 +1023,9 @@ c         call line(wpx(x(1))-wp2,yzero,x2,yzero,iaxtyp)
 
 c --- it will do a density plot of an array x(i,j):
       subroutine dplot1(arr,nxdim,nydim,maxa,gray1,gray2,lintyp,where,
-     -                  small,big,style,barleg,nbpre,nbpost,
-     -                  numb,npre,npost,ifntpnt,iprnfnt,
-     -                  x0plt,y0plt,x1plt,y1plt,dxtxt,dytxt,iaxtyp)
+     -           small,big,style,barleg,nbpre,nbpost,
+     -           numb,npre,npost,ifntpnt,iprnfnt,
+     -           x0plt,y0plt,x1plt,y1plt,dxtxt,dytxt,iaxtyp,rgb1,rgb2)
         implicit none
 #include "asgl.cst"
 #include "io.cst"
@@ -1039,11 +1039,12 @@ c --- it will do a density plot of an array x(i,j):
         integer lin,ix,iy,i
         integer npre,npost,ifntpnt,iprnfnt
         real gray1,gray2,small,big,x1,y1,x2,y2,gray,grayness
-        real xl,wpx,xu,yl,wpy,yu,da,a,x3,x4,yval,y,x5
+        real xl,wpx,xu,yl,wpy,yu,da,a,x3,x4,yval,y,x5,rgb1(3),rgb2(3)
         real x0plt,y0plt,x1plt,y1plt,d,rminarr,rmaxarr,gscale,gtrans
         real arr(maxa,nydim),xx,yy,wd2,dxtxt,dytxt
+        real gscale_rgb(3), gtrans_rgb(3), rgb(3)
         character where*(*), style*(*), labl*9, val*20
-        logical barleg,numb
+        logical barleg,numb,color
 
 c ----- clip everything outside the Plot area:
         d = 0.5*linwdt(iaxtyp)
@@ -1055,10 +1056,21 @@ c ----- find the smallest and the largest elements of an array
         write(iolog,'(a,2g14.4)')
      -  'dplot1___> Zmin, Zmax: ', small, big
 
-c ----- get a scaling factor for the grayness
+        color = index(style, 'COLOR') .gt. 0
+
+c ----- get a scaling factor for the grayness or color by rgb
 c ----- workout the scales in x and y directions (gray=sc*x + tr)
-        gscale = (gray2-gray1) / (big-small) 
-        gtrans = -small*gscale + gray1
+        if (color) then
+          gscale_rgb(1) = (rgb2(1)-rgb1(1)) / (big-small) 
+          gtrans_rgb(1) = -small*gscale_rgb(1) + rgb1(1)
+          gscale_rgb(2) = (rgb2(2)-rgb1(2)) / (big-small) 
+          gtrans_rgb(2) = -small*gscale_rgb(2) + rgb1(2)
+          gscale_rgb(3) = (rgb2(3)-rgb1(3)) / (big-small) 
+          gtrans_rgb(3) = -small*gscale_rgb(3) + rgb1(3)
+        else
+          gscale = (gray2-gray1) / (big-small) 
+          gtrans = -small*gscale + gray1
+        end if
 
 c ----- half-width of the small gray elements:
         wd2 = 0.5
@@ -1077,9 +1089,14 @@ c ----- half-width of the small gray elements:
                 call ps_text(val,xx,yy,ifntpnt,0.0,2,2)
                end if
               else
-                gray = grayness(style,arr(ix,iy),small,big,gscale,
-     -                          gtrans,gray1,gray2)
-                call box(x1,y1,x2,y2,lin,gray)
+                if (color) then
+                  call rgbness(arr(ix,iy),gscale_rgb,gtrans_rgb,rgb)
+                  call box_color(x1,y1,x2,y2,lin,rgb)
+                else
+                  gray = grayness(style,arr(ix,iy),small,big,gscale,
+     -                            gtrans,gray1,gray2)
+                  call box(x1,y1,x2,y2,lin,gray)
+                end if
               end if
 10          continue
 20        continue
@@ -1097,9 +1114,14 @@ c ----- half-width of the small gray elements:
                   call ps_text(val,xx,yy,ifntpnt,0.0,2,2)
                  end if
                 else
-                  gray = grayness(style,arr(ix,iy),small,big,gscale,
-     -                            gtrans,gray1,gray2)
-                  call box(x1,y1,x2,y2,lin,gray)
+                  if (color) then
+                    call rgbness(arr(ix,iy),gscale_rgb,gtrans_rgb,rgb)
+                    call box_color(x1,y1,x2,y2,lin,rgb)
+                  else
+                    gray = grayness(style,arr(ix,iy),small,big,gscale,
+     -                              gtrans,gray1,gray2)
+                    call box(x1,y1,x2,y2,lin,gray)
+                  end if
                 end if
 11            continue
 21          continue
@@ -1116,10 +1138,15 @@ c ----- half-width of the small gray elements:
                    call ps_text(val,xx,yy,ifntpnt,0.0,2,2)
                   end if
                  else
-                   gray = grayness(style,arr(ix,iy),small,big,gscale,
-     -                             gtrans,gray1,gray2)
-                   call box(x1,y1,x2,y2,lin,gray)
-                 end if
+                  if (color) then
+                    call rgbness(arr(ix,iy),gscale_rgb,gtrans_rgb,rgb)
+                    call box_color(x1,y1,x2,y2,lin,rgb)
+                  else
+                    gray = grayness(style,arr(ix,iy),small,big,gscale,
+     -                              gtrans,gray1,gray2)
+                    call box(x1,y1,x2,y2,lin,gray)
+                  end if
+                end if
 12            continue
 22          continue
           end if
@@ -1180,13 +1207,17 @@ c ------- right of the ticks
 c ------- left of the tick labels
           x4 = x3 + dbar*0.04
           do  i = 1, nleg
-            gray = grayness(style,a,small,big,gscale,gtrans,gray1,gray2)
             y1 = (i-1.0)/(nleg)
             y2 = (1.0*i)/(nleg)
-            call box(x1,y1,x2,y2,0,gray)
+            if (color) then
+              call rgbness(a,gscale_rgb,gtrans_rgb,rgb)
+              call box_color(x1,y1,x2,y2,0,rgb)
+            else
+              gray=grayness(style,a,small,big,gscale,gtrans,gray1,gray2)
+              call box(x1,y1,x2,y2,0,gray)
+            end if
             a = a + da
           end do
-
           x5 = x4 + 0.65*fnthgt(iprnfnt)*(nbpre+nbpost)
 c          x5 = x4 + 0.65*fnthgt(2)*(nbpre+nbpost)
           do  i = 1, nnumb+1, 1
@@ -1205,6 +1236,20 @@ c             call ps_text(txt,x,y,ifont,angle,ihstyl,ivstyl)
         return
       end
 
+
+      subroutine rgbness(arr, gscale, gtrans, rgb)
+        real arr, gscale(3), gtrans(3), rgb(3)
+        real g
+
+        g = gscale(1) * arr + gtrans(1)
+        rgb(1) = min(max(0.0, g), 1.)
+        g = gscale(2) * arr + gtrans(2)
+        rgb(2) = min(max(0.0, g), 1.)
+        g = gscale(3) * arr + gtrans(3)
+        rgb(3) = min(max(0.0, g), 1.)
+
+        return
+      end
 
       real function grayness(style, arr, small, big, gscale, gtrans,
      -                       gray1, gray2)

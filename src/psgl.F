@@ -216,6 +216,25 @@ c         end if
       end 
 
 
+      subroutine fill_color(rgb)
+#include "psgl.cst"
+        real rgb(3)
+        character s1*(lennum)
+        character s2*(lennum)
+        character s3*(lennum)
+
+        call condns(rgb(1),s1,l1)
+        call condns(rgb(2),s2,l2)
+        call condns(rgb(3),s3,l3)
+!        call gsave
+        write(iops,'(3(a,1x),a)') 
+     -   s1(:l1),s2(:l2),s3(:l3),'setrgbcolor fill'
+!        call grestore
+
+        return
+      end 
+
+
 c --- rotate PS coordinate system
       subroutine rotate(angle)
 #include "psgl.cst"
@@ -453,6 +472,42 @@ c ----- strike a line if so selected:
 
         return
       end
+
+
+      subroutine box_color(x1, y1, x2, y2, lintyp, rgb)
+#include "psgl.cmn"
+        real rgb(3)
+
+c ----- is there anything to do:
+        if (((lintyp .ge. 1).and.(lintyp.le.nlintp)).or.
+     -      (gray .lt. 0.9999)) then
+
+c ----- draw a new and closed path:
+        call nmoveto(x1,y1)
+        call lineto(x1,y2)
+        call lineto(x2,y2)
+        call lineto(x2,y1)
+        call lineto(x1,y1)
+
+c ----- fill the area if so selected:
+        call fill_color(rgb)
+
+c ----- strike a line if so selected:
+        if((lintyp.ge.1).and.(lintyp.le.nlintp))then
+          call nmoveto(x1,y1)
+          call lineto(x1,y2)
+          call lineto(x2,y2)
+          call lineto(x2,y1)
+          call lineto(x1,y1)
+          call setpen(lintyp)
+          call stroke
+        end if
+      
+        end if
+
+        return
+      end
+
 
 
 c --- a poly-line of type lintyp:
@@ -1185,6 +1240,7 @@ c ------- restore the graphics state, if necessary
 
 c --- write the head and definitions of procedures and variables
       subroutine closeps(ncopies, psf, bbox0, bboy0, bbox1, bboy1)
+#include "io.cst"
 #include "psgl.cmn"
         integer ncopies
         real bbox0, bboy0, bbox1, bboy1

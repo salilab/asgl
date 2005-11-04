@@ -975,7 +975,7 @@ c --- plot the density plot:
      -              sprm(1,33),lprm(1,33),iprm(1,55),iprm(2,55),
      -              lprm(1,34),iprm(1,4),iprm(2,4),iprm(1,49),
      -              iprm(1,52),x0plt,y0plt,x1plt,y1plt,rprm(1,78),
-     -              rprm(2,78),iprm(1,72))
+     -              rprm(2,78),iprm(1,72),rprm(1:3,82),rprm(4:6,82))
         call topgrestore('dplot1')
         called(46) = .true.
 
