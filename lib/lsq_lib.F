@@ -48,6 +48,7 @@ c     larger than abscut in the last two steps);
      -           abscut, relcut, mstdev, niter, alamda, q, errmult, 
      -           degfreed, alammax, maxcyc)
 
+#include "io.cst"
 c ----- to prevent division by 0.0:
         parameter (eps = 1.0e-18, nprmmax2 =100)
 
