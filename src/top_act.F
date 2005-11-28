@@ -49,7 +49,7 @@ c ----- check:
 
 c ----- (tab,y,n,line_type,grayness,relative_bar_width)
         call topgset('hist2')
-        call hist2(tab(1,iprm(1,37)),tab,iprm(1,61),
+        call hist2(tab(1,iprm(1,47)),tab,iprm(1,61),
      -             iprm(iprm(1,46)+1,47),iprm(2,46),
      -             iprm(1,38),rprm(1,36),rprm(1,37),
      -             rprm(1,32),rprm(3,32),rprm(1,59),iprm(1,72))
@@ -1719,19 +1719,43 @@ c        end if
       end
 
 
+c --- FILL_COLUMN
       subroutine act76
         implicit none
 #include "top_appl.cmn"
+        integer i
 
+        if (iprm(1,77) .gt. 0 .and. iprm(1,77) .le. maxclm) then
+          do i = 1, maxpnt
+            tab(i, iprm(1,77)) = rprm(1,84) + (i-1)*rprm(2,84)
+          end do
+          ncolmn = max(ncolmn, iprm(1,77))
+        end if
         called(76) = .true.
 
         return
       end
 
 
+c --- ZOOM
       subroutine act77
         implicit none
 #include "top_appl.cmn"
+        integer ix, ix0, ix1, i
+        logical deflt
+        integer irmaxa
+
+        if (.not. deflt(rprm(1,83))) then
+c ------- find the x index with maximum y
+          ix = irmaxa(tab,maxpnt,maxclm,iprm(1,61),iprm(2,46),
+     &                iprm(iprm(1,46)+1:, 47))
+          ix0 = max(1, ix - nint(rprm(1,83)*(ix-1)))
+          ix1 = min(iprm(1,61), ix + nint(rprm(1,83)*(iprm(1,61)-ix)))
+          iprm(1,61) = ix1 - ix0 + 1
+          do i = 1, ncolmn
+            tab(1:iprm(1,61), i) = tab(ix0:ix1, i)
+          end do
+        end if
 
         called(77) = .true.
 
@@ -1741,9 +1765,9 @@ c        end if
 
       subroutine act78
         implicit none
-#include "top_appl.cmn"
+c #include "top_appl.cmn"
 
-        called(78) = .true.
+c         called(78) = .true.
 
         return
       end
@@ -1751,9 +1775,9 @@ c        end if
 
       subroutine act79
         implicit none
-#include "top_appl.cmn"
+c #include "top_appl.cmn"
 
-        called(79) = .true.
+c         called(79) = .true.
 
         return
       end
@@ -1872,7 +1896,7 @@ c ----- If it is not any of the above, it must be a string:
 
       subroutine act86
         implicit none
-c#include "top_appl.cmn"
+c #include "top_appl.cmn"
 
 c        called(86) = .true.
 

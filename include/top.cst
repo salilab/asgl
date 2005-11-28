@@ -88,5 +88,5 @@ c --- maximal numbers of real, integer, string and logical keywords:
 c --- maximal number of dimensions for real,integer,string & logical keywords:
      &          mvrprm     =    40,
      &          mviprm     =    30,
-     &          mvsprm     =    50,
+     &          mvsprm     =    181,
      &          mvlprm     =    30)

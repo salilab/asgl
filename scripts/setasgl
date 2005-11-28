@@ -4,4 +4,4 @@
 setenv BIN_ASGL $ASGLINSTALL
 setenv LIB_ASGL $ASGLINSTALL/libasgl
 
-set path=($path $ASGLINSTALL)
+set path=($ASGLINSTALL $path)

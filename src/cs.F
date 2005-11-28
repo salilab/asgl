@@ -53,25 +53,25 @@ c
       subroutine world(ixy,nwxy,iwxy,ndim,npnts,
      -                 x0wrl,y0wrl,x1wrl,y1wrl,
      -                 x0pap,y0pap,x1pap,y1pap,
-     -                 angle,a4bound,center)
+     -                 angle,a4bound,center,scale_worldx)
         implicit none
         real small
         parameter (small = 1.0E-10)
 #include "asgl.cmn"
 #include "io.cst"
         integer npnts,ndim,ixy(2),nwxy(2),iwxy(ndim)
-        real x0pap,y0pap,x1pap,y1pap,x0ps,y0ps,x1ps,y1ps
+        real x0pap,y0pap,x1pap,y1pap,x0ps,y0ps,x1ps,y1ps,scale_worldx
         real x0wrl,y0wrl,x1wrl,y1wrl,dxwrl,dywrl,cmps
         real angle,rminv,rmaxv,radians,center
         logical a4bound,deflt
 
 c ----- World extent calculation depends on the type of the last input:
         go to (1,2,3) inp
-c ------- 2D plot
+c ------- 1D plot
 1         call range1(tab,ixy,nwxy,iwxy,ndim,maxpnt,maxclm,npnts,
-     -                  x0wrl,y0wrl,x1wrl,y1wrl,center)
+     -                  x0wrl,y0wrl,x1wrl,y1wrl,center,scale_worldx)
           go to 10
-c ------- histogram
+c ------- 2D plot
 2         call range2(nxdim,nydim,x0wrl,y0wrl,x1wrl,y1wrl)
           go to 10
 c ------- molecule:

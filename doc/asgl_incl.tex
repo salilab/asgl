@@ -273,6 +273,20 @@ When plotting a PDB structure, the \K{PERSPECTIVE}, \K{EYE\_TO\_SCR}, and
 }   
 
 
+\Command      {ZOOM}{zoom into your data}
+
+\Options{
+\OptLine{SCALE\_WORLDX}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+   \K{SCALE\_WORLDX}
+   if different from -999, it will find the x of the peak value in 
+   a histogram and then scale the number of bins in the histogram 
+   to the left and right from the peak by \K{SCALE\_WORLDX}. It 
+   then condenses the plot array accordingly. If you follow by
+   \C{WORLD} and plotting, you will get only a subset of data plotted.
+}
+
 
 \Command      {AXES2D}{draw coordinate axes, ticks, and labels}
 
@@ -475,9 +489,11 @@ This command plots an energy spectrum looking like a vertical bar code.
     \K{XY\_COLUMNS} is used only when default values for 
     \K{XY\_SCOLUMNS} are required.
 
-    \K{BAR\_XSHIFT} shifts the bars for this amount along the X-axis. This is 
-    to allow the plotting of several bars at the same X without
-    modifying the data files.
+    \K{BAR\_XSHIFT} shifts the bars for this amount along the X-axis in 
+    real world coordinates. This is to allow the plotting of several bars 
+    at the same X without modifying the data files and/or for correcting
+    the placement of bars (eg, centering on the tick, right edge on the
+    tick, ...).
 }
 
 
@@ -558,6 +574,18 @@ This command will do a density plot of the Density array read in by the \\
 }
 
 
+\Command      {FILL\_COLUMN}{fill a column with values}
+
+\Options{
+\OptLine{COLUMN}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+\OptLine{COLUMN\_PARAMETERS}{TYPE}{VALUES}{DEFAULT}{DESCRIPTION} \\
+}
+\Description  {
+It will fill column \K{COLUMN} of the data table with values equal to 
+\K{COLUMN\_PARAMETERS[1] + (i-1) \K{COLUMN\_PARAMETERS[2], where
+i runs from 1 to the number of points in the table. These values can
+be used for plotting or to help with axis labeling.
+{
 
 
 \Command      {CAPTION}{place a caption next to an axis}

@@ -62,12 +62,9 @@ c ----- constants & scale in wpx&y
         yside2 = yside
         call upper(yside2)
 
-c ----- no clipping:
-c        call initclip
+! ----- stop clipping
+        call initclip
 
-
-c ----- setup the axis ticks (not necessary to call if all the tick
-c       parameters are setup by the user)
         call ticks(x0wrl,x1wrl,dxtckw,x0tckw,x2tckw,i0xtck,nxnumb,ndecx)
         call ticks(y0wrl,y1wrl,dytckw,y0tckw,y2tckw,i0ytck,nynumb,ndecy)
 
@@ -91,7 +88,6 @@ c        all the empty labels)
      -                               i0ytck,nynumb,ylabl,maxtck,
      -                               yfactaxs,expon)
 
-
 c ----- x-ticks:
 c ----- space between the end of tick and tick label:
         xtcksp = dtick + xtckshft
@@ -100,21 +96,26 @@ c ----- start of the first tick and interval between the ticks
         xtck = wpx(x0tckw)
         dxtick = wpdx(dxtckw)
         ilabl = 0
+
         do 10  i = 1, nxtick
 c ------- write out a tick line:
           if (i.ge.i0xtck.and.mod((i-i0xtck), nxnumb) .eq. 0) then
+           ilabl = ilabl + 1
+           if (xtck .ge. x0plt .and. xtck .le. x1plt) then
             call line(xtck,y0plt,xtck,y0plt-dtick,itktyp)
 c --------- write out a label for this tick if so requested:
             if (lablx .ne. 3) then
               xl = xtck 
               yl = y0plt-dtick-xtcksp
-              ilabl = ilabl + 1
+c              ilabl = ilabl + 1
               call ps_text(xlabl(ilabl),xl,yl,ifntxy,horizo,cenjus,
      -                     topaln)
             end if
+           end if
           else
-c --------- write out a little tick with no label:
-            call line(xtck,y0plt,xtck,y0plt-ftick*dtick,itkstyp)
+c -------- write out a little tick with no label:
+           if (xtck .ge. x0plt .and. xtck .le. x1plt)
+     &       call line(xtck,y0plt,xtck,y0plt-ftick*dtick,itkstyp)
           end if
           xtck = xtck + dxtick
 10      continue
@@ -830,6 +831,40 @@ c ----- determine the real world range of the 'array' graph:
       end
 
 
+
+      integer function irmaxa(y,maxpnt,maxclm,npnts,ny,iy)
+        integer iy(ny)
+        real y(maxpnt,maxclm)
+
+        rmaxa = -9.9E20
+        irmaxa = 1
+        do 10  ic = 1, ny
+          i = irmaxv(y(1,iy(ic)),npnts)
+          if(y(i, ic) .gt. rmaxa) then
+            rmaxa = y(irmaxa, ic)
+            irmaxa = i
+          end if
+10      continue
+
+        return
+      end
+
+
+      integer function irmaxv(y,npnts)
+        real y(npnts)
+        rmaxv  = -9.9E20
+        irmaxv = 1
+        do 5  ip = 1, npnts
+          if(y(ip) .gt. rmaxv) then
+            rmaxv = y(ip)
+            irmaxv = ip
+          end if
+5       continue
+        return
+      end
+
+
+
       subroutine rminmaxv(y,npnts,center,rminv2,rmaxv2)
 #include "asgl.cst"
         real y(npnts), ysrt(maxpnt)
@@ -877,6 +912,7 @@ c ------- slightly larger to allow for rounding error
 c --- prepare the nxtick labels for the x-axis ticks:
       subroutine axslbl(x0tckw,dxtckw,nxtick,ndec,i0xtck,nxnumb,xlabl,
      -                  maxtck,factaxs,expon)
+#include "io.cst"
         integer intexp
         real factaxs
         character xlabl(nxtick)*(*), expons*(10)
@@ -905,8 +941,8 @@ c         write(iolog,*) i, nxtick, i0xtck, x, nxnumb
          if (i.ge.i0xtck.and.mod((i-i0xtck), nxnumb) .eq. 0) then
           ilabl = ilabl + 1
           if (ilabl .gt. maxtck) then
-            write(iolog,'(a)') 'axslbl__E> increase MAXTCK'
-            stop
+           write(iolog,'(a)')'axslbl__E> increase MAXTCK,now: ',maxtck
+           stop
           end if
 c ------- get a string with plenty of pre-dot positions and specified 
 c         number of post-dot positions (if ndec=-1, the integer is obtained,
@@ -920,6 +956,8 @@ c ------- left justify the string
 10      continue
         return
       end
+
+
 
 c --- Plots a spectrum using linestyle ilintp (all in World coordinates)
       subroutine spectr(x,dx,y,npnts,ilintp,iaxtyp)
@@ -1799,7 +1837,7 @@ c ------change the position for the next label of this type
         call openf(ioout, outf, 'unknown')
   
         do  i = 1, npnts
-          write(ioout, '(99g15.4)') (x(i,iwxy(j)),j=1,nwxy(1)+nwxy(2))
+          write(ioout, '(99g16.6)') (x(i,iwxy(j)),j=1,nwxy(1)+nwxy(2))
         end do
 
         close(ioout)

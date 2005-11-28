@@ -10,7 +10,7 @@ c ---- input stream:
        parameter(ioin    =    16)  
        parameter(ioou    =    17)  
 c ---- maximal number of tick labels:
-       parameter(maxtck  =   200)  
+       parameter(maxtck  =   100)  
 c ---- dimensions of the plotting array:
        parameter (maxxarr =   500, maxyarr=500)
 c ---- maximal number of real's columns in a data file:
