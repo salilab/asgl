@@ -33,5 +33,5 @@ c ---- half-thickness of the A4 bounding line in the Base PS coordinates
        parameter (w2lin  =  0.5)
 
 c ---- ASGL version
-       parameter (version = 'ASGL 1.3.1', version_date = 'Oct 08 2003',
+       parameter (version = 'ASGL-SVN', version_date = '',
      -            author = 'Andrej Sali')

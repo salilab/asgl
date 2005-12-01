@@ -1,6 +1,0 @@
-
-#EPSF .ps
-
-INCLUDE
-
-CALL ROUTINE = 'hist', FILE = 'hist.dat'
