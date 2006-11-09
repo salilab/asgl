@@ -12,7 +12,7 @@
 
 SHELL=/bin/sh
 
-.PHONY: default clean distclean depend install check lintfor flint flint1 flint2
+.PHONY: default clean distclean depend install check lintfor flint flint1 flint2 ${PROGRAM}
 
 FTNCHEK=ftnchek
 CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
@@ -199,6 +199,11 @@ deb:
 	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}d" \
 		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
 	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	TOPDIR=`cd .. && pwd`; \
+	sed -e "s;BIN_value;$${TOPDIR}/src;" \
+	    -e "s;LIB_value;$${TOPDIR}/data;" \
+	    asgl.script > $${TOPDIR}/asgl; \
+	chmod a+x $${TOPDIR}/asgl
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
 
 opt:
@@ -212,6 +217,11 @@ opt:
 	make -f Makefile.$${ASGL_EXECUTABLE_TYPE} "ASGL_EXECUTABLE_TYPE=$${ASGL_EXECUTABLE_TYPE}" "COMPILER=$${ASGL_EXECUTABLE_TYPE}" \
 		"INCLUDE=${INCLUDE}" "DDEFS=$${DDEFS}" flags ; \
 	rm Makefile.$${ASGL_EXECUTABLE_TYPE}
+	TOPDIR=`cd .. && pwd`; \
+	sed -e "s;BIN_value;$${TOPDIR}/src;" \
+	    -e "s;LIB_value;$${TOPDIR}/data;" \
+	    asgl.script > $${TOPDIR}/asgl; \
+	chmod a+x $${TOPDIR}/asgl
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
 
 clean: rmhostobj

@@ -11,7 +11,7 @@
 # usage : options latexfile > newlatexfile
 #
 
-$topini_file = "../src/top.ini" ;      # here you can specify the location of the 
+$topini_file = "../data/top.ini" ; # here you can specify the location of the 
                                 # top.ini file
 $description_separator = "#" ;  # change this if you decide to use a different
                                 # separator for descriptions in top.ini

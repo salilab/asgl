@@ -30,7 +30,7 @@ SHELL=/bin/sh
 
 .SUFFIXES: .top .ps
 .top.ps:
-	asgl $<
+	../asgl $<
 
 default: dvi
 
