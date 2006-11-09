@@ -1,0 +1,11 @@
+ASGL 1.3.2 release: 11-09-2006:
+  - Bug fixes.
+  - gfortran and Intel Fortran support on Linux variants.
+  - New ZOOM command, to allow zooming into the relevant x-axis range of a
+    histogram automatically, when a peak is very narrow.
+  - New FILL_COLUMN command, to create a column of linear x-values, to
+    facilitate plotting x-axis tick labels after zooming.
+  - Allow coloring DENSITY plots.
+
+ASGL 1.3.1 release: 10-09-2003:
+  - Compile and bug fixes relative to 1.3.
