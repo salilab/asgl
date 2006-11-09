@@ -202,6 +202,7 @@ deb:
 	TOPDIR=`cd .. && pwd`; \
 	sed -e "s;BIN_value;$${TOPDIR}/src;" \
 	    -e "s;LIB_value;$${TOPDIR}/data;" \
+	    -e "s;^EXECUTABLE.*$$;EXECUTABLE=asgl_$${ASGL_EXECUTABLE_TYPE};" \
 	    asgl.script > $${TOPDIR}/asgl; \
 	chmod a+x $${TOPDIR}/asgl
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
@@ -220,6 +221,7 @@ opt:
 	TOPDIR=`cd .. && pwd`; \
 	sed -e "s;BIN_value;$${TOPDIR}/src;" \
 	    -e "s;LIB_value;$${TOPDIR}/data;" \
+	    -e "s;^EXECUTABLE.*$$;EXECUTABLE=asgl_$${ASGL_EXECUTABLE_TYPE};" \
 	    asgl.script > $${TOPDIR}/asgl; \
 	chmod a+x $${TOPDIR}/asgl
 	size ${PROGRAM}_$${ASGL_EXECUTABLE_TYPE}
