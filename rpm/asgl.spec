@@ -1,5 +1,5 @@
 Name:          asgl
-Version:       1.3.1
+Version:       1.3.2
 Release:       1
 License:       Copyright
 Summary:       PostScript plot creator
@@ -50,6 +50,9 @@ install data/* src/asgl_gfortran ${libdir}
 /usr/lib/asgl/top.ini
 
 %changelog
+* Thu Nov 09 2006 Ben Webb <ben@salilab.org>    1.3.2
+- Rebuild with most recent ASGL version
+
 * Thu Oct 09 2003 Ben Webb <ben@salilab.org>    1.3.1
 - Rebuild with most recent ASGL version
 
