@@ -22,16 +22,7 @@ interpreter of ASGL commands similar to Fortran.
 %setup
 
 %build
-topdir=${RPM_BUILD_DIR}/%{name}-%{version}
-(cd src; ASGL_EXECUTABLE_TYPE=g77 make opt)
-mkdir exe
-cp src/top.ini src/psgl.ini data/egromos.vdw data/egromos.brk \
-   data/3d.lib scripts/__asgl.top src/asgl_g77 exe/
-ln -s asgl_g77 exe/asgl
-BIN_ASGL="${topdir}/exe"
-LIB_ASGL=${BIN_ASGL}
-export BIN_ASGL LIB_ASGL
-PATH="${PATH}:${BIN_ASGL}"
+(cd src && ASGL_EXECUTABLE_TYPE=gfortran make opt)
 (cd doc && make ps)
 
 %install
@@ -40,8 +31,7 @@ libdir=${RPM_BUILD_ROOT}/usr/lib/asgl
 install -d ${bindir}
 install -d ${libdir}
 install rpm/asgl.script ${bindir}/asgl
-rm -f exe/asgl
-install exe/* ${libdir}
+install data/* src/asgl_gfortran ${libdir}
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
@@ -51,7 +41,7 @@ install exe/* ${libdir}
 %doc doc/manual.ps
 /usr/bin/asgl
 %dir /usr/lib/asgl
-/usr/lib/asgl/asgl_g77
+/usr/lib/asgl/asgl_gfortran
 /usr/lib/asgl/__asgl.top
 /usr/lib/asgl/3d.lib
 /usr/lib/asgl/egromos.brk
@@ -60,7 +50,7 @@ install exe/* ${libdir}
 /usr/lib/asgl/top.ini
 
 %changelog
-* Thu Oct 09 2003 Ben Webb <ben@salilab.org>
+* Thu Oct 09 2003 Ben Webb <ben@salilab.org>    1.3.1
 - Rebuild with most recent ASGL version
 
 * Tue Apr 30 2002 Ben Webb <ben@bellatrix.pcl.ox.ac.uk>
