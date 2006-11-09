@@ -2,7 +2,7 @@ cf ----------------------------------------------------------------------------
 cf
 cf    This file contains the main TOP program. No changes required here.
 cf
-cf    Copyright by Andrej Sali, 1990 -- 2005.
+cf    Copyright by Andrej Sali, 1990 -- 2006.
 cf
 cf
 cf    The other parts of the TOP framework are:

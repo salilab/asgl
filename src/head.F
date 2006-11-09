@@ -17,7 +17,7 @@ cf ----------------------------------------------------------------------------
      &  10x,'                    POSTSCRIPT GRAPHICS'/
      &  10x,25x,a//
      &  10x,'                                        v              '/
-     &  10x,'          Copyright(c) 1989-2005 Andrej Sali           '/
+     &  10x,'          Copyright(c) 1989-2006 Andrej Sali           '/
      &  10x,'                  All Rights Reserved                  '//
      &  10x,'                                   v                   '/
      &  10x,'                 Written by Andrej Sali                '//)
