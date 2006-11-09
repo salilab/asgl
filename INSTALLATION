@@ -50,9 +50,9 @@ Installation:
   2) Make sure the ASGL_EXECUTABLE_TYPE environment variable is defined
      for your architecture (see scripts/Makefile.include1 for a list):
 
-             for sh :  ASGL_EXECUTABLE_TYPE=g77; export ASGL_EXECUTABLE_TYPE
+            for sh :  ASGL_EXECUTABLE_TYPE=gfortran; export ASGL_EXECUTABLE_TYPE
 
-             for csh:  setenv ASGL_EXECUTABLE_TYPE g77
+            for csh:  setenv ASGL_EXECUTABLE_TYPE gfortran
 
 
         (These commands could also be put in your login script.)
@@ -82,7 +82,7 @@ Installation:
      setenv ASGLINSTALL /usr/local/bin/asgl
 
      # ASGL executable type
-     setenv ASGL_EXECUTABLE_TYPE g77
+     setenv ASGL_EXECUTABLE_TYPE gfortran
 
      # Set ASGL environment variables and update the command path:
      if (-e $ASGLINSTALL/setasgl) source $ASGLINSTALL/setasgl

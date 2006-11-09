@@ -21,7 +21,7 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 # convex c2 can only read *.f files, not *.F files;
 # Do not know about CRAY.
 
-.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o .i386-intel_o .mac10v4-xlf_o
+.SUFFIXES: .F .next_o .sun4_o .sol2_o .convex_o .o .hp9000s700_o .stardent_o .iris4d_o .alpha_o .decstation_o .cray_o .sun4-5.3_o .m88k_o .r8000_o .f2c_o .g77_o .iris4dt_o .rs6000.o .r10000_o .f90_o .sol2f90_o .i386-linux_o .alphaf90_o .i386-absoft_o .i386-intel_o .mac10v4-xlf_o .gfortran_o
 
 # F2C
 .F.m88k_o:
@@ -110,6 +110,9 @@ CHECK_OPTS=-array=0 -calltree -declare -portability -novice -nopretty \
 
 .F.g77_o:
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
+
+.F.gfortran_o:
+	${FC} ${INCLUDE} -Df90 -Df2c ${DDEFS} ${FFLAGS} -c $*.F -o $@
 
 .F.i386-intel_o:
 	${FC} ${INCLUDE} ${DDEFS} ${FFLAGS} -c $*.F -o $@
@@ -414,6 +417,10 @@ flags:
 	f90d        ) FC=f90;   FFLAGS="-automatic -r10000 -mips4 -r8 -g -C -O0";; \
 	g77         ) FC=g77;   FFLAGS="-r8 -O";; \
 	g77d        ) FC=g77;   FFLAGS="-r8 -g";; \
+	gfortran    ) FC=gfortran;   FFLAGS="-fdefault-real-8 -O";; \
+	gfortrand   ) FC=gfortran;   FFLAGS="-fdefault-real-8 -g";; \
+	gfortrans   ) FC=gfortran;   FFLAGS="-O -ffast-math -fno-f2c";; \
+	gfortrands  ) FC=gfortran;   FFLAGS="-O -fpedantic -finit-local-zero -fbackslash -fsymbol-case-lower -Wsurprising -Wuninitialized -Wunused -Wimplicit -Wredundant-decls -W -Wall";; \
 	sun4        ) FC=f77;   FFLAGS="-r8 -O4 -Nx800"; LDFLAGS="-nolib -Bstatic -lF77 -lV77 -lm -lc" ;; \
 	sun4d       ) FC=f77;   FFLAGS="-r8 -g -Nx800"; LDFLAGS="-lV77" ;; \
 	sol2        ) FC=f77;   FFLAGS="-r8 -O3 -Nx800"; LDFLAGS="-lV77";; \
@@ -474,6 +481,9 @@ ${PROGRAM}_r8000: ${FILES:.F=.r8000_o}
 
 ${PROGRAM}_g77: ${FILES:.F=.g77_o}
 	${FC} ${FFLAGS} ${FILES:.F=.g77_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
+
+${PROGRAM}_gfortran: ${FILES:.F=.gfortran_o}
+	${FC} ${FFLAGS} ${FILES:.F=.gfortran_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}
 
 ${PROGRAM}_i386-intel: ${FILES:.F=.i386-intel_o}
 	${FC} ${FFLAGS} ${FILES:.F=.i386-intel_o} ${LDFLAGS} -o ${PROGRAM}_${ASGL_EXECUTABLE_TYPE}

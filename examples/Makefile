@@ -20,8 +20,6 @@ PLOTS=$E/scatter.ps $E/dplot.ps $E/mhist.ps $E/error.ps $E/bars.ps \
 
 SOURCES=examples.tex examples_incl.tex
 
-LOCAL_DICT=/clients/sali/dbase/ref/dict.local
-
 # =========================================================================
 # ======================== End of usual modifications =====================
 # =========================================================================

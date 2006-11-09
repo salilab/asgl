@@ -16,19 +16,14 @@ else
   STEERF=$1
 fi
 
-# Do not do this because if you just copy the installed PROGRAM from one
-# machine to the other it won't work when the installed directories
-# are different. Instead, rely on the environment variables defined in 
-# setPROGRAM. Maybe this will be problem when using scripts for submitting
-# a job to NQS?
-#
-# BIN_ASGL=BIN_value
-# LIB_ASGL=LIB_value
-# export BIN_ASGL LIB_ASGL ASGL
+# ASGL binary and library file locations:
+BIN_ASGL=BIN_value
+LIB_ASGL=LIB_value
+export BIN_ASGL LIB_ASGL
 
 # for IBM RS6000, to make ERR keyword in I/O work:
 cnverr=yes ; export cnverr
 
 # run the program:
-exec ${EXECUTABLE} $STEERF
+exec ${BIN_ASGL}/${EXECUTABLE} $STEERF
 # nice -20 ${EXECUTABLE} $STEERF
