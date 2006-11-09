@@ -23,7 +23,7 @@ interpreter of ASGL commands similar to Fortran.
 
 %build
 (cd src && ASGL_EXECUTABLE_TYPE=gfortran make opt)
-(cd doc && make ps)
+(cd doc && gfortran collect.f -o collect && make ps)
 
 %install
 bindir=${RPM_BUILD_ROOT}/usr/bin
