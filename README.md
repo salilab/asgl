@@ -1,8 +1,8 @@
                                 ASGL 1.3.2
 
                            PostScript Plotting
-                                                  v              
-                    Copyright(c) 1989-2006 Andrej Sali           
+
+                    Copyright(c) 1989-2006 Andrej Šali
                             All Rights Reserved                  
 
                          E-mail: sali@salilab.org
