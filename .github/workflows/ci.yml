@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          export ASGL_EXECUTABLE_TYPE=asgl
+          make all
+      - name: Run examples
+        run: |
+          cd examples
+          ../asgl bars.top
