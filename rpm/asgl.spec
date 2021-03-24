@@ -4,7 +4,7 @@ Release:       1
 License:       Copyright
 Summary:       PostScript plot creator
 Vendor:        Andrej Sali
-URL:           http://salilab.org/asgl/
+URL:           https://salilab.org/asgl/
 Packager:      Ben Webb <ben@salilab.org>
 Group:         Applications/Engineering
 Source0:       ftp://salilab.org/asgl/%{name}-%{version}.tar.gz
