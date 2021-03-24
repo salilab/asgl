@@ -7,7 +7,7 @@ Vendor:        Andrej Sali
 URL:           https://salilab.org/asgl/
 Packager:      Ben Webb <ben@salilab.org>
 Group:         Applications/Engineering
-Source0:       ftp://salilab.org/asgl/%{name}-%{version}.tar.gz
+Source0:       https://github.com/salilab/asgl/archive/refs/tags/v%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 BuildRequires: /usr/bin/latex, /usr/bin/latex2html, /usr/bin/perl, /usr/bin/dvips
 
